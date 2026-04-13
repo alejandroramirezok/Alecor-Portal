@@ -245,6 +245,65 @@ table.t tr:hover td{background:var(--d2)}
 .lo:last-child{border-bottom:none}.lo:hover{background:var(--d3);color:var(--gold)}
 .lo .lm{font-size:9px;color:var(--t3);margin-top:1px}
 .wc{background:var(--sb);border:1px solid var(--br);border-radius:9px;padding:12px;margin-bottom:8px}
+/* PROGRESS BAR */
+.prog-bar-wrap{margin:14px 0 4px}
+.prog-bar-label{display:flex;justify-content:space-between;font-size:10px;color:var(--t3);margin-bottom:5px}
+.prog-bar-track{height:8px;background:var(--br);border-radius:4px;overflow:hidden}
+.prog-bar-fill{height:100%;background:linear-gradient(90deg,var(--gd),var(--gold));border-radius:4px;transition:width .4s}
+
+/* BILLING PROGRESS */
+.billing-prog{background:var(--sb);border:1px solid var(--br);border-radius:10px;padding:14px 16px;margin-bottom:16px}
+.billing-prog-title{font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;font-weight:500}
+.billing-levels{display:flex;gap:4px;margin-top:8px;flex-wrap:wrap}
+.bl-badge{padding:3px 8px;border-radius:20px;font-size:9px;font-weight:600;background:var(--d3);color:var(--t3);border:1px solid var(--br)}
+.bl-badge.reached{background:rgba(201,168,76,.2);color:var(--gold);border-color:rgba(201,168,76,.4)}
+.bl-badge.current{background:var(--gold);color:#000;border-color:var(--gold)}
+
+/* CALENDAR */
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cal-day-header{font-size:9px;color:var(--t3);text-align:center;padding:4px;text-transform:uppercase;letter-spacing:1px;font-weight:600}
+.cal-day{min-height:80px;background:var(--d3);border-radius:7px;padding:4px;border:1px solid var(--br)}
+.cal-day-num{font-size:9px;color:var(--t3);margin-bottom:3px;font-weight:500}
+.cal-chip{border-radius:4px;padding:3px 5px;font-size:9px;margin-bottom:2px;cursor:pointer;transition:opacity .2s;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;display:flex;align-items:center;gap:3px}
+.cal-chip:hover{opacity:.8}
+.cal-chip-icon{font-size:10px;flex-shrink:0}
+.cal-chip-txt{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cal-task-popup{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--sb);border:1px solid var(--br);border-radius:12px;padding:20px;z-index:500;max-width:320px;width:90%}
+.cal-task-popup h4{font-size:14px;font-weight:600;color:var(--tx);margin-bottom:8px}
+.cal-task-popup p{font-size:12px;color:var(--t2);line-height:1.6}
+.cal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:499}
+
+/* BANCO DE IDEAS */
+.idea-card{background:var(--sb);border:1px solid var(--br);border-radius:10px;padding:14px;margin-bottom:10px}
+.idea-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.idea-title{font-size:13px;font-weight:600;color:var(--tx)}
+.idea-meta{font-size:10px;color:var(--t3);margin-top:2px}
+.estado-badge{padding:2px 8px;border-radius:20px;font-size:9px;font-weight:600;cursor:pointer}
+.estado-idea{background:rgba(55,138,221,.15);color:var(--inf)}
+.estado-guionizado{background:rgba(239,159,39,.15);color:var(--wn)}
+.estado-grabado{background:rgba(201,168,76,.15);color:var(--gold)}
+.estado-subido{background:rgba(29,158,117,.15);color:var(--ok)}
+
+/* CONTENT LIST */
+.content-list-item{background:var(--sb);border:1px solid var(--br);border-radius:9px;padding:11px 13px;margin-bottom:8px;display:flex;align-items:center;gap:12px}
+.cli-thumb{width:56px;height:40px;border-radius:6px;background:var(--d3);overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:18px}
+.cli-thumb img{width:100%;height:100%;object-fit:cover}
+.cli-info{flex:1;min-width:0}
+.cli-name{font-size:12px;font-weight:600;color:var(--tx);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cli-meta{font-size:10px;color:var(--t3);margin-top:2px}
+.cli-stats{display:flex;gap:10px;font-size:10px;color:var(--t2);flex-shrink:0}
+.cli-stat{display:flex;align-items:center;gap:3px}
+
+/* FILTER BAR */
+.filter-bar{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.filter-bar label{font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:1px;font-weight:500}
+.fsort{background:var(--d3);border:1px solid var(--br);color:var(--tx);padding:5px 9px;border-radius:6px;font-size:10px;font-family:var(--font);outline:none;cursor:pointer}
+
+/* TASK EDITOR with date+category */
+.task-er-full{display:grid;grid-template-columns:1fr auto auto auto;gap:6px;margin-bottom:8px;align-items:center}
+.task-er-full input,.task-er-full select{background:var(--d3);border:1px solid var(--br);border-radius:6px;padding:7px 8px;color:var(--tx);font-size:11px;font-family:var(--font);outline:none}
+.task-er-full input:focus,.task-er-full select:focus{border-color:var(--gold)}
+
 .kpi-sidebar{width:200px;min-width:200px;background:var(--sb);border-right:1px solid var(--br);overflow-y:auto;padding:8px 0;height:calc(100vh - 50px)}
 .ksi-section{padding:14px 16px 4px;font-size:9px;color:var(--gold);text-transform:uppercase;letter-spacing:2px;font-weight:600}
 .ksi-item{padding:9px 16px;font-size:11px;color:var(--tx);cursor:pointer;transition:all .18s;border-left:2px solid transparent}
@@ -342,6 +401,7 @@ table.t tr:hover td{background:var(--d2)}
       <div class="ksi-item" onclick="showKpiSec('reels-m',this)">⬡ Reels</div>
       <div class="ksi-item" onclick="showKpiSec('hist-m',this)">⬡ Historias</div>
       <div class="ksi-item" onclick="showKpiSec('yt-m',this)">⬡ YouTube</div>
+      <div class="ksi-item" onclick="showKpiSec('ideas-m',this)">⬡ Banco de Ideas</div>
       <div class="ksi-item" onclick="showKpiSec('viral-m',this)">⬡ Calculadora</div>
       <div class="ksi-section">Config</div>
       <div class="ksi-item" onclick="showKpiSec('negocio-m',this)">⬡ Mi Negocio</div>
@@ -373,9 +433,12 @@ table.t tr:hover td{background:var(--d2)}
           <button class="ctab" onclick="showCtab('hist',this)">📱 Historias</button>
           <button class="ctab" onclick="showCtab('yt',this)">▶️ YouTube</button>
         </div>
-        <div class="ctab-panel active" id="ctab-reels"><div id="dc-reels-kpis"></div><div style="font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;margin-top:14px">Top 3 últimos 90 días (comentarios)</div><div id="dc-reels-top"></div></div>
-        <div class="ctab-panel" id="ctab-hist"><div id="dc-hist-kpis"></div><div style="font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;margin-top:14px">Top 3 últimos 90 días (respuestas CTA)</div><div id="dc-hist-top"></div></div>
-        <div class="ctab-panel" id="ctab-yt"><div id="dc-yt-kpis"></div><div style="font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;margin-top:14px">Top 3 últimos 90 días (visitas)</div><div id="dc-yt-top"></div></div>
+        <div class="ctab-panel active" id="ctab-reels"><div id="dc-reels-kpis"></div><div style="font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;margin-top:14px">Top 3 últimos 90 días (comentarios)</div><div id="dc-reels-top"></div>
+<div style="display:flex;align-items:center;justify-content:space-between;margin-top:16px;margin-bottom:8px"><div style="font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:1px">Todos los reels</div><select class="fsort" id="dc-reels-list-sort" onchange="renderContentList('dc-reels-list',KPI.reels,'reels')"><option value="views">Por visitas</option><option value="comentarios">Por comentarios</option></select></div><div id="dc-reels-list"></div></div>
+        <div class="ctab-panel" id="ctab-hist"><div id="dc-hist-kpis"></div><div style="font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;margin-top:14px">Top 3 últimos 90 días (respuestas CTA)</div><div id="dc-hist-top"></div>
+<div style="display:flex;align-items:center;justify-content:space-between;margin-top:16px;margin-bottom:8px"><div style="font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:1px">Todas las historias</div><select class="fsort" id="dc-hist-list-sort" onchange="renderContentList('dc-hist-list',KPI.historias,'historias')"><option value="views">Por visitas</option><option value="respuestas_cta">Por resp. CTA</option></select></div><div id="dc-hist-list"></div></div>
+        <div class="ctab-panel" id="ctab-yt"><div id="dc-yt-kpis"></div><div style="font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;margin-top:14px">Top 3 últimos 90 días (visitas)</div><div id="dc-yt-top"></div>
+<div style="display:flex;align-items:center;justify-content:space-between;margin-top:16px;margin-bottom:8px"><div style="font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:1px">Todos los videos</div><select class="fsort" id="dc-yt-list-sort" onchange="renderContentList('dc-yt-list',KPI.yt,'yt')"><option value="views">Por visitas</option><option value="ctr">Por CTR</option></select></div><div id="dc-yt-list"></div></div>
       </div>
 
       <!-- MODULE SECTIONS (leads, agendas, etc.) -->
@@ -388,6 +451,9 @@ table.t tr:hover td{background:var(--d2)}
       <div class="kpi-section" id="ksec-reels-m"><div class="tw"><div class="th2"><h3>Reels</h3><button class="ba" onclick="openMod('m-reel');resetMod('reel')">+ Nuevo Reel</button></div><div class="tbl-scroll"><div id="tbl-reels"></div></div></div></div>
       <div class="kpi-section" id="ksec-hist-m"><div class="tw"><div class="th2"><h3>Historias</h3><button class="ba" onclick="openMod('m-hist');resetMod('hist')">+ Nueva Secuencia</button></div><div class="tbl-scroll"><div id="tbl-hist"></div></div></div></div>
       <div class="kpi-section" id="ksec-yt-m"><div class="tw"><div class="th2"><h3>YouTube</h3><button class="ba" onclick="openMod('m-yt');resetMod('yt')">+ Nuevo Video</button></div><div class="tbl-scroll"><div id="tbl-yt"></div></div></div></div>
+      <div class="kpi-section" id="ksec-ideas-m">
+        <div class="tw"><div class="th2"><h3>Banco de Ideas</h3><button class="ba" onclick="openM('m-idea')">+ Nueva Idea</button></div><div class="tbl-scroll"><div id="ideas-list"></div></div></div>
+      </div>
       <div class="kpi-section" id="ksec-viral-m">
         <div class="tw" style="padding:16px;margin-bottom:14px">
           <div class="fr"><label>Nombre del Reel</label><input type="text" id="vir-n" placeholder="Describe el reel"></div>
@@ -504,7 +570,7 @@ table.t tr:hover td{background:var(--d2)}
 <div class="ov" id="m-win"><div class="modal"><div class="mh"><h3>Nueva Win</h3><button class="mc" onclick="closeM('m-win')">✕</button></div><div class="mb"><div class="fg"><div class="fr"><label>Cliente</label><input id="w-cl"></div><div class="fr"><label>Fecha</label><input type="date" id="w-f"></div></div><div class="fr"><label>Win / Resultado</label><textarea id="w-t" rows="3" style="resize:none"></textarea></div><div class="fg"><div class="fr"><label>Grandeza</label><select id="w-g"><option>Grande</option><option>Media</option><option>Pequeña</option></select></div><div class="fr"><label>¿Usada en historias?</label><select id="w-u"><option value="No">No</option><option value="Si">Sí</option></select></div></div><button class="bp" onclick="saveWin()">Guardar</button></div></div></div>
 
 <!-- REEL -->
-<div class="ov" id="m-reel"><div class="modal"><div class="mh"><h3 id="m-reel-t">Nuevo Reel</h3><button class="mc" onclick="closeM('m-reel')">✕</button></div><div class="mb"><input type="hidden" id="reel-idx"><div class="fg"><div class="fr"><label>Nombre</label><input id="r-n"></div><div class="fr"><label>Estructura</label><select id="r-est"><option>Respondiendo a comentario polémico</option><option>La regla de 3</option><option>Gancho controversial</option><option>La paradoja personal</option><option>El espejo</option><option>Video 100% viral</option><option>El roba audiencia</option><option>Vacío de información</option><option>How to template</option><option>El momento WTF</option><option>El desafío contracorriente</option><option>El efecto boomerang</option><option>Viaje del héroe</option><option>Caída doble</option><option>El efecto mariposa</option><option>La teoría del loco</option><option>Pitch de venta perfecto</option><option>Construcción de autoridad para venta</option><option>Testimonio corto + venta directa</option></select></div></div><div class="fr"><label>Gancho (frase de apertura)</label><input id="r-gancho" placeholder="Ej: El 90% de los emprendedores cometen este error..."></div><div class="fg"><div class="fr"><label>Formato visual</label><select id="r-fmt"><option>Hablando a cámara</option><option>POV (Point of View)</option><option>Entrevista</option><option>Vlog</option><option>Selfie (modo celular)</option><option>B-roll</option><option>Comparación A/B</option><option>Reaccionando</option><option>Respuesta a comentario</option><option>Pantalla dividida</option><option>Ranking (Top 3, Top 5...)</option></select></div><div class="fr"><label>Fecha</label><input type="date" id="r-f"></div></div><div class="fg"><div class="fr"><label>Views</label><input type="number" id="r-v" value="0"></div><div class="fr"><label>Comentarios</label><input type="number" id="r-c" value="0"></div></div><div class="fg"><div class="fr"><label>Seguidores Nuevos</label><input type="number" id="r-s" value="0"></div><div class="fr"><label>Likes</label><input type="number" id="r-l" value="0"></div></div><button class="bp" onclick="saveReel()">Guardar</button></div></div></div>
+<div class="ov" id="m-reel"><div class="modal"><div class="mh"><h3 id="m-reel-t">Nuevo Reel</h3><button class="mc" onclick="closeM('m-reel')">✕</button></div><div class="mb"><input type="hidden" id="reel-idx"><div class="fr"><label>Link del video (opcional)</label><input id="r-link" placeholder="https://..." oninput="detectYTThumb(this.value)"></div><div id="r-thumb-preview" style="margin-bottom:8px"></div><div class="fg"><div class="fr"><label>Nombre</label><input id="r-n"></div><div class="fr"><label>Estructura</label><select id="r-est"><option>Respondiendo a comentario polémico</option><option>La regla de 3</option><option>Gancho controversial</option><option>La paradoja personal</option><option>El espejo</option><option>Video 100% viral</option><option>El roba audiencia</option><option>Vacío de información</option><option>How to template</option><option>El momento WTF</option><option>El desafío contracorriente</option><option>El efecto boomerang</option><option>Viaje del héroe</option><option>Caída doble</option><option>El efecto mariposa</option><option>La teoría del loco</option><option>Pitch de venta perfecto</option><option>Construcción de autoridad para venta</option><option>Testimonio corto + venta directa</option></select></div></div><div class="fr"><label>Gancho (frase de apertura)</label><input id="r-gancho" placeholder="Ej: El 90% de los emprendedores cometen este error..."></div><div class="fg"><div class="fr"><label>Formato visual</label><select id="r-fmt"><option>Hablando a cámara</option><option>POV (Point of View)</option><option>Entrevista</option><option>Vlog</option><option>Selfie (modo celular)</option><option>B-roll</option><option>Comparación A/B</option><option>Reaccionando</option><option>Respuesta a comentario</option><option>Pantalla dividida</option><option>Ranking (Top 3, Top 5...)</option></select></div><div class="fr"><label>Fecha</label><input type="date" id="r-f"></div></div><div class="fg"><div class="fr"><label>Views</label><input type="number" id="r-v" value="0"></div><div class="fr"><label>Comentarios</label><input type="number" id="r-c" value="0"></div></div><div class="fg"><div class="fr"><label>Seguidores Nuevos</label><input type="number" id="r-s" value="0"></div><div class="fr"><label>Likes</label><input type="number" id="r-l" value="0"></div></div><button class="bp" onclick="saveReel()">Guardar</button></div></div></div>
 
 <!-- HISTORIA -->
 <div class="ov" id="m-hist"><div class="modal"><div class="mh"><h3 id="m-hist-t">Nueva Secuencia</h3><button class="mc" onclick="closeM('m-hist')">✕</button></div><div class="mb"><input type="hidden" id="hist-idx"><div class="fg"><div class="fr"><label>Idea de secuencia</label><input id="h-idea"></div><div class="fr"><label>Formato</label><select id="h-fmt"><option>POV / Reflexión</option><option>Caja de Preguntas</option><option>Todos hacen esto</option><option>Lo que decían</option><option>Lo que dejo fuera es tan importante</option><option>Cómo piensa tu mente</option><option>Mini-Reel</option><option>Directo + Final</option><option>Mi punto de quiebre</option><option>Fórmula AIDA</option><option>Problema-Solución</option><option>Caso de éxito</option><option>3 pasos</option><option>P.A.S</option><option>P.S.A</option><option>Pastor</option><option>Doble CTA</option><option>Casos de éxito + entregable</option><option>Pregunta trampa</option><option>Explicar qué haces</option><option>Casos de éxitos masivos</option></select></div></div><div class="fg"><div class="fr"><label>Fecha</label><input type="date" id="h-f"></div><div class="fr"><label>Views última historia</label><input type="number" id="h-v" value="0" oninput="calcTasa()"></div></div><div class="fg"><div class="fr"><label>Respuestas al CTA</label><input type="number" id="h-cta" value="0" oninput="calcTasa()"></div><div class="fr"><label>Tasa interacción (auto)</label><input id="h-tasa" readonly style="background:var(--d4);cursor:default"></div></div><button class="bp" onclick="saveHist()">Guardar</button></div></div></div>
@@ -513,6 +579,16 @@ table.t tr:hover td{background:var(--d2)}
 <div class="ov" id="m-yt"><div class="modal"><div class="mh"><h3 id="m-yt-t">Nuevo Video YouTube</h3><button class="mc" onclick="closeM('m-yt')">✕</button></div><div class="mb"><input type="hidden" id="yt-idx"><div class="fg"><div class="fr"><label>Título</label><input id="y-t"></div><div class="fr"><label>Fecha</label><input type="date" id="y-f"></div></div><div class="fg"><div class="fr"><label>Duración (min)</label><input type="number" id="y-d" step="0.5"></div><div class="fr"><label>Views</label><input type="number" id="y-v" value="0"></div></div><div class="fg"><div class="fr"><label>% CTR</label><input type="number" id="y-ctr" step="0.1"></div><div class="fr"><label>% Retención</label><input type="number" id="y-ret" step="0.1"></div></div><button class="bp" onclick="saveYT()">Guardar</button></div></div></div>
 
 <!-- PROGRAMA -->
+<div class="ov" id="m-idea"><div class="modal"><div class="mh"><h3>Nueva Idea</h3><button class="mc" onclick="closeM('m-idea')">✕</button></div><div class="mb">
+  <div class="fg"><div class="fr"><label>Idea / Título</label><input id="idea-titulo" placeholder="Ej: Video sobre los errores más comunes..."></div><div class="fr"><label>Gancho que se te ocurrió</label><input id="idea-gancho" placeholder="Frase de apertura"></div></div>
+  <div class="fg"><div class="fr"><label>Link de referencia</label><input id="idea-link" placeholder="https://..."></div><div class="fr"><label>Tipo de contenido</label><select id="idea-tipo" onchange="toggleIdeaTipo()"><option value="reel">Reel</option><option value="historia">Historia</option><option value="youtube">YouTube</option></select></div></div>
+  <div class="fr"><label>Transcripción del video referencia</label><textarea id="idea-transcripcion" rows="3" style="resize:vertical" placeholder="Pega la transcripción si tienes..."></textarea></div>
+  <div class="fr" id="idea-est-reel-row"><label>Estructura de guión</label><select id="idea-est-reel"><option>Respondiendo a comentario polémico</option><option>La regla de 3</option><option>Gancho controversial</option><option>La paradoja personal</option><option>El espejo</option><option>Video 100% viral</option><option>El roba audiencia</option><option>Vacío de información</option><option>How to template</option><option>El momento WTF</option><option>El desafío contracorriente</option><option>El efecto boomerang</option><option>Viaje del héroe</option><option>Caída doble</option><option>El efecto mariposa</option><option>La teoría del loco</option><option>Pitch de venta perfecto</option><option>Construcción de autoridad para venta</option><option>Testimonio corto + venta directa</option></select></div>
+  <div class="fr" id="idea-est-hist-row" style="display:none"><label>Estructura de historia</label><select id="idea-est-hist"><option>POV / Reflexión</option><option>Caja de Preguntas</option><option>Todos hacen esto</option><option>Lo que decían</option><option>Lo que dejo fuera es tan importante</option><option>Cómo piensa tu mente</option><option>Mini-Reel</option><option>Directo + Final</option><option>Mi punto de quiebre</option><option>Fórmula AIDA</option><option>Problema-Solución</option><option>Caso de éxito</option><option>3 pasos</option><option>P.A.S</option><option>P.S.A</option><option>Pastor</option><option>Doble CTA</option><option>Casos de éxito + entregable</option><option>Pregunta trampa</option><option>Explicar qué haces</option><option>Casos de éxitos masivos</option></select></div>
+  <div class="fg" id="idea-fmt-row"><div class="fr"><label>Formato visual (reel)</label><select id="idea-fmt"><option>Hablando a cámara</option><option>POV (Point of View)</option><option>Entrevista</option><option>Vlog</option><option>Selfie (modo celular)</option><option>B-roll</option><option>Comparación A/B</option><option>Reaccionando</option><option>Respuesta a comentario</option><option>Pantalla dividida</option><option>Ranking (Top 3, Top 5...)</option></select></div><div class="fr"><label>Estado</label><select id="idea-estado"><option value="idea">Idea</option><option value="guionizado">Guionizado</option><option value="grabado">Grabado</option><option value="subido">Subido</option></select></div></div>
+  <button class="bp" onclick="saveIdea()">Guardar Idea</button>
+</div></div></div>
+
 <div class="ov" id="m-prog"><div class="modal"><div class="mh"><h3 id="m-prog-t">Nuevo Programa</h3><button class="mc" onclick="closeM('m-prog')">✕</button></div><div class="mb"><input type="hidden" id="prog-idx"><div class="fg"><div class="fr"><label>Nombre</label><input id="p-nom"></div><div class="fr"><label>Precio ($)</label><input type="number" id="p-precio"></div></div><div class="fg"><div class="fr"><label>Duración (días)</label><input type="number" id="p-dias"></div><div class="fr"><label>Cuotas</label><input type="number" id="p-cuotas" value="1"></div></div><div class="fr"><label>Descripción</label><textarea id="p-desc" rows="2" style="resize:none"></textarea></div><button class="bp" onclick="saveProg()">Guardar</button></div></div></div>
 
 <!-- PASARELA -->
@@ -734,14 +810,23 @@ async function renderPanelGeneral(cid){
     sb.from('profiles').select('*').eq('id',cid).single()
   ]);
   const init=(profile?.name||'?').split(' ').map(w=>w[0]).slice(0,2).join('');
-  const done=(tasks||[]).filter(t=>t.done).length;
-  const total=(tasks||[]).length;
+  const taskList=tasks||[];
+  const done=taskList.filter(t=>t.done).length;
+  const total=taskList.length;
+  const pct=total>0?Math.round(done/total*100):0;
   document.getElementById('pg-body').innerHTML=`
     <div class="pg-wrap">
       <div class="pg-hero">
         <div class="pg-avatar">${init}</div>
-        <div><div class="pg-name">${profile?.name||'—'}</div><div class="pg-prog">${profile?.program||'—'}</div></div>
-        <div class="pg-stats"><div class="sv">${done}/${total}</div><div class="sl">tareas completadas</div></div>
+        <div style="flex:1">
+          <div class="pg-name">${profile?.name||'—'}</div>
+          <div class="pg-prog">${profile?.program||'—'}</div>
+          <div class="prog-bar-wrap" style="max-width:280px;margin-top:8px">
+            <div class="prog-bar-label"><span>Progreso semanal</span><span id="pg-pct-txt">${pct}%</span></div>
+            <div class="prog-bar-track"><div class="prog-bar-fill" id="pg-prog-fill" style="width:${pct}%"></div></div>
+          </div>
+        </div>
+        <div class="pg-stats"><div class="sv" id="pg-done-cnt">${done}/${total}</div><div class="sl">tareas</div></div>
       </div>
       <div class="info-grid">
         <div class="ic"><div class="ic-lbl">Nicho</div><div class="ic-val">${info?.nicho||'Por definir'}</div></div>
@@ -750,20 +835,19 @@ async function renderPanelGeneral(cid){
       </div>
       <div class="two-col">
         <div class="sc">
-          <div class="sch"><h3>Tareas Semanales</h3><span class="sch-badge">${done}/${total}</span></div>
+          <div class="sch"><h3>Tareas Semanales</h3><span class="sch-badge" id="pg-task-badge">${done}/${total}</span></div>
           <div class="scb">
-            ${(tasks||[]).length?tasks.map(t=>`
+            ${taskList.length?taskList.map(t=>`
               <div class="task-row${t.done?' done':''}" id="tr-${t.id}">
                 <input type="checkbox" class="task-cb" ${t.done?'checked':''} onchange="toggleTask('${t.id}',this,'${cid}')">
                 <span class="task-lbl">${t.text}</span>
+                ${t.date?`<span style="font-size:9px;color:var(--t3);flex-shrink:0;margin-left:auto">${fD(t.date)}</span>`:''}
               </div>`).join(''):'<div style="font-size:11px;color:var(--t3);padding:8px 0">Sin tareas asignadas</div>'}
           </div>
         </div>
         <div class="sc">
           <div class="sch"><h3>Calendario Semanal</h3></div>
-          <div class="scb">
-            ${info?.cal_url?`<div class="cal-img-wrap"><img src="${info.cal_url}" alt="Calendario" onerror="this.parentElement.innerHTML='<div class=\\'cal-placeholder\\'>Imagen no disponible</div>'"></div>`:`<div class="cal-img-wrap"><div class="cal-placeholder">Sin calendario asignado aún</div></div>`}
-          </div>
+          <div class="scb" style="padding:8px">${buildCalendar(taskList)}</div>
         </div>
       </div>
       <div class="docs-card">
@@ -784,6 +868,13 @@ async function toggleTask(taskId,cb,cid){
   const row=document.getElementById('tr-'+taskId);
   if(row)row.classList.toggle('done',cb.checked);
   await sb.from('tasks').update({done:cb.checked}).eq('id',taskId);
+  const allCbs=document.querySelectorAll('.task-cb');
+  const total=allCbs.length;const done=[...allCbs].filter(c=>c.checked).length;
+  const pct=total>0?Math.round(done/total*100):0;
+  const fill=document.getElementById('pg-prog-fill');const txt=document.getElementById('pg-pct-txt');
+  const badge=document.getElementById('pg-task-badge');const cnt=document.getElementById('pg-done-cnt');
+  if(fill)fill.style.width=pct+'%';if(txt)txt.textContent=pct+'%';
+  if(badge)badge.textContent=done+'/'+total;if(cnt)cnt.textContent=done+'/'+total;
 }
 
 async function openKPI(clientId){
@@ -798,7 +889,7 @@ async function openKPI(clientId){
 
 async function loadKPIData(){
   const uid=portalClientId;
-  const[l,a,i,g,c,w,r,h,y,v,p,pa]=await Promise.all([
+  const[l,a,i,g,c,w,r,h,y,v,p,pa,id]=await Promise.all([
     sb.from('leads').select('*').eq('user_id',uid),
     sb.from('agendas').select('*').eq('user_id',uid),
     sb.from('ingresos').select('*').eq('user_id',uid),
@@ -810,9 +901,10 @@ async function loadKPIData(){
     sb.from('yt_videos').select('*').eq('user_id',uid),
     sb.from('viralidad').select('*').eq('user_id',uid),
     sb.from('programas').select('*').eq('user_id',uid),
-    sb.from('pasarelas').select('*').eq('user_id',uid)
+    sb.from('pasarelas').select('*').eq('user_id',uid),
+    sb.from('ideas').select('*').eq('user_id',uid).order('created_at',{ascending:false})
   ]);
-  KPI={leads:l.data||[],agendas:a.data||[],ingresos:i.data||[],gastos:g.data||[],clientes:c.data||[],wins:w.data||[],reels:r.data||[],historias:h.data||[],yt:y.data||[],viralidad:v.data||[],programas:p.data||[],pasarelas:pa.data||[]};
+  KPI={leads:l.data||[],agendas:a.data||[],ingresos:i.data||[],gastos:g.data||[],clientes:c.data||[],wins:w.data||[],reels:r.data||[],historias:h.data||[],yt:y.data||[],viralidad:v.data||[],programas:p.data||[],pasarelas:pa.data||[],ideas:id.data||[]};
 }
 
 function showKpiSec(sec,el){
@@ -830,6 +922,7 @@ function showKpiSec(sec,el){
   else if(sec==='wins-m')renderWins();
   else if(sec==='reels-m')renderTbl('reels','tbl-reels');
   else if(sec==='hist-m')renderTbl('historias','tbl-hist');
+  else if(sec==='ideas-m')renderIdeas();
   else if(sec==='yt-m')renderTbl('yt','tbl-yt');
   else if(sec==='viral-m')renderViralidad();
   else if(sec==='negocio-m'){renderProgs();renderPas();}
@@ -868,7 +961,22 @@ function renderOps(){
   if(ag.length>0&&cr<30)alts+=`<div class="alrt">Close Rate bajo (${cr}%) — Trabajar objeciones</div>`;
   if(ns>2)alts+=`<div class="alrt">${ns} No-Shows — Mejorar proceso de confirmación</div>`;
   document.getElementById('ops-alerts').innerHTML=alts;
-  document.getElementById('ops-ventas').innerHTML=`<div class="ds"><div class="dst"><span>💰</span>Dashboard Ventas</div><div class="kg"><div class="kcard${fac===0?' r':''}"><div class="kl">Facturación</div><div class="kv">${fM(fac)}</div><div class="ks">Clientes nuevos</div></div><div class="kcard"><div class="kl">Cash Collected</div><div class="kv">${fM(cash)}</div><div class="ks">Real cobrado</div></div><div class="kcard y"><div class="kl">Por Cobrar</div><div class="kv">${fM(porCobrar)}</div><div class="ks">Cuotas pendientes</div></div><div class="kcard"><div class="kl">Gastos</div><div class="kv">${fM(gas)}</div><div class="ks">Período</div></div><div class="kcard${bal<0?' r':bal>0?' g':''}"><div class="kl">Balance</div><div class="kv">${fM(bal)}</div><div class="ks">Cash − Gastos</div></div><div class="kcard${marg<20&&cash>0?' y':marg>=40?' g':''}"><div class="kl">Margen</div><div class="kv">${marg}%</div><div class="ks">Meta: +40%</div></div><div class="kcard"><div class="kl">Clientes Nuevos</div><div class="kv">${cN}</div><div class="ks">Período</div></div><div class="kcard"><div class="kl">Cuotas Recibidas</div><div class="kv">${cQ}</div><div class="ks">Abonos</div></div><div class="kcard"><div class="kl">Clientes Activos</div><div class="kv">${cA}</div><div class="ks">Total</div></div></div></div>`;
+  const lifeTotal=KPI.ingresos.filter(i=>i.tipo==='nuevo').reduce((s,i)=>s+Number(i.monto||0),0);
+  const LEVELS=[5000,10000,20000,30000,50000,100000];
+  const curLevel=LEVELS.findIndex(l=>lifeTotal<l);
+  const prevL=curLevel>0?LEVELS[curLevel-1]:0;
+  const nextL=curLevel>=0?LEVELS[curLevel]:LEVELS[LEVELS.length-1];
+  const lifePct=curLevel>=0?Math.min(100,Math.round((lifeTotal-prevL)/(nextL-prevL)*100)):100;
+  const lifeLabel=curLevel>=0?`Nivel ${curLevel+1} — Meta: ${fM(nextL)}`:'🏆 Nivel Máximo';
+  const levelBadges=LEVELS.map((l,i)=>{const reached=lifeTotal>=l;const curr=curLevel===i;return`<span class="bl-badge${curr?' current':reached?' reached':''}">${fM(l)}</span>`;}).join('');
+  document.getElementById('ops-ventas').innerHTML=`<div class="ds"><div class="dst"><span>💰</span>Dashboard Ventas</div>
+  <div class="billing-prog">
+    <div class="billing-prog-title">Facturación Lifetime — ${fM(lifeTotal)}</div>
+    <div class="prog-bar-label"><span>${lifeLabel}</span><span>${lifePct}%</span></div>
+    <div class="prog-bar-track" style="height:10px"><div class="prog-bar-fill" style="width:${lifePct}%"></div></div>
+    <div class="billing-levels">${levelBadges}</div>
+  </div>
+  <div class="kg"><div class="kcard${fac===0?' r':''}"><div class="kl">Facturación</div><div class="kv">${fM(fac)}</div><div class="ks">Clientes nuevos</div></div><div class="kcard"><div class="kl">Cash Collected</div><div class="kv">${fM(cash)}</div><div class="ks">Real cobrado</div></div><div class="kcard y"><div class="kl">Por Cobrar</div><div class="kv">${fM(porCobrar)}</div><div class="ks">Cuotas pendientes</div></div><div class="kcard"><div class="kl">Gastos</div><div class="kv">${fM(gas)}</div><div class="ks">Período</div></div><div class="kcard${bal<0?' r':bal>0?' g':''}"><div class="kl">Balance</div><div class="kv">${fM(bal)}</div><div class="ks">Cash − Gastos</div></div><div class="kcard${marg<20&&cash>0?' y':marg>=40?' g':''}"><div class="kl">Margen</div><div class="kv">${marg}%</div><div class="ks">Meta: +40%</div></div><div class="kcard"><div class="kl">Clientes Nuevos</div><div class="kv">${cN}</div><div class="ks">Período</div></div><div class="kcard"><div class="kl">Cuotas Recibidas</div><div class="kv">${cQ}</div><div class="ks">Abonos</div></div><div class="kcard"><div class="kl">Clientes Activos</div><div class="kv">${cA}</div><div class="ks">Total</div></div></div></div>`;
   document.getElementById('ops-leads').innerHTML=`<div class="ds"><div class="dst"><span>🧍</span>Dashboard Leads</div><div class="kg"><div class="kcard${leads.length<5?' y':''}"><div class="kl">Leads Totales</div><div class="kv">${leads.length}</div><div class="ks">Período</div></div><div class="kcard"><div class="kl">Leads Agendados</div><div class="kv">${la}</div><div class="ks">Marcados</div></div><div class="kcard${pL<20&&leads.length>0?' r':pL>=40?' g':''}"><div class="kl">% Leads→Agenda</div><div class="kv">${pL}%</div><div class="ks">Meta: +40%</div></div><div class="kcard"><div class="kl">En Seguimiento</div><div class="kv">${ls}</div><div class="ks">Activos</div></div><div class="kcard b"><div class="kl">Lead Magnet</div><div class="kv">${llm}</div><div class="ks">Nurturing</div></div><div class="kcard${lp>5?' y':''}"><div class="kl">Lead Perdido</div><div class="kv">${lp}</div><div class="ks">No convirtieron</div></div></div></div>`;
   document.getElementById('ops-agendas').innerHTML=`<div class="ds"><div class="dst"><span>☎️</span>Dashboard Agendas</div><div class="kg"><div class="kcard"><div class="kl">Llamadas Totales</div><div class="kv">${ag.length}</div><div class="ks">Período</div></div><div class="kcard g"><div class="kl">Llamadas Cerradas</div><div class="kv">${cerr}</div><div class="ks">Ventas</div></div><div class="kcard${cr<30&&ag.length>0?' r':cr>=50?' g':''}"><div class="kl">Close Rate</div><div class="kv">${cr}%</div><div class="ks">Meta: +50%</div></div><div class="kcard${nsp>20?' y':''}"><div class="kl">% No Show</div><div class="kv">${nsp}%</div><div class="ks">${ns} llamadas</div></div><div class="kcard"><div class="kl">Calificadas</div><div class="kv">${calA}</div><div class="ks">Alta calificación</div></div><div class="kcard"><div class="kl">AOV Promedio</div><div class="kv">${fM(aov)}</div><div class="ks">Por venta</div></div></div></div>`;
   const mD=MESES.map((_,i)=>KPI.ingresos.filter(v=>{if(!v.fecha||v.tipo!=='nuevo')return false;const d=new Date(v.fecha+'T12:00:00');return d.getMonth()===i&&d.getFullYear()===CY}).reduce((s,v)=>s+Number(v.monto||0),0));
@@ -890,6 +998,8 @@ function top3Cards(items,nk,sk,sl,empty){if(!items.length)return`<div style="fon
 function showCtab(t,el){document.querySelectorAll('.ctab-panel').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.ctab').forEach(x=>x.classList.remove('active'));document.getElementById('ctab-'+t).classList.add('active');el.classList.add('active');if(t==='reels')renderContentReels();else if(t==='hist')renderContentHist();else renderContentYT();}
 function onSegChange(){const at=document.querySelector('.ctab-panel.active');if(!at)return;const id=at.id.replace('ctab-','');if(id==='reels')renderContentReels();else if(id==='hist')renderContentHist();else renderContentYT();}
 
+function getYTThumb(link){if(!link)return null;const m=link.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|shorts\/))([a-zA-Z0-9_-]{11})/);return m?`https://img.youtube.com/vi/${m[1]}/mqdefault.jpg`:null;}
+function detectYTThumb(link){const thumb=getYTThumb(link);const prev=document.getElementById('r-thumb-preview');if(!prev)return;prev.innerHTML=thumb?`<img src="${thumb}" style="width:80px;height:56px;border-radius:6px;object-fit:cover;margin-bottom:4px" onerror="this.style.display='none'">`:''}
 function renderContentReels(){
   const seg=getSeg();const all=KPI.reels;const r90=all.filter(r=>isWithin90(r.fecha));
   const avgV=all.length?Math.round(all.reduce((s,r)=>s+Number(r.views||0),0)/all.length):0;
@@ -898,6 +1008,7 @@ function renderContentReels(){
   const rr=seg>0&&avgV>0?Math.round(avgV/seg*100):0;
   document.getElementById('dc-reels-kpis').innerHTML=`<div class="dst"><span>🎬</span>Reels — ${all.length} total · ${r90.length} últimos 90 días</div><div class="kg"><div class="kcard"><div class="kl">Promedio Views</div><div class="kv">${avgV.toLocaleString()}</div><div class="ks">${seg>0?rendRV(avgV,seg):'—'}</div></div><div class="kcard"><div class="kl">Prom. Comentarios</div><div class="kv">${avgC}</div><div class="ks">${avgC&&avgV?rendRC(avgC,avgV):'—'}</div></div><div class="kcard"><div class="kl">Prom. Seg. Nuevos</div><div class="kv">${avgS}</div><div class="ks">${avgS&&avgV?rendRS(avgS,avgV):'—'}</div></div>${seg>0?`<div class="kcard${rr<12?' r':rr>=35?' g':'y'}"><div class="kl">Reach Rate</div><div class="kv">${rr}%</div><div class="ks">Views/Seguidores</div></div>`:''}</div>`;
   document.getElementById('dc-reels-top').innerHTML=top3Cards(sortD(r90.length?r90:all,'comentarios').slice(0,3),'nombre','comentarios','comentarios','Sin reels registrados');
+  renderContentList('dc-reels-list',all,'reels');
 }
 function renderContentHist(){
   const seg=getSeg();const all=KPI.historias;const h90=all.filter(h=>isWithin90(h.fecha));
@@ -905,6 +1016,7 @@ function renderContentHist(){
   const avgC=all.length?Math.round(all.reduce((s,h)=>s+Number(h.respuestas_cta||0),0)/all.length):0;
   document.getElementById('dc-hist-kpis').innerHTML=`<div class="dst"><span>📱</span>Historias — ${all.length} total · ${h90.length} últimos 90 días</div><div class="kg"><div class="kcard"><div class="kl">Promedio Views</div><div class="kv">${avgV.toLocaleString()}</div><div class="ks">${seg>0?rendHV(avgV,seg):'—'}</div></div><div class="kcard"><div class="kl">Prom. Resp. CTA</div><div class="kv">${avgC}</div><div class="ks">${seg>0?rendHC(avgC,seg):'—'}</div></div></div>`;
   document.getElementById('dc-hist-top').innerHTML=top3Cards(sortD(h90.length?h90:all,'respuestas_cta').slice(0,3),'idea','respuestas_cta','resp. CTA','Sin historias registradas');
+  renderContentList('dc-hist-list',all,'historias');
 }
 function renderContentYT(){
   const all=KPI.yt;const y90=all.filter(y=>isWithin90(y.fecha));
@@ -913,6 +1025,7 @@ function renderContentYT(){
   const avgR=all.length?(all.reduce((s,y)=>s+Number(y.retencion||0),0)/all.length).toFixed(1):0;
   document.getElementById('dc-yt-kpis').innerHTML=`<div class="dst"><span>▶️</span>YouTube — ${all.length} total · ${y90.length} últimos 90 días</div><div class="kg"><div class="kcard"><div class="kl">Promedio Views</div><div class="kv">${avgV.toLocaleString()}</div><div class="ks">Por video</div></div><div class="kcard"><div class="kl">CTR Promedio</div><div class="kv">${avgC}%</div><div class="ks">${rendYC(avgC)}</div></div><div class="kcard"><div class="kl">Retención Prom.</div><div class="kv">${avgR}%</div><div class="ks">Meta: +40%</div></div></div>`;
   document.getElementById('dc-yt-top').innerHTML=top3Cards(sortD(y90.length?y90:all,'views').slice(0,3),'titulo','views','views','Sin videos registrados');
+  renderContentList('dc-yt-list',all,'yt');
 }
 
 function renderTbl(type,elId){
@@ -958,10 +1071,10 @@ async function saveInfo(){const cid=getCurCid();if(!cid)return;const nicho=docum
 async function saveCalendario(){const cid=getCurCid();if(!cid)return;const url=document.getElementById('ed-cal').value.trim();const{data:ex}=await sb.from('client_info').select('id').eq('user_id',cid).maybeSingle();if(ex)await sb.from('client_info').update({cal_url:url}).eq('user_id',cid);else await sb.from('client_info').insert({user_id:cid,cal_url:url});updateCalPrev(url);showToast('Calendario actualizado');}
 
 let edTasks=[];let edDocs=[];
-function renderTasksEd(tasks){edTasks=[...tasks];const el=document.getElementById('tasks-ed');el.innerHTML=edTasks.map((t,i)=>`<div class="task-er"><input type="text" value="${t.text||''}" id="te-${i}" placeholder="Tarea..."><button class="btn-danger" onclick="removeTaskEd(${i})">✕</button></div>`).join('');}
-function addTaskEd(){edTasks.push({text:'Nueva tarea',done:false,position:edTasks.length});const el=document.getElementById('tasks-ed');el.innerHTML+=`<div class="task-er"><input type="text" value="Nueva tarea" id="te-${edTasks.length-1}" placeholder="Tarea..."><button class="btn-danger" onclick="removeTaskEd(${edTasks.length-1})">✕</button></div>`;}
+function renderTasksEd(tasks){edTasks=[...tasks];const el=document.getElementById('tasks-ed');const cats=Object.keys(CAL_COLORS);el.innerHTML=edTasks.map((t,i)=>`<div class="task-er-full"><input type="text" value="${t.text||''}" id="te-${i}" placeholder="Tarea..."><input type="date" value="${t.date||''}" id="td-${i}"><select id="tc-${i}" style="max-width:130px">${cats.map(c=>`<option value="${c}"${t.category===c?' selected':''}>${c}</option>`).join('')}</select><button class="btn-danger" onclick="removeTaskEd(${i})">✕</button></div><div style="margin-bottom:8px"><input type="text" value="${t.description||''}" id="tdesc-${i}" placeholder="Descripción (opcional)..." style="width:100%;background:var(--d3);border:1px solid var(--br);border-radius:6px;padding:5px 8px;color:var(--tx);font-size:10px;font-family:var(--font);outline:none"></div>`).join('');}
+function addTaskEd(){edTasks.push({text:'Nueva tarea',done:false,position:edTasks.length,date:'',category:'Tarea',description:''});renderTasksEd(edTasks);}
 function removeTaskEd(i){edTasks.splice(i,1);renderTasksEd(edTasks);}
-async function saveTareas(){const cid=getCurCid();if(!cid)return;const updated=edTasks.map((t,i)=>({...t,text:document.getElementById('te-'+i)?.value||t.text}));await sb.from('tasks').delete().eq('user_id',cid);if(updated.length)await sb.from('tasks').insert(updated.map((t,i)=>({user_id:cid,text:t.text,done:t.done||false,position:i})));edTasks=updated;showToast('Tareas guardadas');}
+async function saveTareas(){const cid=getCurCid();if(!cid)return;const updated=edTasks.map((t,i)=>({...t,text:document.getElementById('te-'+i)?.value||t.text,date:document.getElementById('td-'+i)?.value||null,category:document.getElementById('tc-'+i)?.value||'Tarea',description:document.getElementById('tdesc-'+i)?.value||''}));await sb.from('tasks').delete().eq('user_id',cid);if(updated.length)await sb.from('tasks').insert(updated.map((t,i)=>({user_id:cid,text:t.text,done:t.done||false,position:i,date:t.date,category:t.category,description:t.description})));edTasks=updated;showToast('Tareas guardadas');}
 
 function renderDocsEd(docs){edDocs=[...docs];const el=document.getElementById('docs-ed');el.innerHTML=edDocs.map((d,i)=>`<div class="doc-er"><input type="text" value="${d.name||''}" id="dn-${i}" placeholder="Nombre del documento"><input type="text" value="${d.url||''}" id="du-${i}" placeholder="https://docs.google.com/..."><button class="btn-danger" onclick="removeDocEd(${i})">✕</button></div>`).join('');}
 function addDocEd(){edDocs.push({name:'',url:''});const el=document.getElementById('docs-ed');el.innerHTML+=`<div class="doc-er"><input type="text" value="" id="dn-${edDocs.length-1}" placeholder="Nombre del documento"><input type="text" value="" id="du-${edDocs.length-1}" placeholder="https://docs.google.com/..."><button class="btn-danger" onclick="removeDocEd(${edDocs.length-1})">✕</button></div>`;}
@@ -1002,9 +1115,127 @@ async function saveCliente(){const pid=document.getElementById('cl-prog').value;
 async function saveIngreso(){const o={user_id:portalClientId,tipo:tipoIng,nombre:document.getElementById('in-n').value,programa:document.getElementById('in-prog').value,fecha:document.getElementById('in-f').value||null,monto:Number(document.getElementById('in-m').value)||0,cuotas:tipoIng==='nuevo'?parseInt(document.getElementById('in-cuotas').value)||1:1,cuota_num:tipoIng==='cuota'?parseInt(document.getElementById('in-cn').value)||null:null,pasarela:document.getElementById('in-pas').value};await sb.from('ingresos').insert(o);closeM('m-ingreso');await loadKPIData();renderTbl('ingresos','tbl-ingresos');showToast('Ingreso guardado');}
 async function saveGasto(){const o={user_id:portalClientId,detalle:document.getElementById('g-d').value,fecha:document.getElementById('g-f').value||null,monto:Number(document.getElementById('g-m').value)||0,categoria:document.getElementById('g-cat').value,descripcion:document.getElementById('g-desc').value};await sb.from('gastos').insert(o);closeM('m-gasto');await loadKPIData();renderTbl('gastos','tbl-gastos');showToast('Gasto guardado');}
 async function saveWin(){const o={user_id:portalClientId,cliente:document.getElementById('w-cl').value,fecha:document.getElementById('w-f').value||null,win:document.getElementById('w-t').value,grandeza:document.getElementById('w-g').value,usada_historias:document.getElementById('w-u').value};await sb.from('wins').insert(o);closeM('m-win');await loadKPIData();renderWins();showToast('Win guardada');}
-async function saveReel(){const o={user_id:portalClientId,nombre:document.getElementById('r-n').value,estructura:document.getElementById('r-est').value,gancho:document.getElementById('r-gancho').value,formato:document.getElementById('r-fmt').value,fecha:document.getElementById('r-f').value||null,views:parseInt(document.getElementById('r-v').value)||0,comentarios:parseInt(document.getElementById('r-c').value)||0,seguidores_nuevos:parseInt(document.getElementById('r-s').value)||0,likes:parseInt(document.getElementById('r-l').value)||0};await sb.from('reels').insert(o);closeM('m-reel');await loadKPIData();renderTbl('reels','tbl-reels');showToast('Reel guardado');}
+async function saveReel(){const o={user_id:portalClientId,nombre:document.getElementById('r-n').value,estructura:document.getElementById('r-est').value,gancho:document.getElementById('r-gancho').value,formato:document.getElementById('r-fmt').value,fecha:document.getElementById('r-f').value||null,views:parseInt(document.getElementById('r-v').value)||0,comentarios:parseInt(document.getElementById('r-c').value)||0,seguidores_nuevos:parseInt(document.getElementById('r-s').value)||0,likes:parseInt(document.getElementById('r-l').value)||0,link:document.getElementById('r-link')?.value||''};await sb.from('reels').insert(o);closeM('m-reel');await loadKPIData();renderTbl('reels','tbl-reels');showToast('Reel guardado');}
 async function saveHist(){const o={user_id:portalClientId,idea:document.getElementById('h-idea').value,formato:document.getElementById('h-fmt').value,fecha:document.getElementById('h-f').value||null,views:parseInt(document.getElementById('h-v').value)||0,respuestas_cta:parseInt(document.getElementById('h-cta').value)||0,tasa:document.getElementById('h-tasa').value};await sb.from('historias').insert(o);closeM('m-hist');await loadKPIData();renderTbl('historias','tbl-hist');showToast('Historia guardada');}
 async function saveYT(){const o={user_id:portalClientId,titulo:document.getElementById('y-t').value,fecha:document.getElementById('y-f').value||null,duracion:Number(document.getElementById('y-d').value)||0,views:parseInt(document.getElementById('y-v').value)||0,ctr:Number(document.getElementById('y-ctr').value)||0,retencion:Number(document.getElementById('y-ret').value)||0};await sb.from('yt_videos').insert(o);closeM('m-yt');await loadKPIData();renderTbl('yt','tbl-yt');showToast('Video guardado');}
+
+function renderContentList(elId,data,type){
+  const el=document.getElementById(elId);if(!el)return;
+  const sort=document.getElementById(elId+'-sort')?.value||'views';
+  const sorted=[...data].sort((a,b)=>Number(b[sort]||0)-Number(a[sort]||0));
+  if(!sorted.length){el.innerHTML='<div style="font-size:11px;color:var(--t3);padding:12px 0">Sin registros</div>';return;}
+  el.innerHTML=sorted.map(item=>{
+    const name=item.nombre||item.idea||item.titulo||'—';
+    const views=Number(item.views||0);const coms=Number(item.comentarios||item.respuestas_cta||0);
+    const link=item.link||'';
+    const thumb=getYTThumb(link);
+    const thumbHTML=thumb?`<div class="cli-thumb"><img src="${thumb}" onerror="this.parentElement.innerHTML='🎬'"></div>`:`<div class="cli-thumb">${type==='yt'?'▶️':'🎬'}</div>`;
+    return`<div class="content-list-item">${thumbHTML}<div class="cli-info"><div class="cli-name">${name}</div><div class="cli-meta">${fD(item.fecha)} ${item.estructura?'· '+item.estructura:''}</div></div><div class="cli-stats"><div class="cli-stat">👁 ${views.toLocaleString()}</div><div class="cli-stat">💬 ${coms.toLocaleString()}</div></div></div>`;
+  }).join('');
+}
+
+const CAL_COLORS={
+  'Carrusel':{'bg':'#e8d5f5','txt':'#6b21a8','icon':'📸'},
+  'Historia':{'bg':'#fef3c7','txt':'#92400e','icon':'📖'},
+  'Entregable':{'bg':'#fed7aa','txt':'#9a3412','icon':'📦'},
+  'Ads':{'bg':'#fef9c3','txt':'#854d0e','icon':'📣'},
+  'Auditoría':{'bg':'#e2e8f0','txt':'#334155','icon':'🔍'},
+  'Llamada 1:1':{'bg':'#ccfbf1','txt':'#0f766e','icon':'📞'},
+  'KPI / Métricas':{'bg':'#dbeafe','txt':'#1e40af','icon':'📊'},
+  'ManyChat':{'bg':'#dcfce7','txt':'#166534','icon':'🤖'},
+  'Lead Magnet':{'bg':'#fce7f3','txt':'#9d174d','icon':'🎁'},
+  'Grabación':{'bg':'#d1fae5','txt':'#065f46','icon':'🎬'},
+  'ADS':{'bg':'#bfdbfe','txt':'#1e3a8a','icon':'💰'},
+  'Email / Newsletter':{'bg':'#e0e7ff','txt':'#3730a3','icon':'📧'},
+  'Revisión / Feedback':{'bg':'#bbf7d0','txt':'#14532d','icon':'✅'},
+  'Estrategia':{'bg':'#fce7f3','txt':'#831843','icon':'🧠'},
+  'Shoutout':{'bg':'#fef08a','txt':'#713f12','icon':'📢'},
+  'VSL':{'bg':'#e7e5e4','txt':'#44403c','icon':'📺'},
+  'Cierre / Venta':{'bg':'#fef08a','txt':'#92400e','icon':'🏆'},
+  'Subir Reel':{'bg':'#d9f99d','txt':'#3f6212','icon':'⬆️'},
+  'Youtube':{'bg':'#fecaca','txt':'#991b1b','icon':'▶️'},
+  'Diseño Interfaz Interna':{'bg':'#fbcfe8','txt':'#9d174d','icon':'🎨'},
+  'Tarea':{'bg':'#f1f5f9','txt':'#475569','icon':'✓'},
+};
+
+function buildCalendar(tasks){
+  const today=new Date();const day=today.getDay();
+  const monday=new Date(today);monday.setDate(today.getDate()-(day===0?6:day-1));
+  const days=['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
+  const tasksByDay={};
+  (tasks||[]).forEach(t=>{
+    if(!t.date)return;
+    const td=new Date(t.date+'T12:00:00');
+    const diff=Math.round((td-monday)/86400000);
+    if(diff>=0&&diff<=6){if(!tasksByDay[diff])tasksByDay[diff]=[];tasksByDay[diff].push(t);}
+  });
+  const hasTasks=Object.keys(tasksByDay).length>0;
+  if(!hasTasks)return'<div style="font-size:11px;color:var(--t3);padding:12px;text-align:center">Asigna fechas a las tareas para ver el calendario</div>';
+  let html='<div class="cal-grid">';
+  days.forEach((d,i)=>{
+    const dt=new Date(monday);dt.setDate(monday.getDate()+i);
+    const dn=dt.getDate();
+    const isToday=dt.toDateString()===today.toDateString();
+    html+=`<div class="cal-day" style="${isToday?'border-color:var(--gold)':''}"><div class="cal-day-num" style="${isToday?'color:var(--gold);font-weight:700':''}">${d} ${dn}</div>`;
+    (tasksByDay[i]||[]).forEach(t=>{
+      const cat=t.category||'Tarea';
+      const c=CAL_COLORS[cat]||CAL_COLORS['Tarea'];
+      const desc=t.description?t.description.replace(/'/g,"\'"):'';
+      const txt=t.text.replace(/'/g,"\'");
+      html+=`<div class="cal-chip" style="background:${c.bg};color:${c.txt}" onclick="showCalPopup('${txt}','${desc}','${cat}')"><span class="cal-chip-icon">${c.icon}</span><span class="cal-chip-txt">${t.text}</span></div>`;
+    });
+    html+='</div>';
+  });
+  html+='</div>';
+  return html;
+}
+
+function showCalPopup(title,desc,cat){
+  document.querySelectorAll('.cal-overlay,.cal-task-popup').forEach(e=>e.remove());
+  const ov=document.createElement('div');ov.className='cal-overlay';ov.onclick=()=>{ov.remove();document.querySelector('.cal-task-popup')?.remove();};
+  const pop=document.createElement('div');pop.className='cal-task-popup';
+  const c=CAL_COLORS[cat]||CAL_COLORS['Tarea'];
+  pop.innerHTML=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><span style="font-size:18px">${c.icon}</span><span style="font-size:11px;padding:2px 8px;border-radius:20px;background:${c.bg};color:${c.txt};font-weight:600">${cat}</span></div><h4>${title}</h4>${desc?`<p style="margin-top:8px">${desc}</p>`:''}<button onclick="document.querySelectorAll('.cal-overlay,.cal-task-popup').forEach(e=>e.remove())" style="margin-top:14px;background:var(--gold);color:#000;border:none;padding:6px 16px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font)">Cerrar</button>`;
+  document.body.appendChild(ov);document.body.appendChild(pop);
+}
+
+function renderIdeas(){
+  const el=document.getElementById('ideas-list');
+  if(!KPI.ideas||!KPI.ideas.length){el.innerHTML='<div style="padding:16px;font-size:11px;color:var(--t3);text-align:center">Sin ideas aún. ¡Agrega tu primera idea!</div>';return;}
+  el.innerHTML=KPI.ideas.map(idea=>{
+    const estadoClass={'idea':'estado-idea','guionizado':'estado-guionizado','grabado':'estado-grabado','subido':'estado-subido'}[idea.estado]||'estado-idea';
+    return`<div class="idea-card">
+      <div class="idea-card-header">
+        <div><div class="idea-title">${idea.titulo||'Sin título'}</div><div class="idea-meta">${idea.tipo||'reel'} · ${fD(idea.created_at?.slice(0,10))}</div></div>
+        <span class="estado-badge ${estadoClass}">${idea.estado||'idea'}</span>
+      </div>
+      ${idea.gancho?`<div style="font-size:11px;color:var(--t2);margin-bottom:6px">💡 ${idea.gancho}</div>`:''}
+      ${idea.estructura?`<div style="font-size:10px;color:var(--t3)">Estructura: ${idea.estructura}</div>`:''}
+      ${idea.link?`<div style="margin-top:6px"><a href="${idea.link}" target="_blank" style="font-size:10px;color:var(--inf)">Ver referencia →</a></div>`:''}
+    </div>`;
+  }).join('');
+}
+
+function toggleIdeaTipo(){
+  const tipo=document.getElementById('idea-tipo').value;
+  document.getElementById('idea-est-reel-row').style.display=tipo==='reel'?'block':'none';
+  document.getElementById('idea-est-hist-row').style.display=tipo==='historia'?'block':'none';
+  document.getElementById('idea-fmt-row').style.display=tipo==='reel'?'grid':'none';
+}
+
+async function saveIdea(){
+  const tipo=document.getElementById('idea-tipo').value;
+  const est=tipo==='reel'?document.getElementById('idea-est-reel').value:tipo==='historia'?document.getElementById('idea-est-hist').value:'';
+  const o={user_id:portalClientId,titulo:document.getElementById('idea-titulo').value,gancho:document.getElementById('idea-gancho').value,link:document.getElementById('idea-link').value,transcripcion:document.getElementById('idea-transcripcion').value,tipo,estructura:est,formato:tipo==='reel'?document.getElementById('idea-fmt').value:'',estado:document.getElementById('idea-estado').value};
+  await sb.from('ideas').insert(o);
+  closeM('m-idea');
+  KPI.ideas=KPI.ideas||[];
+  const{data}=await sb.from('ideas').select('*').eq('user_id',portalClientId).order('created_at',{ascending:false});
+  KPI.ideas=data||[];
+  renderIdeas();showToast('Idea guardada');
+}
+
+function openM(id){document.getElementById(id)?.classList.add('open');}
 
 function initUniverse(){
   const c=document.getElementById('universe-canvas');
