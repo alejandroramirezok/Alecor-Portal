@@ -244,7 +244,15 @@ table.t tr:hover td{background:var(--d2)}
 .lo{padding:9px 12px;font-size:11px;color:var(--tx);cursor:pointer;border-bottom:1px solid var(--br)}
 .lo:last-child{border-bottom:none}.lo:hover{background:var(--d3);color:var(--gold)}
 .lo .lm{font-size:9px;color:var(--t3);margin-top:1px}
-.wc{background:var(--sb);border:1px solid var(--br);border-radius:9px;padding:12px;margin-bottom:8px}
+.wc{background:var(--sb);border:1px solid var(--br);border-radius:9px;padding:12px;margin-bottom:8px}.folder-card{background:var(--d3);border:1px solid var(--br);border-radius:10px;overflow:hidden;margin-bottom:8px}
+.folder-header{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;cursor:pointer;transition:background .2s}
+.folder-header:hover{background:var(--d4)}
+.folder-left{display:flex;align-items:center;gap:10px}
+.folder-name{font-size:13px;font-weight:600;color:var(--tx)}
+.folder-sub{font-size:10px;color:var(--t3);margin-top:2px}
+.folder-arrow{color:var(--t3);font-size:10px;transition:transform .2s}
+.folder-docs{padding:0 14px 8px}
+
 /* PROGRESS BAR */
 .prog-bar-wrap{margin:14px 0 4px}
 .prog-bar-label{display:flex;justify-content:space-between;font-size:10px;color:var(--t3);margin-bottom:5px}
@@ -531,10 +539,13 @@ table.t tr:hover td{background:var(--d2)}
             </div>
           </div>
           <div class="ep" id="ep-documentos">
-            <div class="ec"><div class="ect" style="display:flex;align-items:center;justify-content:space-between"><span>Documentos / Entregables</span><button class="btn-add-sm" onclick="addDocEd()">+ Agregar</button></div>
-              <div style="font-size:10px;color:var(--t3);margin-bottom:12px">Nombre · Link de Google Drive (link público o con acceso al cliente)</div>
-              <div id="docs-ed"></div>
-              <button class="btn-save" style="margin-top:12px" onclick="saveDocs()">Guardar documentos</button>
+            <div class="ec">
+              <div class="ect">Documentos por Etapa</div>
+              <div style="font-size:10px;color:var(--t3);margin-bottom:14px">Agrega documentos por etapa. El cliente los verá en carpetas.</div>
+              <div style="margin-bottom:14px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px"><div style="font-size:11px;font-weight:600;color:var(--gold)">🧬 ADN del Negocio — Etapa 1</div><button class="btn-add-sm" onclick="addDocEd('etapa1')">+ Doc</button></div><div id="docs-ed-etapa1"></div></div>
+              <div style="margin-bottom:14px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px"><div style="font-size:11px;font-weight:600;color:var(--gold)">🎯 Contenido Láser — Etapa 2</div><button class="btn-add-sm" onclick="addDocEd('etapa2')">+ Doc</button></div><div id="docs-ed-etapa2"></div></div>
+              <div style="margin-bottom:14px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px"><div style="font-size:11px;font-weight:600;color:var(--gold)">⚙️ Estructuras y Operaciones — Etapa 3</div><button class="btn-add-sm" onclick="addDocEd('etapa3')">+ Doc</button></div><div id="docs-ed-etapa3"></div></div>
+              <button class="btn-save" style="margin-top:8px" onclick="saveDocs()">Guardar documentos</button>
             </div>
           </div>
         </div>
@@ -810,7 +821,7 @@ async function renderPanelGeneral(cid){
     sb.from('profiles').select('*').eq('id',cid).single()
   ]);
   const init=(profile?.name||'?').split(' ').map(w=>w[0]).slice(0,2).join('');
-  const taskList=tasks||[];
+  const taskList=(tasks||[]).slice().sort((a,b)=>{if(!a.date&&!b.date)return 0;if(!a.date)return 1;if(!b.date)return -1;return new Date(a.date)-new Date(b.date);});
   const done=taskList.filter(t=>t.done).length;
   const total=taskList.length;
   const pct=total>0?Math.round(done/total*100):0;
@@ -851,14 +862,8 @@ async function renderPanelGeneral(cid){
         </div>
       </div>
       <div class="docs-card">
-        <div class="sch"><h3>Documentos y Entregables</h3><span class="sch-badge">${(docs||[]).length} docs</span></div>
-        <div style="padding:0 18px">
-          ${(docs||[]).length?docs.map(d=>`
-            <div class="doc-row">
-              <div class="doc-left"><div class="doc-icon">📄</div><div><div class="doc-name">${d.name}</div><div class="doc-type">Google Drive</div></div></div>
-              <button class="btn-open-doc" onclick="window.open('${d.url}','_blank')">Abrir →</button>
-            </div>`).join(''):'<div style="font-size:11px;color:var(--t3);padding:16px 0">Sin documentos asignados aún</div>'}
-        </div>
+        <div class="sch"><h3>Documentos y Entregables</h3></div>
+        <div style="padding:8px 14px 14px">${renderFolders(docs||[])}</div>
       </div>
     </div>`;
   showScreen('s-portal');
@@ -976,7 +981,8 @@ function renderOps(){
     <div class="prog-bar-track" style="height:10px"><div class="prog-bar-fill" style="width:${lifePct}%"></div></div>
     <div class="billing-levels">${levelBadges}</div>
   </div>
-  <div class="kg"><div class="kcard${fac===0?' r':''}"><div class="kl">Facturación</div><div class="kv">${fM(fac)}</div><div class="ks">Clientes nuevos</div></div><div class="kcard"><div class="kl">Cash Collected</div><div class="kv">${fM(cash)}</div><div class="ks">Real cobrado</div></div><div class="kcard y"><div class="kl">Por Cobrar</div><div class="kv">${fM(porCobrar)}</div><div class="ks">Cuotas pendientes</div></div><div class="kcard"><div class="kl">Gastos</div><div class="kv">${fM(gas)}</div><div class="ks">Período</div></div><div class="kcard${bal<0?' r':bal>0?' g':''}"><div class="kl">Balance</div><div class="kv">${fM(bal)}</div><div class="ks">Cash − Gastos</div></div><div class="kcard${marg<20&&cash>0?' y':marg>=40?' g':''}"><div class="kl">Margen</div><div class="kv">${marg}%</div><div class="ks">Meta: +40%</div></div><div class="kcard"><div class="kl">Clientes Nuevos</div><div class="kv">${cN}</div><div class="ks">Período</div></div><div class="kcard"><div class="kl">Cuotas Recibidas</div><div class="kv">${cQ}</div><div class="ks">Abonos</div></div><div class="kcard"><div class="kl">Clientes Activos</div><div class="kv">${cA}</div><div class="ks">Total</div></div></div></div>`;
+  <div class="kg"><div class="kcard${fac===0?' r':''}"><div class="kl">Facturación</div><div class="kv">${fM(fac)}</div><div class="ks">Período</div></div><div class="kcard"><div class="kl">Cash Collected</div><div class="kv">${fM(cash)}</div><div class="ks">Real cobrado</div></div><div class="kcard y"><div class="kl">Por Cobrar</div><div class="kv">${fM(porCobrar)}</div><div class="ks">Cuotas pendientes</div></div><div class="kcard"><div class="kl">Gastos</div><div class="kv">${fM(gas)}</div><div class="ks">Período</div></div><div class="kcard${marg<20&&cash>0?' y':marg>=40?' g':''}"><div class="kl">Margen</div><div class="kv">${marg}%</div><div class="ks">Meta: +40%</div></div><div class="kcard"><div class="kl">Cuotas Recibidas</div><div class="kv">${cQ}</div><div class="ks">Abonos</div></div></div></div>
+  <div class="ds"><div class="dst"><span>🏅</span>Producto</div><div class="kg"><div class="kcard g" style="grid-column:span 2"><div class="kl">Clientes Activos</div><div class="kv" style="font-size:28px">${cA}</div><div class="ks">En programa ahora</div></div><div class="kcard${KPI.clientes.filter(c=>c.activo!=='Si').length>0?' r':''}"><div class="kl">Clientes Inactivos</div><div class="kv">${KPI.clientes.filter(c=>c.activo!=='Si').length}</div><div class="ks">Finalizados</div></div><div class="kcard" style="grid-column:span 3;background:rgba(201,168,76,.06);border-color:rgba(201,168,76,.3)"><div class="kl">Wins de Clientes</div><div class="kv" style="font-size:28px;color:var(--gold)">${KPI.wins.length}</div><div class="ks">Total registradas</div></div></div></div>`;
   document.getElementById('ops-leads').innerHTML=`<div class="ds"><div class="dst"><span>🧍</span>Dashboard Leads</div><div class="kg"><div class="kcard${leads.length<5?' y':''}"><div class="kl">Leads Totales</div><div class="kv">${leads.length}</div><div class="ks">Período</div></div><div class="kcard"><div class="kl">Leads Agendados</div><div class="kv">${la}</div><div class="ks">Marcados</div></div><div class="kcard${pL<20&&leads.length>0?' r':pL>=40?' g':''}"><div class="kl">% Leads→Agenda</div><div class="kv">${pL}%</div><div class="ks">Meta: +40%</div></div><div class="kcard"><div class="kl">En Seguimiento</div><div class="kv">${ls}</div><div class="ks">Activos</div></div><div class="kcard b"><div class="kl">Lead Magnet</div><div class="kv">${llm}</div><div class="ks">Nurturing</div></div><div class="kcard${lp>5?' y':''}"><div class="kl">Lead Perdido</div><div class="kv">${lp}</div><div class="ks">No convirtieron</div></div></div></div>`;
   document.getElementById('ops-agendas').innerHTML=`<div class="ds"><div class="dst"><span>☎️</span>Dashboard Agendas</div><div class="kg"><div class="kcard"><div class="kl">Llamadas Totales</div><div class="kv">${ag.length}</div><div class="ks">Período</div></div><div class="kcard g"><div class="kl">Llamadas Cerradas</div><div class="kv">${cerr}</div><div class="ks">Ventas</div></div><div class="kcard${cr<30&&ag.length>0?' r':cr>=50?' g':''}"><div class="kl">Close Rate</div><div class="kv">${cr}%</div><div class="ks">Meta: +50%</div></div><div class="kcard${nsp>20?' y':''}"><div class="kl">% No Show</div><div class="kv">${nsp}%</div><div class="ks">${ns} llamadas</div></div><div class="kcard"><div class="kl">Calificadas</div><div class="kv">${calA}</div><div class="ks">Alta calificación</div></div><div class="kcard"><div class="kl">AOV Promedio</div><div class="kv">${fM(aov)}</div><div class="ks">Por venta</div></div></div></div>`;
   const mD=MESES.map((_,i)=>KPI.ingresos.filter(v=>{if(!v.fecha||v.tipo!=='nuevo')return false;const d=new Date(v.fecha+'T12:00:00');return d.getMonth()===i&&d.getFullYear()===CY}).reduce((s,v)=>s+Number(v.monto||0),0));
@@ -1076,10 +1082,21 @@ function addTaskEd(){edTasks.push({text:'Nueva tarea',done:false,position:edTask
 function removeTaskEd(i){edTasks.splice(i,1);renderTasksEd(edTasks);}
 async function saveTareas(){const cid=getCurCid();if(!cid)return;const updated=edTasks.map((t,i)=>({...t,text:document.getElementById('te-'+i)?.value||t.text,date:document.getElementById('td-'+i)?.value||null,category:document.getElementById('tc-'+i)?.value||'Tarea',description:document.getElementById('tdesc-'+i)?.value||''}));await sb.from('tasks').delete().eq('user_id',cid);if(updated.length)await sb.from('tasks').insert(updated.map((t,i)=>({user_id:cid,text:t.text,done:t.done||false,position:i,date:t.date,category:t.category,description:t.description})));edTasks=updated;showToast('Tareas guardadas');}
 
-function renderDocsEd(docs){edDocs=[...docs];const el=document.getElementById('docs-ed');el.innerHTML=edDocs.map((d,i)=>`<div class="doc-er"><input type="text" value="${d.name||''}" id="dn-${i}" placeholder="Nombre del documento"><input type="text" value="${d.url||''}" id="du-${i}" placeholder="https://docs.google.com/..."><button class="btn-danger" onclick="removeDocEd(${i})">✕</button></div>`).join('');}
-function addDocEd(){edDocs.push({name:'',url:''});const el=document.getElementById('docs-ed');el.innerHTML+=`<div class="doc-er"><input type="text" value="" id="dn-${edDocs.length-1}" placeholder="Nombre del documento"><input type="text" value="" id="du-${edDocs.length-1}" placeholder="https://docs.google.com/..."><button class="btn-danger" onclick="removeDocEd(${edDocs.length-1})">✕</button></div>`;}
+function renderDocsEd(docs){
+  edDocs=[...docs];
+  ['etapa1','etapa2','etapa3'].forEach(eid=>{
+    const el=document.getElementById('docs-ed-'+eid);
+    if(!el)return;
+    const eDocs=edDocs.filter(d=>d.etapa===eid);
+    el.innerHTML=eDocs.map((d,_)=>{
+      const gi=edDocs.indexOf(d);
+      return`<div class="doc-er"><input type="text" value="${d.name||''}" id="dn-${gi}" placeholder="Nombre del documento"><input type="text" value="${d.url||''}" id="du-${gi}" placeholder="https://docs.google.com/..."><button class="btn-danger" onclick="removeDocEd(${gi})">✕</button></div>`;
+    }).join('');
+  });
+}
+function addDocEd(etapa){etapa=etapa||'etapa1';edDocs.push({name:'',url:'',etapa});renderDocsEd(edDocs);}
 function removeDocEd(i){edDocs.splice(i,1);renderDocsEd(edDocs);}
-async function saveDocs(){const cid=getCurCid();if(!cid)return;const updated=edDocs.map((_,i)=>({name:document.getElementById('dn-'+i)?.value||'',url:document.getElementById('du-'+i)?.value||''}));await sb.from('documents').delete().eq('user_id',cid);if(updated.length)await sb.from('documents').insert(updated.map((d,i)=>({user_id:cid,name:d.name,url:d.url,position:i})));edDocs=updated;showToast('Documentos guardados');}
+async function saveDocs(){const cid=getCurCid();if(!cid)return;const updated=edDocs.map((d,i)=>({name:document.getElementById('dn-'+i)?.value||d.name||'',url:document.getElementById('du-'+i)?.value||d.url||'',etapa:d.etapa||'etapa1'}));await sb.from('documents').delete().eq('user_id',cid);if(updated.length)await sb.from('documents').insert(updated.map((d,i)=>({user_id:cid,name:d.name,url:d.url,position:i,etapa:d.etapa})));edDocs=updated;showToast('Documentos guardados');}
 
 function showNegTab(t,el){document.getElementById('neg-prog-panel').style.display=t==='prog'?'block':'none';document.getElementById('neg-pas-panel').style.display=t==='pas'?'block':'none';document.querySelectorAll('#ksec-negocio-m .knav').forEach(b=>b.classList.remove('active'));el.classList.add('active');if(t==='prog')renderProgs();else renderPas();}
 function renderProgs(){const el=document.getElementById('prog-list');if(!KPI.programas.length){el.innerHTML=emptyEl('Agrega tu primer programa');return}el.innerHTML=KPI.programas.map(p=>`<div class="pc-card"><div><div class="pc-n">${p.nombre}</div><div class="pc-m">${fM(p.precio)} · ${p.dias||'?'} días · ${p.cuotas||1} cuota(s)</div></div><button class="bd" onclick="delProg('${p.id}')">✕</button></div>`).join('');}
@@ -1171,23 +1188,23 @@ function buildCalendar(tasks){
   });
   const hasTasks=Object.keys(tasksByDay).length>0;
   if(!hasTasks)return'<div style="font-size:11px;color:var(--t3);padding:12px;text-align:center">Asigna fechas a las tareas para ver el calendario</div>';
-  let html='<div class="cal-grid">';
-  days.forEach((d,i)=>{
-    const dt=new Date(monday);dt.setDate(monday.getDate()+i);
-    const dn=dt.getDate();
-    const isToday=dt.toDateString()===today.toDateString();
-    html+=`<div class="cal-day" style="${isToday?'border-color:var(--gold)':''}"><div class="cal-day-num" style="${isToday?'color:var(--gold);font-weight:700':''}">${d} ${dn}</div>`;
-    (tasksByDay[i]||[]).forEach(t=>{
-      const cat=t.category||'Tarea';
-      const c=CAL_COLORS[cat]||CAL_COLORS['Tarea'];
-      const desc=t.description?t.description.replace(/'/g,"\'"):'';
-      const txt=t.text.replace(/'/g,"\'");
-      html+=`<div class="cal-chip" style="background:${c.bg};color:${c.txt}" onclick="showCalPopup('${txt}','${desc}','${cat}')"><span class="cal-chip-icon">${c.icon}</span><span class="cal-chip-txt">${t.text}</span></div>`;
+  function calRow(indices){
+    let html='<div style="display:grid;grid-template-columns:repeat('+indices.length+',1fr);gap:4px;margin-bottom:4px">';
+    indices.forEach(i=>{
+      const d=days[i];const dt=new Date(monday);dt.setDate(monday.getDate()+i);
+      const dn=dt.getDate();const isToday=dt.toDateString()===today.toDateString();
+      html+=`<div class="cal-day" style="${isToday?'border-color:var(--gold)':''}"><div class="cal-day-num" style="${isToday?'color:var(--gold);font-weight:700':''}">${d} ${dn}</div>`;
+      (tasksByDay[i]||[]).forEach(t=>{
+        const cat=t.category||'Tarea';const c=CAL_COLORS[cat]||CAL_COLORS['Tarea'];
+        const desc=(t.description||'').replace(/'/g,"\'").replace(/`/g,'');
+        const txt=(t.text||'').replace(/'/g,"\'").replace(/`/g,'');
+        html+=`<div class="cal-chip" style="background:${c.bg};color:${c.txt}" onclick="showCalPopup('${txt}','${desc}','${cat}')"><span class="cal-chip-icon">${c.icon}</span><span class="cal-chip-txt">${t.text}</span></div>`;
+      });
+      html+='</div>';
     });
-    html+='</div>';
-  });
-  html+='</div>';
-  return html;
+    html+='</div>';return html;
+  }
+  return calRow([0,1,2,3])+calRow([4,5,6]);
 }
 
 function showCalPopup(title,desc,cat){
@@ -1236,6 +1253,39 @@ async function saveIdea(){
 }
 
 function openM(id){document.getElementById(id)?.classList.add('open');}
+
+const ETAPAS=[
+  {id:'etapa1',nombre:'ADN del Negocio',etapa:'Etapa 1',icon:'🧬'},
+  {id:'etapa2',nombre:'Contenido Láser',etapa:'Etapa 2',icon:'🎯'},
+  {id:'etapa3',nombre:'Estructuras y Operaciones',etapa:'Etapa 3',icon:'⚙️'},
+];
+
+function renderFolders(docs){
+  // docs array: [{name, url, etapa}] - etapa = 'etapa1'|'etapa2'|'etapa3'
+  if(!docs.length)return'<div style="font-size:11px;color:var(--t3);padding:12px 0">Sin documentos asignados aún</div>';
+  return ETAPAS.map(e=>{
+    const etapaDocs=docs.filter(d=>d.etapa===e.id);
+    if(!etapaDocs.length)return'';
+    return`<div class="folder-card" id="folder-${e.id}">
+      <div class="folder-header" onclick="toggleFolder('${e.id}')">
+        <div class="folder-left"><span style="font-size:18px">${e.icon}</span><div><div class="folder-name">${e.nombre}</div><div class="folder-sub">${e.etapa} · ${etapaDocs.length} doc${etapaDocs.length!==1?'s':''}</div></div></div>
+        <span class="folder-arrow" id="farr-${e.id}">▶</span>
+      </div>
+      <div class="folder-docs" id="fdocs-${e.id}" style="display:none">
+        ${etapaDocs.map(d=>`<div class="doc-row"><div class="doc-left"><div class="doc-icon">📄</div><div><div class="doc-name">${d.name}</div><div class="doc-type">Google Drive</div></div></div><button class="btn-open-doc" onclick="window.open('${d.url}','_blank')">Abrir →</button></div>`).join('')}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleFolder(id){
+  const docs=document.getElementById('fdocs-'+id);
+  const arr=document.getElementById('farr-'+id);
+  if(!docs)return;
+  const open=docs.style.display==='block';
+  docs.style.display=open?'none':'block';
+  if(arr)arr.style.transform=open?'':'rotate(90deg)';
+}
 
 function initUniverse(){
   const c=document.getElementById('universe-canvas');
