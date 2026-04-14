@@ -403,8 +403,9 @@ table.t tr:hover td{background:var(--d2)}
       <div class="ksi-item" onclick="showKpiSec('agendas-m',this)">⬡ Agendas</div>
       <div class="ksi-item" onclick="showKpiSec('ingresos-m',this)">⬡ Ingresos</div>
       <div class="ksi-item" onclick="showKpiSec('gastos-m',this)">⬡ Gastos</div>
+      <div class="ksi-section">Producto</div>
       <div class="ksi-item" onclick="showKpiSec('clientes-m',this)">⬡ Clientes</div>
-      <div class="ksi-item" onclick="showKpiSec('wins-m',this)">⬡ Wins</div>
+      <div class="ksi-item" onclick="showKpiSec('wins-m',this)">⬡ Wins Clientes</div>
       <div class="ksi-section">Marketing</div>
       <div class="ksi-item" onclick="showKpiSec('reels-m',this)">⬡ Reels</div>
       <div class="ksi-item" onclick="showKpiSec('hist-m',this)">⬡ Historias</div>
@@ -420,6 +421,7 @@ table.t tr:hover td{background:var(--d2)}
 
       <!-- OPS DASHBOARD -->
       <div class="kpi-section active" id="ksec-ops">
+        <div id="ops-billing-bar"></div>
         <div class="pb-bar">
           <button class="pb active" id="pb-month" onclick="setPeriod('month')">Mes</button>
           <select class="msel" id="msel" onchange="renderOps()"><option value="0">Enero</option><option value="1">Febrero</option><option value="2">Marzo</option><option value="3" selected>Abril</option><option value="4">Mayo</option><option value="5">Junio</option><option value="6">Julio</option><option value="7">Agosto</option><option value="8">Septiembre</option><option value="9">Octubre</option><option value="10">Noviembre</option><option value="11">Diciembre</option></select>
@@ -454,8 +456,18 @@ table.t tr:hover td{background:var(--d2)}
       <div class="kpi-section" id="ksec-agendas-m"><div class="tw"><div class="th2"><h3>Agendas</h3><button class="ba" onclick="openAgModal()">+ Nueva Agenda</button></div><div class="tbl-scroll"><div id="tbl-agendas"></div></div></div></div>
       <div class="kpi-section" id="ksec-ingresos-m"><div class="tw"><div class="th2"><h3>Ingresos</h3><button class="ba" onclick="openIngModal()">+ Nuevo Ingreso</button></div><div class="tbl-scroll"><div id="tbl-ingresos"></div></div></div></div>
       <div class="kpi-section" id="ksec-gastos-m"><div class="tw"><div class="th2"><h3>Gastos</h3><button class="ba" onclick="openMod('m-gasto');resetMod('gasto')">+ Nuevo Gasto</button></div><div class="tbl-scroll"><div id="tbl-gastos"></div></div></div></div>
-      <div class="kpi-section" id="ksec-clientes-m"><div class="tw"><div class="th2"><h3>Clientes</h3><button class="ba" onclick="openClienteModal()">+ Nuevo Cliente</button></div><div class="tbl-scroll"><div id="tbl-clientes"></div></div></div></div>
-      <div class="kpi-section" id="ksec-wins-m"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:13px"><div style="font-size:15px;font-weight:600;color:var(--tx)">Wins</div><button class="ba" onclick="openMod('m-win')">+ Nueva Win</button></div><div id="wins-list"></div></div>
+      <div class="kpi-section" id="ksec-clientes-m">
+        <div class="kg" style="margin-bottom:14px">
+          <div class="kcard g"><div class="kl">Clientes Activos</div><div class="kv" id="cli-activos-cnt">0</div><div class="ks">En programa</div></div>
+          <div class="kcard r"><div class="kl">Clientes Inactivos</div><div class="kv" id="cli-inactivos-cnt">0</div><div class="ks">Finalizados</div></div>
+        </div>
+        <div class="tw"><div class="th2"><h3>Clientes</h3><button class="ba" onclick="openClienteModal()">+ Nuevo Cliente</button></div><div class="tbl-scroll"><div id="tbl-clientes"></div></div></div>
+      </div>
+      <div class="kpi-section" id="ksec-wins-m">
+        <div class="kcard" style="margin-bottom:14px;background:rgba(201,168,76,.06);border-color:rgba(201,168,76,.3)"><div class="kl">Total Wins de Clientes</div><div class="kv" id="wins-total-cnt" style="color:var(--gold)">0</div><div class="ks">Registradas</div></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:13px"><div style="font-size:15px;font-weight:600;color:var(--tx)">Wins Clientes</div><button class="ba" onclick="openMod('m-win')">+ Nueva Win</button></div>
+        <div id="wins-list"></div>
+      </div>
       <div class="kpi-section" id="ksec-reels-m"><div class="tw"><div class="th2"><h3>Reels</h3><button class="ba" onclick="openMod('m-reel');resetMod('reel')">+ Nuevo Reel</button></div><div class="tbl-scroll"><div id="tbl-reels"></div></div></div></div>
       <div class="kpi-section" id="ksec-hist-m"><div class="tw"><div class="th2"><h3>Historias</h3><button class="ba" onclick="openMod('m-hist');resetMod('hist')">+ Nueva Secuencia</button></div><div class="tbl-scroll"><div id="tbl-hist"></div></div></div></div>
       <div class="kpi-section" id="ksec-yt-m"><div class="tw"><div class="th2"><h3>YouTube</h3><button class="ba" onclick="openMod('m-yt');resetMod('yt')">+ Nuevo Video</button></div><div class="tbl-scroll"><div id="tbl-yt"></div></div></div></div>
@@ -556,7 +568,7 @@ table.t tr:hover td{background:var(--d2)}
 
 <!-- ===== MODALS ===== -->
 <!-- LEAD -->
-<div class="ov" id="m-lead"><div class="modal"><div class="mh"><h3 id="m-lead-t">Nuevo Lead</h3><button class="mc" onclick="closeM('m-lead')">✕</button></div><div class="mb"><input type="hidden" id="lead-idx"><div class="fg"><div class="fr"><label>Nombre</label><input id="l-n"></div><div class="fr"><label>Instagram</label><input id="l-ig" placeholder="@usuario"></div></div><div class="fg"><div class="fr"><label>Fecha</label><input type="date" id="l-f"></div><div class="fr"><label>Fuente</label><select id="l-fue"><option>Instagram Orgánico</option><option>Instagram ADS</option><option>Referido</option><option>TikTok</option><option>YouTube</option><option>Otro</option></select></div></div><div class="fg"><div class="fr"><label>Estado</label><select id="l-est"><option>Nuevo</option><option>En seguimiento</option><option>Agendado</option><option>Lead Magnet</option><option>Perdido</option></select></div><div class="fr"><label>¿Agendó?</label><select id="l-ag"><option value="No">No</option><option value="Si">Sí</option></select></div></div><button class="bp" onclick="saveLead()">Guardar</button></div></div></div>
+<input type="hidden" id="edit-mode-id"><input type="hidden" id="edit-mode-type"><div class="ov" id="m-lead"><div class="modal"><div class="mh"><h3 id="m-lead-t">Nuevo Lead</h3><button class="mc" onclick="closeM('m-lead')">✕</button></div><div class="mb"><input type="hidden" id="lead-idx"><div class="fg"><div class="fr"><label>Nombre</label><input id="l-n"></div><div class="fr"><label>Instagram</label><input id="l-ig" placeholder="@usuario"></div></div><div class="fg"><div class="fr"><label>Fecha</label><input type="date" id="l-f"></div><div class="fr"><label>Fuente</label><select id="l-fue"><option>Instagram Orgánico</option><option>Instagram ADS</option><option>Referido</option><option>TikTok</option><option>YouTube</option><option>Otro</option></select></div></div><div class="fg"><div class="fr"><label>Estado</label><select id="l-est"><option>Nuevo</option><option>En seguimiento</option><option>Agendado</option><option>Lead Magnet</option><option>Perdido</option></select></div><div class="fr"><label>¿Agendó?</label><select id="l-ag"><option value="No">No</option><option value="Si">Sí</option></select></div></div><button class="bp" onclick="saveLead()">Guardar</button></div></div></div>
 
 <!-- AGENDA -->
 <div class="ov" id="m-agenda"><div class="modal"><div class="mh"><h3 id="m-ag-t">Nueva Agenda</h3><button class="mc" onclick="closeM('m-agenda')">✕</button></div><div class="mb"><input type="hidden" id="ag-idx">
@@ -603,7 +615,7 @@ table.t tr:hover td{background:var(--d2)}
 <div class="ov" id="m-prog"><div class="modal"><div class="mh"><h3 id="m-prog-t">Nuevo Programa</h3><button class="mc" onclick="closeM('m-prog')">✕</button></div><div class="mb"><input type="hidden" id="prog-idx"><div class="fg"><div class="fr"><label>Nombre</label><input id="p-nom"></div><div class="fr"><label>Precio ($)</label><input type="number" id="p-precio"></div></div><div class="fg"><div class="fr"><label>Duración (días)</label><input type="number" id="p-dias"></div><div class="fr"><label>Cuotas</label><input type="number" id="p-cuotas" value="1"></div></div><div class="fr"><label>Descripción</label><textarea id="p-desc" rows="2" style="resize:none"></textarea></div><button class="bp" onclick="saveProg()">Guardar</button></div></div></div>
 
 <!-- PASARELA -->
-<div class="ov" id="m-pas"><div class="modal"><div class="mh"><h3 id="m-pas-t">Nueva Pasarela</h3><button class="mc" onclick="closeM('m-pas')">✕</button></div><div class="mb"><input type="hidden" id="pas-idx"><div class="fg"><div class="fr"><label>Nombre</label><select id="pas-n"><option>Stripe</option><option>PayPal</option><option>Hotmart</option><option>Transferencia</option><option>MercadoPago</option><option>Otro</option></select></div><div class="fr"><label>% Comisión</label><input type="number" id="pas-com" step="0.1"></div></div><div class="fr"><label>Notas</label><input id="pas-nota"></div><button class="bp" onclick="savePas()">Guardar</button></div></div></div>
+<div class="ov" id="m-pas"><div class="modal"><div class="mh"><h3 id="m-pas-t">Nueva Pasarela</h3><button class="mc" onclick="closeM('m-pas')">✕</button></div><div class="mb"><input type="hidden" id="pas-idx"><div class="fg"><div class="fr"><label>Nombre</label><select id="pas-n" onchange="togglePasOtro()"><option>Stripe</option><option>PayPal</option><option>Hotmart</option><option>Transferencia</option><option>MercadoPago</option><option>Otro</option></select></div><div class="fr"><label>% Comisión</label><input type="number" id="pas-com" step="0.1"></div></div><div class="fr" id="pas-otro-row" style="display:none"><label>Especificar nombre</label><input id="pas-otro" placeholder="Nombre de la pasarela..."></div><div class="fr"><label>Notas</label><input id="pas-nota"></div><button class="bp" onclick="savePas()">Guardar</button></div></div></div>
 
 <script>
 const SUPA_URL='https://tnzaioxqrykrduwgqluj.supabase.co';
@@ -974,13 +986,17 @@ function renderOps(){
   const lifePct=curLevel>=0?Math.min(100,Math.round((lifeTotal-prevL)/(nextL-prevL)*100)):100;
   const lifeLabel=curLevel>=0?`Nivel ${curLevel+1} — Meta: ${fM(nextL)}`:'🏆 Nivel Máximo';
   const levelBadges=LEVELS.map((l,i)=>{const reached=lifeTotal>=l;const curr=curLevel===i;return`<span class="bl-badge${curr?' current':reached?' reached':''}">${fM(l)}</span>`;}).join('');
-  document.getElementById('ops-ventas').innerHTML=`<div class="ds"><div class="dst"><span>💰</span>Dashboard Ventas</div>
-  <div class="billing-prog">
+  const billingEl=document.getElementById('ops-billing-bar');
+  if(billingEl)billingEl.innerHTML=`<div class="billing-prog" style="margin-bottom:14px">
+    <div style="font-size:11px;color:var(--gold);font-style:italic;margin-bottom:8px;text-align:center">✨ Cada día estás más cerca de recibir tu placa física a tu casa</div>
     <div class="billing-prog-title">Facturación Lifetime — ${fM(lifeTotal)}</div>
     <div class="prog-bar-label"><span>${lifeLabel}</span><span>${lifePct}%</span></div>
     <div class="prog-bar-track" style="height:10px"><div class="prog-bar-fill" style="width:${lifePct}%"></div></div>
     <div class="billing-levels">${levelBadges}</div>
-  </div>
+  </div>`;
+  // Update wins counter
+  const wEl=document.getElementById('wins-total-cnt');if(wEl)wEl.textContent=KPI.wins.length;
+  document.getElementById('ops-ventas').innerHTML=`<div class="ds"><div class="dst"><span>💰</span>Dashboard Ventas</div>
   <div class="kg"><div class="kcard${fac===0?' r':''}"><div class="kl">Facturación</div><div class="kv">${fM(fac)}</div><div class="ks">Período</div></div><div class="kcard"><div class="kl">Cash Collected</div><div class="kv">${fM(cash)}</div><div class="ks">Real cobrado</div></div><div class="kcard y"><div class="kl">Por Cobrar</div><div class="kv">${fM(porCobrar)}</div><div class="ks">Cuotas pendientes</div></div><div class="kcard"><div class="kl">Gastos</div><div class="kv">${fM(gas)}</div><div class="ks">Período</div></div><div class="kcard${marg<20&&cash>0?' y':marg>=40?' g':''}"><div class="kl">Margen</div><div class="kv">${marg}%</div><div class="ks">Meta: +40%</div></div><div class="kcard"><div class="kl">Cuotas Recibidas</div><div class="kv">${cQ}</div><div class="ks">Abonos</div></div></div></div>
   <div class="ds"><div class="dst"><span>🏅</span>Producto</div><div class="kg"><div class="kcard g" style="grid-column:span 2"><div class="kl">Clientes Activos</div><div class="kv" style="font-size:28px">${cA}</div><div class="ks">En programa ahora</div></div><div class="kcard${KPI.clientes.filter(c=>c.activo!=='Si').length>0?' r':''}"><div class="kl">Clientes Inactivos</div><div class="kv">${KPI.clientes.filter(c=>c.activo!=='Si').length}</div><div class="ks">Finalizados</div></div><div class="kcard" style="grid-column:span 3;background:rgba(201,168,76,.06);border-color:rgba(201,168,76,.3)"><div class="kl">Wins de Clientes</div><div class="kv" style="font-size:28px;color:var(--gold)">${KPI.wins.length}</div><div class="ks">Total registradas</div></div></div></div>`;
   document.getElementById('ops-leads').innerHTML=`<div class="ds"><div class="dst"><span>🧍</span>Dashboard Leads</div><div class="kg"><div class="kcard${leads.length<5?' y':''}"><div class="kl">Leads Totales</div><div class="kv">${leads.length}</div><div class="ks">Período</div></div><div class="kcard"><div class="kl">Leads Agendados</div><div class="kv">${la}</div><div class="ks">Marcados</div></div><div class="kcard${pL<20&&leads.length>0?' r':pL>=40?' g':''}"><div class="kl">% Leads→Agenda</div><div class="kv">${pL}%</div><div class="ks">Meta: +40%</div></div><div class="kcard"><div class="kl">En Seguimiento</div><div class="kv">${ls}</div><div class="ks">Activos</div></div><div class="kcard b"><div class="kl">Lead Magnet</div><div class="kv">${llm}</div><div class="ks">Nurturing</div></div><div class="kcard${lp>5?' y':''}"><div class="kl">Lead Perdido</div><div class="kv">${lp}</div><div class="ks">No convirtieron</div></div></div></div>`;
@@ -1034,13 +1050,80 @@ function renderContentYT(){
   renderContentList('dc-yt-list',all,'yt');
 }
 
+function editPencilBtn(type,id){return`<button onclick="openEdit('${type}','${id}')" style="background:none;border:none;color:var(--t3);cursor:pointer;padding:2px 5px;font-size:13px;transition:color .2s" title="Editar" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--t3)'">✏️</button>`;}
+
 function renderTbl(type,elId){
   const el=document.getElementById(elId);
-  const keyMap={leads:{cols:['Nombre','Instagram','Fecha','Estado','Fuente'],keys:['nombre','ig','fecha','estado','fuente'],fmt:{fecha:fD,estado:v=>`<span class="st ${v==='Agendado'?'sg':v==='Perdido'?'sr':v==='Nuevo'?'sy':'sm'}">${v||'-'}</span>`}},agendas:{cols:['Nombre','Fecha','Cal.','Resultado','Notas'],keys:['nombre','fecha','calificacion','resultado','notas'],fmt:{fecha:fD,calificacion:v=>`<span class="st ${v==='Alta'?'sg':v==='Media'?'sy':'sm'}">${v||'-'}</span>`,resultado:v=>`<span class="st ${v==='Cerrado'?'sg':v==='No Show'?'sr':v==='Pendiente'?'sy':'sm'}">${v||'-'}</span>`}},ingresos:{cols:['Nombre','Tipo','Programa','Fecha','Monto'],keys:['nombre','tipo','programa','fecha','monto'],fmt:{tipo:v=>`<span class="st ${v==='nuevo'?'sg':'sb2'}">${v==='nuevo'?'Nuevo':'Cuota'}</span>`,fecha:fD,monto:v=>`<b style="color:var(--gold)">${fM(v)}</b>`}},gastos:{cols:['Detalle','Fecha','Monto','Categoría'],keys:['detalle','fecha','monto','categoria'],fmt:{fecha:fD,monto:v=>`<span style="color:var(--er)">${fM(v)}</span>`}},clientes:{cols:['Nombre','Instagram','Ingreso','Fin','Activo'],keys:['nombre','ig','fecha_ingreso','fecha_fin','activo'],fmt:{fecha_ingreso:fD,fecha_fin:fD,activo:v=>`<span class="st ${v==='Si'?'sg':'sm'}">${v==='Si'?'Activo':'Inactivo'}</span>`}},reels:{cols:['Nombre','Estructura','Fecha','Views','Coms','Segs'],keys:['nombre','estructura','fecha','views','comentarios','seguidores_nuevos'],fmt:{fecha:fD,views:v=>Number(v||0).toLocaleString()}},historias:{cols:['Idea','Formato','Fecha','Views','Resp. CTA'],keys:['idea','formato','fecha','views','respuestas_cta'],fmt:{fecha:fD,views:v=>Number(v||0).toLocaleString()}},yt:{cols:['Título','Fecha','Views','%CTR','%Ret.'],keys:['titulo','fecha','views','ctr','retencion'],fmt:{fecha:fD,views:v=>Number(v||0).toLocaleString(),ctr:v=>v+'%',retencion:v=>v+'%'}}};
+  if(type==='leads'){renderLeadsTbl(el);return;}
+  const keyMap={agendas:{cols:['Nombre','Fecha','Cal.','Resultado','Notas',''],keys:['nombre','fecha','calificacion','resultado','notas','_edit'],fmt:{fecha:fD,calificacion:v=>`<span class="st ${v==='Alta'?'sg':v==='Media'?'sy':'sm'}">${v||'-'}</span>`,resultado:v=>`<span class="st ${v==='Cerrado'?'sg':v==='No Show'?'sr':v==='Pendiente'?'sy':'sm'}">${v||'-'}</span>`}},ingresos:{cols:['Nombre','Tipo','Programa','Fecha','Monto',''],keys:['nombre','tipo','programa','fecha','monto','_edit'],fmt:{tipo:v=>`<span class="st ${v==='nuevo'?'sg':'sb2'}">${v==='nuevo'?'Nuevo':'Cuota'}</span>`,fecha:fD,monto:v=>`<b style="color:var(--gold)">${fM(v)}</b>`}},gastos:{cols:['Detalle','Fecha','Monto','Categoría',''],keys:['detalle','fecha','monto','categoria','_edit'],fmt:{fecha:fD,monto:v=>`<span style="color:var(--er)">${fM(v)}</span>`}},clientes:{cols:['Nombre','Instagram','Ingreso','Fin','Activo',''],keys:['nombre','ig','fecha_ingreso','fecha_fin','activo','_edit'],fmt:{fecha_ingreso:fD,fecha_fin:fD,activo:v=>`<span class="st ${v==='Si'?'sg':'sm'}">${v==='Si'?'Activo':'Inactivo'}</span>`}},reels:{cols:['Nombre','Estructura','Fecha','Views','Coms','Segs',''],keys:['nombre','estructura','fecha','views','comentarios','seguidores_nuevos','_edit'],fmt:{fecha:fD,views:v=>Number(v||0).toLocaleString()}},historias:{cols:['Idea','Formato','Fecha','Views','Resp. CTA',''],keys:['idea','formato','fecha','views','respuestas_cta','_edit'],fmt:{fecha:fD,views:v=>Number(v||0).toLocaleString()}},yt:{cols:['Título','Fecha','Views','%CTR','%Ret.',''],keys:['titulo','fecha','views','ctr','retencion','_edit'],fmt:{fecha:fD,views:v=>Number(v||0).toLocaleString(),ctr:v=>v+'%',retencion:v=>v+'%'}}};
   const cfg=keyMap[type];const data=KPI[type==='yt'?'yt':type];
   if(!data||!data.length){el.innerHTML=emptyEl('Sin registros aún');return;}
-  el.innerHTML=`<table class="t"><thead><tr>${cfg.cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead><tbody>${data.map(row=>`<tr>${cfg.keys.map(k=>{let v=row[k]??'—';if(cfg.fmt&&cfg.fmt[k])v=cfg.fmt[k](row[k]);return`<td>${v}</td>`}).join('')}</tr>`).join('')}</tbody></table>`;
+  // Update clientes counters
+  if(type==='clientes'){
+    const actEl=document.getElementById('cli-activos-cnt');const inEl=document.getElementById('cli-inactivos-cnt');
+    if(actEl)actEl.textContent=data.filter(c=>c.activo==='Si').length;
+    if(inEl)inEl.textContent=data.filter(c=>c.activo!=='Si').length;
+  }
+  el.innerHTML=`<table class="t"><thead><tr>${cfg.cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead><tbody>${data.map(row=>`<tr ondblclick="openEdit('${type}','${row.id}')" style="cursor:pointer">${cfg.keys.map(k=>{if(k==='_edit')return`<td>${editPencilBtn(type,row.id)}</td>`;let v=row[k]??'—';if(cfg.fmt&&cfg.fmt[k])v=cfg.fmt[k](row[k]);return`<td>${v}</td>`;}).join('')}</tr>`).join('')}</tbody></table>`;
 }
+
+function renderLeadsTbl(el){
+  const data=KPI.leads;
+  if(!data||!data.length){el.innerHTML=emptyEl('Sin leads aún');return;}
+  el.innerHTML=`<table class="t"><thead><tr><th>Nombre</th><th>Instagram</th><th>Fecha</th><th>Estado</th><th>Fuente</th><th>Seguimientos</th><th></th></tr></thead><tbody>${data.map(row=>`<tr ondblclick="openEdit('leads','${row.id}')" style="cursor:pointer">
+    <td>${row.nombre||'—'}</td>
+    <td>${row.ig||'—'}</td>
+    <td>${fD(row.fecha)}</td>
+    <td><span class="st ${row.estado==='Agendado'?'sg':row.estado==='Perdido'?'sr':row.estado==='Nuevo'?'sy':'sm'}">${row.estado||'-'}</span></td>
+    <td>${row.fuente||'—'}</td>
+    <td><select onchange="updateSeguimiento('${row.id}',this.value)" style="background:var(--d3);border:1px solid var(--br);color:var(--tx);padding:3px 6px;border-radius:5px;font-size:10px;font-family:var(--font);outline:none;cursor:pointer">
+      ${[0,1,2,3,4,5,6,7,8,9,10].map(n=>`<option value="${n}" ${Number(row.seguimientos||0)===n?'selected':''}>${n===0?'Sin seguimiento':n+' seguimiento'+(n>1?'s':'')}</option>`).join('')}
+    </select></td>
+    <td>${editPencilBtn('leads',row.id)}</td>
+  </tr>`).join('')}</tbody></table>`;
+}
+
+async function updateSeguimiento(id,val){
+  await sb.from('leads').update({seguimientos:parseInt(val)}).eq('id',id);
+  const lead=KPI.leads.find(l=>l.id===id);
+  if(lead)lead.seguimientos=parseInt(val);
+}
+
+function openEdit(type,id){
+  const map={leads:'m-lead',agendas:'m-agenda',ingresos:'m-ingreso',gastos:'m-gasto',clientes:'m-cliente',reels:'m-reel',historias:'m-hist',yt:'m-yt'};
+  const data=KPI[type==='yt'?'yt':type];
+  const row=data?.find(r=>r.id===id);
+  if(!row||!map[type])return;
+  if(type==='leads')fillLeadEdit(row);
+  else if(type==='agendas')fillAgendaEdit(row);
+  else if(type==='ingresos')fillIngresoEdit(row);
+  else if(type==='gastos')fillGastoEdit(row);
+  else if(type==='clientes')fillClienteEdit(row);
+  else if(type==='reels')fillReelEdit(row);
+  else if(type==='historias')fillHistEdit(row);
+  else if(type==='yt')fillYTEdit(row);
+  document.getElementById('edit-mode-id').value=id;
+  document.getElementById('edit-mode-type').value=type;
+  openMod(map[type]);
+}
+
+function fillLeadEdit(r){
+  document.getElementById('lead-idx').value=r.id;
+  document.getElementById('l-n').value=r.nombre||'';
+  document.getElementById('l-ig').value=r.ig||'';
+  document.getElementById('l-f').value=r.fecha||'';
+  document.getElementById('l-est').value=r.estado||'Nuevo';
+  document.getElementById('l-fue').value=r.fuente||'Instagram Orgánico';
+  document.getElementById('l-ag').value=r.agendo||'No';
+  document.getElementById('m-lead-t').textContent='Editar Lead';
+}
+function fillAgendaEdit(r){document.getElementById('ag-idx').value=r.id;document.getElementById('ag-n').value=r.nombre||'';document.getElementById('ag-ig').value=r.ig||'';document.getElementById('ag-f').value=r.fecha||'';document.getElementById('ag-tel').value=r.telefono||'';document.getElementById('ag-cal').value=r.calificacion||'Alta';document.getElementById('ag-res').value=r.resultado||'Pendiente';document.getElementById('ag-not').value=r.notas||'';document.getElementById('m-ag-t').textContent='Editar Agenda';}
+function fillIngresoEdit(r){populateIngDD();document.getElementById('ing-idx').value=r.id;setTipo(r.tipo||'nuevo');document.getElementById('in-n').value=r.nombre||'';document.getElementById('in-f').value=r.fecha||'';document.getElementById('in-m').value=r.monto||0;document.getElementById('in-prog').value=r.programa||'';document.getElementById('in-pas').value=r.pasarela||'';document.getElementById('m-ing-t').textContent='Editar Ingreso';}
+function fillGastoEdit(r){document.getElementById('gas-idx').value=r.id;document.getElementById('g-d').value=r.detalle||'';document.getElementById('g-f').value=r.fecha||'';document.getElementById('g-m').value=r.monto||0;document.getElementById('g-cat').value=r.categoria||'Herramientas';document.getElementById('g-desc').value=r.descripcion||'';document.getElementById('m-gas-t').textContent='Editar Gasto';}
+function fillClienteEdit(r){populateCProg();document.getElementById('cl-idx').value=r.id;document.getElementById('cl-n').value=r.nombre||'';document.getElementById('cl-ig').value=r.ig||'';document.getElementById('cl-tel').value=r.telefono||'';document.getElementById('cl-ing').value=r.fecha_ingreso||'';document.getElementById('cl-activo').value=r.activo||'Si';document.getElementById('m-cl-t').textContent='Editar Cliente';}
+function fillReelEdit(r){document.getElementById('reel-idx').value=r.id;document.getElementById('r-n').value=r.nombre||'';document.getElementById('r-est').value=r.estructura||'';document.getElementById('r-gancho').value=r.gancho||'';document.getElementById('r-fmt').value=r.formato||'';document.getElementById('r-f').value=r.fecha||'';document.getElementById('r-v').value=r.views||0;document.getElementById('r-c').value=r.comentarios||0;document.getElementById('r-s').value=r.seguidores_nuevos||0;document.getElementById('r-l').value=r.likes||0;if(document.getElementById('r-link'))document.getElementById('r-link').value=r.link||'';document.getElementById('m-reel-t').textContent='Editar Reel';}
+function fillHistEdit(r){document.getElementById('hist-idx').value=r.id;document.getElementById('h-idea').value=r.idea||'';document.getElementById('h-fmt').value=r.formato||'';document.getElementById('h-f').value=r.fecha||'';document.getElementById('h-v').value=r.views||0;document.getElementById('h-cta').value=r.respuestas_cta||0;document.getElementById('h-tasa').value=r.tasa||'';document.getElementById('m-hist-t').textContent='Editar Historia';}
+function fillYTEdit(r){document.getElementById('yt-idx').value=r.id;document.getElementById('y-t').value=r.titulo||'';document.getElementById('y-f').value=r.fecha||'';document.getElementById('y-d').value=r.duracion||0;document.getElementById('y-v').value=r.views||0;document.getElementById('y-ctr').value=r.ctr||0;document.getElementById('y-ret').value=r.retencion||0;document.getElementById('m-yt-t').textContent='Editar Video';}
 
 function renderWins(){const el=document.getElementById('wins-list');if(!KPI.wins.length){el.innerHTML=emptyEl('Sin wins');return}el.innerHTML=KPI.wins.map(w=>`<div class="wc"><div style="display:flex;gap:5px;margin-bottom:5px"><span class="st sy">${w.grandeza}</span>${w.usada_historias==='Si'?'<span class="st sg">En historias</span>':''}</div><div style="font-size:12px;color:var(--tx);margin:4px 0">${w.win}</div><div style="font-size:9px;color:var(--t3)">${w.cliente} · ${fD(w.fecha)}</div></div>`).join('');}
 
@@ -1104,7 +1187,12 @@ function renderPas(){const el=document.getElementById('pas-list');if(!KPI.pasare
 function openNewProg(){document.getElementById('prog-idx').value='';['p-nom','p-desc'].forEach(id=>document.getElementById(id).value='');document.getElementById('p-precio').value='';document.getElementById('p-dias').value='';document.getElementById('p-cuotas').value=1;document.getElementById('m-prog-t').textContent='Nuevo Programa';openMod('m-prog');}
 function openNewPas(){document.getElementById('pas-idx').value='';document.getElementById('pas-com').value='';document.getElementById('pas-nota').value='';document.getElementById('m-pas-t').textContent='Nueva Pasarela';openMod('m-pas');}
 async function saveProg(){const nombre=document.getElementById('p-nom').value;if(!nombre)return;await sb.from('programas').insert({user_id:portalClientId,nombre,precio:document.getElementById('p-precio').value,dias:document.getElementById('p-dias').value,cuotas:document.getElementById('p-cuotas').value,descripcion:document.getElementById('p-desc').value});closeM('m-prog');await loadKPIData();renderProgs();showToast('Programa guardado');}
-async function savePas(){await sb.from('pasarelas').insert({user_id:portalClientId,nombre:document.getElementById('pas-n').value,comision:document.getElementById('pas-com').value,notas:document.getElementById('pas-nota').value});closeM('m-pas');await loadKPIData();renderPas();showToast('Pasarela guardada');}
+async function savePas(){
+  const sel=document.getElementById('pas-n').value;
+  const nombre=sel==='Otro'?(document.getElementById('pas-otro').value||'Otro'):sel;
+  await sb.from('pasarelas').insert({user_id:portalClientId,nombre,comision:document.getElementById('pas-com').value,notas:document.getElementById('pas-nota').value});
+  closeM('m-pas');await loadKPIData();renderPas();showToast('Pasarela guardada');
+}
 async function delProg(id){await sb.from('programas').delete().eq('id',id);await loadKPIData();renderProgs();}
 async function delPas(id){await sb.from('pasarelas').delete().eq('id',id);await loadKPIData();renderPas();}
 
@@ -1124,17 +1212,53 @@ function openClienteModal(){populateCProg();document.getElementById('cl-idx').va
 function populateCProg(){const s=document.getElementById('cl-prog');s.innerHTML='<option value="">—</option>';KPI.programas.forEach(p=>s.innerHTML+=`<option value="${p.id}">${p.nombre} (${p.dias||'?'} días)</option>`);}
 function calcCF(){const pid=document.getElementById('cl-prog').value;const ing=document.getElementById('cl-ing').value;const prog=KPI.programas.find(p=>p.id===pid);const el=document.getElementById('cl-fp');if(!prog||!ing){el.innerHTML='';return}const dias=parseInt(prog.dias||90);const fin=addDays(ing,dias);const cuotasD=parseInt(prog.cuotas||1);const csel=document.getElementById('cl-cuotas');const cv=csel.value;csel.innerHTML='';for(let i=1;i<=cuotasD;i++)csel.innerHTML+=`<option value="${i}">${i} cuota${i>1?'s':''}</option>`;if(cv&&parseInt(cv)<=cuotasD)csel.value=cv;const cuotas=parseInt(csel.value)||1;const inter=cuotas>1?Math.round(dias/cuotas):0;let html=`<div class="fcp"><b>Fin de servicio:</b> ${fD(fin)}<br>`;if(cuotas>1){html+=`<b>Fechas de cobro:</b><br>`;for(let i=1;i<=cuotas;i++){const fc=addDays(ing,(i-1)*inter);html+=`· Cuota ${i}: ${fD(fc)}<br>`;}}html+='</div>';el.innerHTML=html;}
 function calcTasa(){const seg=getSeg();const v=parseInt(document.getElementById('h-v').value)||0;const cta=parseInt(document.getElementById('h-cta').value)||0;const base=v>0?v:(seg>0?seg:0);if(base>0)document.getElementById('h-tasa').value=(cta/base*100).toFixed(1)+'%';else document.getElementById('h-tasa').value='';}
-function resetMod(t){const maps={lead:['l-n','l-ig','l-f'],gasto:['g-d','g-f','g-m','g-desc'],reel:['r-n','r-gancho','r-f'],hist:['h-idea','h-f','h-tasa'],yt:['y-t','y-f','y-d']};(maps[t]||[]).forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});['r-v','r-c','r-s','r-l','h-v','h-cta','y-v','y-ctr','y-ret'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=0;});}
+function resetMod(t){const maps={lead:['l-n','l-ig','l-f'],gasto:['g-d','g-f','g-m','g-desc'],reel:['r-n','r-gancho','r-f','r-link'],hist:['h-idea','h-f','h-tasa'],yt:['y-t','y-f','y-d']};(maps[t]||[]).forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});['r-v','r-c','r-s','r-l','h-v','h-cta','y-v','y-ctr','y-ret'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=0;});['lead-idx','ag-idx','gas-idx','reel-idx','hist-idx','yt-idx'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});document.getElementById('m-lead-t')&&(document.getElementById('m-lead-t').textContent='Nuevo Lead');}
 
-async function saveLead(){const o={user_id:portalClientId,nombre:document.getElementById('l-n').value,ig:document.getElementById('l-ig').value,fecha:document.getElementById('l-f').value||null,estado:document.getElementById('l-est').value,fuente:document.getElementById('l-fue').value,agendo:document.getElementById('l-ag').value};await sb.from('leads').insert(o);closeM('m-lead');await loadKPIData();renderTbl('leads','tbl-leads');showToast('Lead guardado');}
-async function saveAgenda(){const o={user_id:portalClientId,nombre:document.getElementById('ag-n').value,ig:document.getElementById('ag-ig').value,fecha:document.getElementById('ag-f').value||null,telefono:document.getElementById('ag-tel').value,calificacion:document.getElementById('ag-cal').value,resultado:document.getElementById('ag-res').value,notas:document.getElementById('ag-not').value};await sb.from('agendas').insert(o);closeM('m-agenda');await loadKPIData();renderTbl('agendas','tbl-agendas');showToast('Agenda guardada');}
+async function saveLead(){
+  const id=document.getElementById('lead-idx').value;
+  const o={user_id:portalClientId,nombre:document.getElementById('l-n').value,ig:document.getElementById('l-ig').value,fecha:document.getElementById('l-f').value||null,estado:document.getElementById('l-est').value,fuente:document.getElementById('l-fue').value,agendo:document.getElementById('l-ag').value};
+  if(id)await sb.from('leads').update(o).eq('id',id);
+  else await sb.from('leads').insert(o);
+  closeM('m-lead');await loadKPIData();renderTbl('leads','tbl-leads');showToast(id?'Lead actualizado':'Lead guardado');
+}
+async function saveAgenda(){
+  const id=document.getElementById('ag-idx').value;
+  const o={user_id:portalClientId,nombre:document.getElementById('ag-n').value,ig:document.getElementById('ag-ig').value,fecha:document.getElementById('ag-f').value||null,telefono:document.getElementById('ag-tel').value,calificacion:document.getElementById('ag-cal').value,resultado:document.getElementById('ag-res').value,notas:document.getElementById('ag-not').value};
+  if(id)await sb.from('agendas').update(o).eq('id',id);
+  else await sb.from('agendas').insert(o);
+  closeM('m-agenda');await loadKPIData();renderTbl('agendas','tbl-agendas');showToast(id?'Agenda actualizada':'Agenda guardada');
+}
 async function saveCliente(){const pid=document.getElementById('cl-prog').value;const ing=document.getElementById('cl-ing').value;const prog=KPI.programas.find(p=>p.id===pid);const dias=prog?parseInt(prog.dias||90):0;const fin=ing&&dias?addDays(ing,dias):null;const o={user_id:portalClientId,nombre:document.getElementById('cl-n').value,ig:document.getElementById('cl-ig').value,telefono:document.getElementById('cl-tel').value,fecha_ingreso:ing||null,fecha_fin:fin,prog_id:pid||null,cuotas:parseInt(document.getElementById('cl-cuotas').value)||1,activo:document.getElementById('cl-activo').value};await sb.from('clientes_kpi').insert(o);closeM('m-cliente');await loadKPIData();renderTbl('clientes','tbl-clientes');showToast('Cliente guardado');}
 async function saveIngreso(){const o={user_id:portalClientId,tipo:tipoIng,nombre:document.getElementById('in-n').value,programa:document.getElementById('in-prog').value,fecha:document.getElementById('in-f').value||null,monto:Number(document.getElementById('in-m').value)||0,cuotas:tipoIng==='nuevo'?parseInt(document.getElementById('in-cuotas').value)||1:1,cuota_num:tipoIng==='cuota'?parseInt(document.getElementById('in-cn').value)||null:null,pasarela:document.getElementById('in-pas').value};await sb.from('ingresos').insert(o);closeM('m-ingreso');await loadKPIData();renderTbl('ingresos','tbl-ingresos');showToast('Ingreso guardado');}
-async function saveGasto(){const o={user_id:portalClientId,detalle:document.getElementById('g-d').value,fecha:document.getElementById('g-f').value||null,monto:Number(document.getElementById('g-m').value)||0,categoria:document.getElementById('g-cat').value,descripcion:document.getElementById('g-desc').value};await sb.from('gastos').insert(o);closeM('m-gasto');await loadKPIData();renderTbl('gastos','tbl-gastos');showToast('Gasto guardado');}
+async function saveGasto(){
+  const id=document.getElementById('gas-idx').value;
+  const o={user_id:portalClientId,detalle:document.getElementById('g-d').value,fecha:document.getElementById('g-f').value||null,monto:Number(document.getElementById('g-m').value)||0,categoria:document.getElementById('g-cat').value,descripcion:document.getElementById('g-desc').value};
+  if(id)await sb.from('gastos').update(o).eq('id',id);
+  else await sb.from('gastos').insert(o);
+  closeM('m-gasto');await loadKPIData();renderTbl('gastos','tbl-gastos');showToast(id?'Gasto actualizado':'Gasto guardado');
+}
 async function saveWin(){const o={user_id:portalClientId,cliente:document.getElementById('w-cl').value,fecha:document.getElementById('w-f').value||null,win:document.getElementById('w-t').value,grandeza:document.getElementById('w-g').value,usada_historias:document.getElementById('w-u').value};await sb.from('wins').insert(o);closeM('m-win');await loadKPIData();renderWins();showToast('Win guardada');}
-async function saveReel(){const o={user_id:portalClientId,nombre:document.getElementById('r-n').value,estructura:document.getElementById('r-est').value,gancho:document.getElementById('r-gancho').value,formato:document.getElementById('r-fmt').value,fecha:document.getElementById('r-f').value||null,views:parseInt(document.getElementById('r-v').value)||0,comentarios:parseInt(document.getElementById('r-c').value)||0,seguidores_nuevos:parseInt(document.getElementById('r-s').value)||0,likes:parseInt(document.getElementById('r-l').value)||0,link:document.getElementById('r-link')?.value||''};await sb.from('reels').insert(o);closeM('m-reel');await loadKPIData();renderTbl('reels','tbl-reels');showToast('Reel guardado');}
-async function saveHist(){const o={user_id:portalClientId,idea:document.getElementById('h-idea').value,formato:document.getElementById('h-fmt').value,fecha:document.getElementById('h-f').value||null,views:parseInt(document.getElementById('h-v').value)||0,respuestas_cta:parseInt(document.getElementById('h-cta').value)||0,tasa:document.getElementById('h-tasa').value};await sb.from('historias').insert(o);closeM('m-hist');await loadKPIData();renderTbl('historias','tbl-hist');showToast('Historia guardada');}
-async function saveYT(){const o={user_id:portalClientId,titulo:document.getElementById('y-t').value,fecha:document.getElementById('y-f').value||null,duracion:Number(document.getElementById('y-d').value)||0,views:parseInt(document.getElementById('y-v').value)||0,ctr:Number(document.getElementById('y-ctr').value)||0,retencion:Number(document.getElementById('y-ret').value)||0};await sb.from('yt_videos').insert(o);closeM('m-yt');await loadKPIData();renderTbl('yt','tbl-yt');showToast('Video guardado');}
+async function saveReel(){
+  const id=document.getElementById('reel-idx').value;
+  const o={user_id:portalClientId,nombre:document.getElementById('r-n').value,estructura:document.getElementById('r-est').value,gancho:document.getElementById('r-gancho').value,formato:document.getElementById('r-fmt').value,fecha:document.getElementById('r-f').value||null,views:parseInt(document.getElementById('r-v').value)||0,comentarios:parseInt(document.getElementById('r-c').value)||0,seguidores_nuevos:parseInt(document.getElementById('r-s').value)||0,likes:parseInt(document.getElementById('r-l').value)||0,link:document.getElementById('r-link')?.value||''};
+  if(id)await sb.from('reels').update(o).eq('id',id);
+  else await sb.from('reels').insert(o);
+  closeM('m-reel');await loadKPIData();renderTbl('reels','tbl-reels');showToast(id?'Reel actualizado':'Reel guardado');
+}
+async function saveHist(){
+  const id=document.getElementById('hist-idx').value;
+  const o={user_id:portalClientId,idea:document.getElementById('h-idea').value,formato:document.getElementById('h-fmt').value,fecha:document.getElementById('h-f').value||null,views:parseInt(document.getElementById('h-v').value)||0,respuestas_cta:parseInt(document.getElementById('h-cta').value)||0,tasa:document.getElementById('h-tasa').value};
+  if(id)await sb.from('historias').update(o).eq('id',id);
+  else await sb.from('historias').insert(o);
+  closeM('m-hist');await loadKPIData();renderTbl('historias','tbl-hist');showToast(id?'Historia actualizada':'Historia guardada');
+}
+async function saveYT(){
+  const id=document.getElementById('yt-idx').value;
+  const o={user_id:portalClientId,titulo:document.getElementById('y-t').value,fecha:document.getElementById('y-f').value||null,duracion:Number(document.getElementById('y-d').value)||0,views:parseInt(document.getElementById('y-v').value)||0,ctr:Number(document.getElementById('y-ctr').value)||0,retencion:Number(document.getElementById('y-ret').value)||0};
+  if(id)await sb.from('yt_videos').update(o).eq('id',id);
+  else await sb.from('yt_videos').insert(o);
+  closeM('m-yt');await loadKPIData();renderTbl('yt','tbl-yt');showToast(id?'Video actualizado':'Video guardado');
+}
 
 function renderContentList(elId,data,type){
   const el=document.getElementById(elId);if(!el)return;
@@ -1285,6 +1409,11 @@ function toggleFolder(id){
   const open=docs.style.display==='block';
   docs.style.display=open?'none':'block';
   if(arr)arr.style.transform=open?'':'rotate(90deg)';
+}
+
+function togglePasOtro(){
+  const v=document.getElementById('pas-n').value;
+  document.getElementById('pas-otro-row').style.display=v==='Otro'?'block':'none';
 }
 
 function initUniverse(){
