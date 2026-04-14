@@ -437,7 +437,7 @@ table.t tr:hover td{background:var(--d2)}
 
       <!-- CONTENT DASHBOARD -->
       <div class="kpi-section" id="ksec-content">
-        <div class="seg-bar"><label>Seguidores cuenta</label><input type="number" class="seg-inp" id="seg-n" placeholder="Ej: 5400" oninput="onSegChange()"><span id="seg-txt" style="font-size:10px;color:var(--t3)"></span></div>
+        <div class="seg-bar"><label>Seguidores cuenta</label><input type="number" class="seg-inp" id="seg-n" placeholder="Ej: 5400" oninput="saveSeguidores(this.value);onSegChange()"><span id="seg-txt" style="font-size:10px;color:var(--t3)"></span></div>
         <div class="ctabs">
           <button class="ctab active" onclick="showCtab('reels',this)">🎬 Reels</button>
           <button class="ctab" onclick="showCtab('hist',this)">📱 Historias</button>
@@ -638,6 +638,8 @@ function addDays(d,n){if(!d)return null;const dt=new Date(d+'T12:00:00');dt.setD
 function isWithin90(d){if(!d)return false;return(now-new Date(d+'T12:00:00'))/(864e5)<=90;}
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,5);}
 function getSeg(){return parseInt(document.getElementById('seg-n').value)||0;}
+function saveSeguidores(v){try{localStorage.setItem('alecor_seg_'+portalClientId,v);}catch(e){}}
+function loadSeguidores(){try{const v=localStorage.getItem('alecor_seg_'+portalClientId);if(v){const el=document.getElementById('seg-n');if(el)el.value=v;}}catch(e){}}
 
 document.querySelectorAll('.ov').forEach(m=>m.addEventListener('click',function(e){if(e.target===this)this.classList.remove('open')}));
 document.addEventListener('click',e=>{if(!e.target.closest('.lead-swrap'))document.getElementById('ag-dd')&&document.getElementById('ag-dd').classList.remove('show');});
@@ -813,6 +815,7 @@ async function adminOpenKPI(clientId){
   await loadKPIData();
   showScreen('s-kpi');
   document.getElementById('msel').value=now.getMonth().toString();
+  loadSeguidores();
   renderOps();renderContentReels();renderViralidad();
 }
 
@@ -973,11 +976,7 @@ function renderOps(){
   const cr=ag.length?Math.round(cerr/ag.length*100):0;
   const nsp=ag.length?Math.round(ns/ag.length*100):0;
   const aov=cerr>0?Math.round(fac/cerr):0;
-  let alts='';
-  if(leads.length>0&&pL<20)alts+=`<div class="alrt">Tasa Leads→Agenda baja (${pL}%) — Revisar estrategia de DMs</div>`;
-  if(ag.length>0&&cr<30)alts+=`<div class="alrt">Close Rate bajo (${cr}%) — Trabajar objeciones</div>`;
-  if(ns>2)alts+=`<div class="alrt">${ns} No-Shows — Mejorar proceso de confirmación</div>`;
-  document.getElementById('ops-alerts').innerHTML=alts;
+  document.getElementById('ops-alerts').innerHTML='';
   const lifeTotal=KPI.ingresos.filter(i=>i.tipo==='nuevo').reduce((s,i)=>s+Number(i.monto||0),0);
   const LEVELS=[5000,10000,20000,30000,50000,100000];
   const curLevel=LEVELS.findIndex(l=>lifeTotal<l);
@@ -998,7 +997,7 @@ function renderOps(){
   const wEl=document.getElementById('wins-total-cnt');if(wEl)wEl.textContent=KPI.wins.length;
   document.getElementById('ops-ventas').innerHTML=`<div class="ds"><div class="dst"><span>💰</span>Dashboard Ventas</div>
   <div class="kg"><div class="kcard${fac===0?' r':''}"><div class="kl">Facturación</div><div class="kv">${fM(fac)}</div><div class="ks">Período</div></div><div class="kcard"><div class="kl">Cash Collected</div><div class="kv">${fM(cash)}</div><div class="ks">Real cobrado</div></div><div class="kcard y"><div class="kl">Por Cobrar</div><div class="kv">${fM(porCobrar)}</div><div class="ks">Cuotas pendientes</div></div><div class="kcard"><div class="kl">Gastos</div><div class="kv">${fM(gas)}</div><div class="ks">Período</div></div><div class="kcard${marg<20&&cash>0?' y':marg>=40?' g':''}"><div class="kl">Margen</div><div class="kv">${marg}%</div><div class="ks">Meta: +40%</div></div><div class="kcard"><div class="kl">Cuotas Recibidas</div><div class="kv">${cQ}</div><div class="ks">Abonos</div></div></div></div>
-  <div class="ds"><div class="dst"><span>🏅</span>Producto</div><div class="kg"><div class="kcard g" style="grid-column:span 2"><div class="kl">Clientes Activos</div><div class="kv" style="font-size:28px">${cA}</div><div class="ks">En programa ahora</div></div><div class="kcard${KPI.clientes.filter(c=>c.activo!=='Si').length>0?' r':''}"><div class="kl">Clientes Inactivos</div><div class="kv">${KPI.clientes.filter(c=>c.activo!=='Si').length}</div><div class="ks">Finalizados</div></div><div class="kcard" style="grid-column:span 3;background:rgba(201,168,76,.06);border-color:rgba(201,168,76,.3)"><div class="kl">Wins de Clientes</div><div class="kv" style="font-size:28px;color:var(--gold)">${KPI.wins.length}</div><div class="ks">Total registradas</div></div></div></div>`;
+`;
   document.getElementById('ops-leads').innerHTML=`<div class="ds"><div class="dst"><span>🧍</span>Dashboard Leads</div><div class="kg"><div class="kcard${leads.length<5?' y':''}"><div class="kl">Leads Totales</div><div class="kv">${leads.length}</div><div class="ks">Período</div></div><div class="kcard"><div class="kl">Leads Agendados</div><div class="kv">${la}</div><div class="ks">Marcados</div></div><div class="kcard${pL<20&&leads.length>0?' r':pL>=40?' g':''}"><div class="kl">% Leads→Agenda</div><div class="kv">${pL}%</div><div class="ks">Meta: +40%</div></div><div class="kcard"><div class="kl">En Seguimiento</div><div class="kv">${ls}</div><div class="ks">Activos</div></div><div class="kcard b"><div class="kl">Lead Magnet</div><div class="kv">${llm}</div><div class="ks">Nurturing</div></div><div class="kcard${lp>5?' y':''}"><div class="kl">Lead Perdido</div><div class="kv">${lp}</div><div class="ks">No convirtieron</div></div></div></div>`;
   document.getElementById('ops-agendas').innerHTML=`<div class="ds"><div class="dst"><span>☎️</span>Dashboard Agendas</div><div class="kg"><div class="kcard"><div class="kl">Llamadas Totales</div><div class="kv">${ag.length}</div><div class="ks">Período</div></div><div class="kcard g"><div class="kl">Llamadas Cerradas</div><div class="kv">${cerr}</div><div class="ks">Ventas</div></div><div class="kcard${cr<30&&ag.length>0?' r':cr>=50?' g':''}"><div class="kl">Close Rate</div><div class="kv">${cr}%</div><div class="ks">Meta: +50%</div></div><div class="kcard${nsp>20?' y':''}"><div class="kl">% No Show</div><div class="kv">${nsp}%</div><div class="ks">${ns} llamadas</div></div><div class="kcard"><div class="kl">Calificadas</div><div class="kv">${calA}</div><div class="ks">Alta calificación</div></div><div class="kcard"><div class="kl">AOV Promedio</div><div class="kv">${fM(aov)}</div><div class="ks">Por venta</div></div></div></div>`;
   const mD=MESES.map((_,i)=>KPI.ingresos.filter(v=>{if(!v.fecha||v.tipo!=='nuevo')return false;const d=new Date(v.fecha+'T12:00:00');return d.getMonth()===i&&d.getFullYear()===CY}).reduce((s,v)=>s+Number(v.monto||0),0));
