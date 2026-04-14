@@ -245,6 +245,12 @@ table.t tr:hover td{background:var(--d2)}
 .lo:last-child{border-bottom:none}.lo:hover{background:var(--d3);color:var(--gold)}
 .lo .lm{font-size:9px;color:var(--t3);margin-top:1px}
 .wc{background:var(--sb);border:1px solid var(--br);border-radius:9px;padding:12px;margin-bottom:8px}.folder-card{background:var(--d3);border:1px solid var(--br);border-radius:10px;overflow:hidden;margin-bottom:8px}
+.ic-collapsed{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;cursor:pointer}
+.ic-expand-btn{background:none;border:none;color:var(--gold);font-size:10px;cursor:pointer;font-family:var(--font);padding:3px 0;display:block;margin-top:4px}
+.quick-access{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.qa-label{font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:1px;font-weight:500;white-space:nowrap}
+.qa-btn{background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.25);color:var(--gold);padding:5px 12px;border-radius:7px;font-size:10px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all .2s;text-decoration:none;display:inline-block}
+.qa-btn:hover{background:rgba(201,168,76,.2)}
 .folder-header{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;cursor:pointer;transition:background .2s}
 .folder-header:hover{background:var(--d4)}
 .folder-left{display:flex;align-items:center;gap:10px}
@@ -533,8 +539,12 @@ table.t tr:hover td{background:var(--d2)}
           <div class="ep active" id="ep-info">
             <div class="ec"><div class="ect">Información general</div>
               <div class="fr"><label>Nicho</label><input id="ed-nicho" placeholder="Ej: Psicología clínica"></div>
-              <div class="fr"><label>Oferta principal</label><input id="ed-oferta" placeholder="Ej: Consultoría 1:1 de 90 días"></div>
+              <div class="fr"><label>Oferta principal</label><textarea id="ed-oferta" rows="3" style="resize:vertical" placeholder="Ej: Consultoría 1:1 de 90 días"></textarea></div>
               <div class="fr"><label>Cliente ideal</label><textarea id="ed-ci" rows="3" style="resize:vertical"></textarea></div>
+              <div style="font-size:11px;font-weight:600;color:var(--gold);margin:12px 0 8px">⚡ Accesos Rápidos — Links de guiones</div>
+              <div class="fr"><label>Link Guiones Reels</label><input id="ed-link-reels" placeholder="https://docs.google.com/..."></div>
+              <div class="fr"><label>Link Guiones Historias</label><input id="ed-link-historias" placeholder="https://docs.google.com/..."></div>
+              <div class="fr"><label>Link Guiones YouTube</label><input id="ed-link-yt" placeholder="https://docs.google.com/..."></div>
               <button class="btn-save" onclick="saveInfo()">Guardar cambios</button>
             </div>
           </div>
@@ -875,10 +885,22 @@ async function renderPanelGeneral(cid){
         </div>
         <div class="pg-stats"><div class="sv" id="pg-done-cnt">${done}/${total}</div><div class="sl">tareas</div></div>
       </div>
+      ${(info?.link_reels||info?.link_historias||info?.link_yt)?`<div style="background:var(--d3);border-radius:10px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+        <span class="qa-label">⚡ Accesos Rápidos</span>
+        ${info?.link_reels?`<a class="qa-btn" href="${info.link_reels}" target="_blank">🎬 Guiones Reels</a>`:''}
+        ${info?.link_historias?`<a class="qa-btn" href="${info.link_historias}" target="_blank">📱 Guiones Historias</a>`:''}
+        ${info?.link_yt?`<a class="qa-btn" href="${info.link_yt}" target="_blank">▶️ Guiones YouTube</a>`:''}
+      </div>`:''}
       <div class="info-grid">
         <div class="ic"><div class="ic-lbl">Nicho</div><div class="ic-val">${info?.nicho||'Por definir'}</div></div>
-        <div class="ic"><div class="ic-lbl">Oferta Principal</div><div class="ic-val">${info?.oferta||'Por definir'}</div></div>
-        <div class="ic"><div class="ic-lbl">Cliente Ideal</div><div class="ic-val">${info?.cliente_ideal||'Por definir'}</div></div>
+        <div class="ic"><div class="ic-lbl">Oferta Principal</div>
+          <div class="ic-val ic-collapsed" id="ic-oferta">${info?.oferta||'Por definir'}</div>
+          ${(info?.oferta||'').length>80?`<button class="ic-expand-btn" onclick="toggleExpand('ic-oferta',this)">Ver más ▼</button>`:''}
+        </div>
+        <div class="ic"><div class="ic-lbl">Cliente Ideal</div>
+          <div class="ic-val ic-collapsed" id="ic-ci">${info?.cliente_ideal||'Por definir'}</div>
+          ${(info?.cliente_ideal||'').length>80?`<button class="ic-expand-btn" onclick="toggleExpand('ic-ci',this)">Ver más ▼</button>`:''}
+        </div>
       </div>
       <div class="two-col">
         <div class="sc">
@@ -1178,6 +1200,9 @@ async function loadEditor(){
   document.getElementById('ed-nicho').value=info?.nicho||'';
   document.getElementById('ed-oferta').value=info?.oferta||'';
   document.getElementById('ed-ci').value=info?.cliente_ideal||'';
+  if(document.getElementById('ed-link-reels'))document.getElementById('ed-link-reels').value=info?.link_reels||'';
+  if(document.getElementById('ed-link-historias'))document.getElementById('ed-link-historias').value=info?.link_historias||'';
+  if(document.getElementById('ed-link-yt'))document.getElementById('ed-link-yt').value=info?.link_yt||'';
   document.getElementById('ed-cal').value=info?.cal_url||'';
   updateCalPrev(info?.cal_url||'');
   renderTasksEd(tasks||[]);
@@ -1189,7 +1214,20 @@ async function loadEditor(){
 function updateCalPrev(url){document.getElementById('cal-prev').innerHTML=url?`<div style="width:100%;border-radius:8px;overflow:hidden;background:var(--d3)"><img src="${url}" style="width:100%;max-height:120px;object-fit:cover" onerror="this.parentElement.style.display='none'"></div>`:''}
 function getCurCid(){return document.getElementById('ed-select').value;}
 
-async function saveInfo(){const cid=getCurCid();if(!cid)return;const nicho=document.getElementById('ed-nicho').value;const oferta=document.getElementById('ed-oferta').value;const ci=document.getElementById('ed-ci').value;const{data:ex}=await sb.from('client_info').select('id').eq('user_id',cid).maybeSingle();if(ex)await sb.from('client_info').update({nicho,oferta,cliente_ideal:ci}).eq('user_id',cid);else await sb.from('client_info').insert({user_id:cid,nicho,oferta,cliente_ideal:ci});showToast('Info guardada');}
+async function saveInfo(){
+  const cid=getCurCid();if(!cid)return;
+  const nicho=document.getElementById('ed-nicho').value;
+  const oferta=document.getElementById('ed-oferta').value;
+  const ci=document.getElementById('ed-ci').value;
+  const link_reels=document.getElementById('ed-link-reels')?.value||'';
+  const link_historias=document.getElementById('ed-link-historias')?.value||'';
+  const link_yt=document.getElementById('ed-link-yt')?.value||'';
+  const{data:ex}=await sb.from('client_info').select('id').eq('user_id',cid).maybeSingle();
+  const payload={nicho,oferta,cliente_ideal:ci,link_reels,link_historias,link_yt};
+  if(ex)await sb.from('client_info').update(payload).eq('user_id',cid);
+  else await sb.from('client_info').insert({user_id:cid,...payload});
+  showToast('Info guardada');
+}
 async function saveCalendario(){const cid=getCurCid();if(!cid)return;const url=document.getElementById('ed-cal').value.trim();const{data:ex}=await sb.from('client_info').select('id').eq('user_id',cid).maybeSingle();if(ex)await sb.from('client_info').update({cal_url:url}).eq('user_id',cid);else await sb.from('client_info').insert({user_id:cid,cal_url:url});updateCalPrev(url);showToast('Calendario actualizado');}
 
 let edTasks=[];let edDocs=[];
@@ -1470,6 +1508,14 @@ async function saveLlamadas(){
   await sb.from('llamadas').delete().eq('user_id',cid);
   if(updated.length)await sb.from('llamadas').insert(updated.map((l,i)=>({user_id:cid,titulo:l.titulo,fecha:l.fecha||null,url:l.url,position:i})));
   edLlamadas=updated;showToast('Llamadas guardadas');
+}
+
+function toggleExpand(id,btn){
+  const el=document.getElementById(id);
+  if(!el)return;
+  const collapsed=el.classList.contains('ic-collapsed');
+  el.classList.toggle('ic-collapsed',!collapsed);
+  btn.textContent=collapsed?'Ver menos ▲':'Ver más ▼';
 }
 
 function initUniverse(){
