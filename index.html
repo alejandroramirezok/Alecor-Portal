@@ -528,6 +528,7 @@ table.t tr:hover td{background:var(--d2)}
             <button class="etab" onclick="showEditTab('tareas',this)">Tareas</button>
             <button class="etab" onclick="showEditTab('calendario',this)">Calendario</button>
             <button class="etab" onclick="showEditTab('documentos',this)">Documentos</button>
+            <button class="etab" onclick="showEditTab('llamadas',this)">Llamadas 1:1</button>
           </div>
           <div class="ep active" id="ep-info">
             <div class="ec"><div class="ect">Información general</div>
@@ -558,6 +559,14 @@ table.t tr:hover td{background:var(--d2)}
               <div style="margin-bottom:14px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px"><div style="font-size:11px;font-weight:600;color:var(--gold)">🎯 Contenido Láser — Etapa 2</div><button class="btn-add-sm" onclick="addDocEd('etapa2')">+ Doc</button></div><div id="docs-ed-etapa2"></div></div>
               <div style="margin-bottom:14px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px"><div style="font-size:11px;font-weight:600;color:var(--gold)">⚙️ Estructuras y Operaciones — Etapa 3</div><button class="btn-add-sm" onclick="addDocEd('etapa3')">+ Doc</button></div><div id="docs-ed-etapa3"></div></div>
               <button class="btn-save" style="margin-top:8px" onclick="saveDocs()">Guardar documentos</button>
+            </div>
+          </div>
+          <div class="ep" id="ep-llamadas">
+            <div class="ec">
+              <div class="ect" style="display:flex;align-items:center;justify-content:space-between"><span>Llamadas 1:1</span><button class="btn-add-sm" onclick="addLlamadaEd()">+ Agregar</button></div>
+              <div style="font-size:10px;color:var(--t3);margin-bottom:12px">Título de la sesión · Fecha · Link de Phantom</div>
+              <div id="llamadas-ed"></div>
+              <button class="btn-save" style="margin-top:12px" onclick="saveLlamadas()">Guardar llamadas</button>
             </div>
           </div>
         </div>
@@ -840,11 +849,12 @@ async function openPanelGeneral(clientId){
 }
 
 async function renderPanelGeneral(cid){
-  const[{data:info},{data:tasks},{data:docs},{data:profile}]=await Promise.all([
+  const[{data:info},{data:tasks},{data:docs},{data:profile},{data:llamadas}]=await Promise.all([
     sb.from('client_info').select('*').eq('user_id',cid).maybeSingle(),
     sb.from('tasks').select('*').eq('user_id',cid).order('position'),
     sb.from('documents').select('*').eq('user_id',cid).order('position'),
-    sb.from('profiles').select('*').eq('id',cid).single()
+    sb.from('profiles').select('*').eq('id',cid).single(),
+    sb.from('llamadas').select('*').eq('user_id',cid).order('fecha',{ascending:false})
   ]);
   const init=(profile?.name||'?').split(' ').map(w=>w[0]).slice(0,2).join('');
   const taskList=(tasks||[]).slice().sort((a,b)=>{if(!a.date&&!b.date)return 0;if(!a.date)return 1;if(!b.date)return -1;return new Date(a.date)-new Date(b.date);});
@@ -891,6 +901,18 @@ async function renderPanelGeneral(cid){
         <div class="sch"><h3>Documentos y Entregables</h3></div>
         <div style="padding:8px 14px 14px">${renderFolders(docs||[])}</div>
       </div>
+      ${(llamadas||[]).length?`<div class="docs-card">
+        <div class="sch"><h3>📞 Llamadas 1:1</h3><span class="sch-badge">${(llamadas||[]).length} sesiones</span></div>
+        <div style="padding:0 18px">
+          ${(llamadas||[]).map(l=>`<div class="doc-row">
+            <div class="doc-left">
+              <div class="doc-icon">📞</div>
+              <div><div class="doc-name">${l.titulo||'Llamada'}</div><div class="doc-type">${l.fecha?fD(l.fecha):''}</div></div>
+            </div>
+            <button class="btn-open-doc" onclick="window.open('${l.url}','_blank')">Ver grabación →</button>
+          </div>`).join('')}
+        </div>
+      </div>`:''}
     </div>`;
   showScreen('s-portal');
 }
@@ -1148,7 +1170,7 @@ async function loadEditor(){
   const cid=document.getElementById('ed-select').value;
   const body=document.getElementById('editor-body');
   if(!cid){body.style.display='none';return;}
-  const[{data:p},{data:info},{data:tasks},{data:docs}]=await Promise.all([sb.from('profiles').select('*').eq('id',cid).single(),sb.from('client_info').select('*').eq('user_id',cid).maybeSingle(),sb.from('tasks').select('*').eq('user_id',cid).order('position'),sb.from('documents').select('*').eq('user_id',cid).order('position')]);
+  const[{data:p},{data:info},{data:tasks},{data:docs},{data:llamadasEd}]=await Promise.all([sb.from('profiles').select('*').eq('id',cid).single(),sb.from('client_info').select('*').eq('user_id',cid).maybeSingle(),sb.from('tasks').select('*').eq('user_id',cid).order('position'),sb.from('documents').select('*').eq('user_id',cid).order('position'),sb.from('llamadas').select('*').eq('user_id',cid).order('position')]);
   const init=(p?.name||'?').split(' ').map(w=>w[0]).slice(0,2).join('');
   document.getElementById('ed-av').textContent=init;
   document.getElementById('ed-nm').textContent=p?.name||'—';
@@ -1160,6 +1182,7 @@ async function loadEditor(){
   updateCalPrev(info?.cal_url||'');
   renderTasksEd(tasks||[]);
   renderDocsEd(docs||[]);
+  renderLlamadasEd(llamadasEd||[]);
   body.style.display='block';
   showEditTab('info',document.querySelector('.etab'));
 }
@@ -1424,6 +1447,29 @@ function toggleFolder(id){
 function togglePasOtro(){
   const v=document.getElementById('pas-n').value;
   document.getElementById('pas-otro-row').style.display=v==='Otro'?'block':'none';
+}
+
+let edLlamadas=[];
+function renderLlamadasEd(llamadas){
+  edLlamadas=[...llamadas];
+  const el=document.getElementById('llamadas-ed');
+  if(!el)return;
+  el.innerHTML=edLlamadas.map((l,i)=>`
+    <div style="display:grid;grid-template-columns:1fr 120px 1fr auto;gap:7px;margin-bottom:8px;align-items:center">
+      <input type="text" value="${l.titulo||''}" id="ll-t-${i}" placeholder="Ej: Sesión de onboarding" style="background:var(--d3);border:1px solid var(--br);border-radius:6px;padding:7px 9px;color:var(--tx);font-size:11px;font-family:var(--font);outline:none">
+      <input type="date" value="${l.fecha||''}" id="ll-f-${i}" style="background:var(--d3);border:1px solid var(--br);border-radius:6px;padding:7px 9px;color:var(--tx);font-size:11px;font-family:var(--font);outline:none">
+      <input type="text" value="${l.url||''}" id="ll-u-${i}" placeholder="Link Phantom..." style="background:var(--d3);border:1px solid var(--br);border-radius:6px;padding:7px 9px;color:var(--tx);font-size:11px;font-family:var(--font);outline:none">
+      <button class="btn-danger" onclick="removeLlamadaEd(${i})">✕</button>
+    </div>`).join('');
+}
+function addLlamadaEd(){edLlamadas.push({titulo:'',fecha:'',url:''});renderLlamadasEd(edLlamadas);}
+function removeLlamadaEd(i){edLlamadas.splice(i,1);renderLlamadasEd(edLlamadas);}
+async function saveLlamadas(){
+  const cid=getCurCid();if(!cid)return;
+  const updated=edLlamadas.map((_,i)=>({titulo:document.getElementById('ll-t-'+i)?.value||'',fecha:document.getElementById('ll-f-'+i)?.value||null,url:document.getElementById('ll-u-'+i)?.value||''}));
+  await sb.from('llamadas').delete().eq('user_id',cid);
+  if(updated.length)await sb.from('llamadas').insert(updated.map((l,i)=>({user_id:cid,titulo:l.titulo,fecha:l.fecha||null,url:l.url,position:i})));
+  edLlamadas=updated;showToast('Llamadas guardadas');
 }
 
 function initUniverse(){
