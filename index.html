@@ -638,8 +638,19 @@ function addDays(d,n){if(!d)return null;const dt=new Date(d+'T12:00:00');dt.setD
 function isWithin90(d){if(!d)return false;return(now-new Date(d+'T12:00:00'))/(864e5)<=90;}
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,5);}
 function getSeg(){return parseInt(document.getElementById('seg-n').value)||0;}
-function saveSeguidores(v){try{localStorage.setItem('alecor_seg_'+portalClientId,v);}catch(e){}}
-function loadSeguidores(){try{const v=localStorage.getItem('alecor_seg_'+portalClientId);if(v){const el=document.getElementById('seg-n');if(el)el.value=v;}}catch(e){}}
+let segTimer=null;
+function saveSeguidores(v){
+  clearTimeout(segTimer);
+  segTimer=setTimeout(async()=>{
+    const{data:ex}=await sb.from('client_info').select('id').eq('user_id',portalClientId).maybeSingle();
+    if(ex)await sb.from('client_info').update({seguidores:parseInt(v)||0}).eq('user_id',portalClientId);
+    else await sb.from('client_info').insert({user_id:portalClientId,seguidores:parseInt(v)||0});
+  },800);
+}
+async function loadSeguidores(){
+  const{data}=await sb.from('client_info').select('seguidores').eq('user_id',portalClientId).maybeSingle();
+  if(data?.seguidores){const el=document.getElementById('seg-n');if(el)el.value=data.seguidores;}
+}
 
 document.querySelectorAll('.ov').forEach(m=>m.addEventListener('click',function(e){if(e.target===this)this.classList.remove('open')}));
 document.addEventListener('click',e=>{if(!e.target.closest('.lead-swrap'))document.getElementById('ag-dd')&&document.getElementById('ag-dd').classList.remove('show');});
