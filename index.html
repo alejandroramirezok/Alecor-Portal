@@ -1249,7 +1249,7 @@ async function saveInfo(){
 async function saveCalendario(){const cid=getCurCid();if(!cid)return;const url=document.getElementById('ed-cal').value.trim();const{data:ex}=await sb.from('client_info').select('id').eq('user_id',cid).maybeSingle();if(ex)await sb.from('client_info').update({cal_url:url}).eq('user_id',cid);else await sb.from('client_info').insert({user_id:cid,cal_url:url});updateCalPrev(url);showToast('Calendario actualizado');}
 
 let edTasks=[];let edDocs=[];
-function taskEdRow(t,i){const cats=Object.keys(CAL_COLORS);return`<div class="task-er-full" id="ter-${i}"><input type="text" value="${(t.text||'').replace(/"/g,'&quot;')}" id="te-${i}" placeholder="Tarea..."><input type="date" value="${t.date||''}" id="td-${i}"><select id="tc-${i}" style="max-width:130px">${cats.map(c=>`<option value="${c}"${t.category===c?' selected':''}>${c}</option>`).join('')}</select><button title="Duplicar" onclick="dupTaskEd(${i})" style="background:none;border:none;color:var(--t3);cursor:pointer;padding:2px 5px;font-size:13px" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--t3)'">⧉</button><button class="btn-danger" onclick="removeTaskEd(${i})">✕</button></div><div style="margin-bottom:8px"><input type="text" value="${(t.description||'').replace(/"/g,'&quot;')}" id="tdesc-${i}" placeholder="Descripción (opcional)..." style="width:100%;background:var(--d3);border:1px solid var(--br);border-radius:6px;padding:5px 8px;color:var(--tx);font-size:10px;font-family:var(--font);outline:none"></div>`;}
+function taskEdRow(t,i){const cats=Object.keys(CAL_COLORS);return`<div class="task-er-full" id="ter-${i}"><input type="text" value="${(t.text||'').replace(/"/g,'&quot;')}" id="te-${i}" placeholder="Tarea..."><input type="date" value="${t.date||''}" id="td-${i}"><select id="tc-${i}" style="max-width:130px">${cats.map(c=>`<option value="${c}"${t.category===c?' selected':''}>${c}</option>`).join('')}</select><button title="Duplicar" onclick="dupTaskEd(${i})" style="background:none;border:none;color:var(--t3);cursor:pointer;padding:2px 5px;font-size:13px" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--t3)'">⧉</button><button title="Eliminar" onclick="removeTaskEd(${i})" style="background:none;border:none;color:rgba(226,75,74,.6);cursor:pointer;padding:2px 5px;font-size:13px" onmouseover="this.style.color='var(--er)'" onmouseout="this.style.color='rgba(226,75,74,.6)'">✕</button></div><div style="margin-bottom:8px"><input type="text" value="${(t.description||'').replace(/"/g,'&quot;')}" id="tdesc-${i}" placeholder="Descripción (opcional)..." style="width:100%;background:var(--d3);border:1px solid var(--br);border-radius:6px;padding:5px 8px;color:var(--tx);font-size:10px;font-family:var(--font);outline:none"></div>`;}
 function renderTasksEd(tasks){edTasks=[...tasks];const el=document.getElementById('tasks-ed');el.innerHTML=edTasks.map((t,i)=>taskEdRow(t,i)).join('');}
 function addTaskEd(){
   // Save current values before adding
@@ -1269,7 +1269,21 @@ function dupTaskEd(i){
   el.innerHTML+=taskEdRow(dup,edTasks.length-1);
 }
 function removeTaskEd(i){edTasks.splice(i,1);renderTasksEd(edTasks);}
-async function saveTareas(){const cid=getCurCid();if(!cid)return;const updated=edTasks.map((t,i)=>({...t,text:document.getElementById('te-'+i)?.value||t.text,date:document.getElementById('td-'+i)?.value||null,category:document.getElementById('tc-'+i)?.value||'Tarea',description:document.getElementById('tdesc-'+i)?.value||''}));await sb.from('tasks').delete().eq('user_id',cid);if(updated.length)await sb.from('tasks').insert(updated.map((t,i)=>({user_id:cid,text:t.text,done:t.done||false,position:i,date:t.date,category:t.category,description:t.description})));edTasks=updated;showToast('Tareas guardadas');}
+async function saveTareas(){
+  const cid=getCurCid();if(!cid)return;
+  // Read current DOM values into edTasks first
+  const updated=edTasks.map((t,i)=>({...t,
+    text:document.getElementById('te-'+i)?.value||t.text,
+    date:document.getElementById('td-'+i)?.value||null,
+    category:document.getElementById('tc-'+i)?.value||'Tarea',
+    description:document.getElementById('tdesc-'+i)?.value||''
+  })).filter(t=>t.text.trim());
+  await sb.from('tasks').delete().eq('user_id',cid);
+  if(updated.length)await sb.from('tasks').insert(updated.map((t,i)=>({user_id:cid,text:t.text,done:t.done||false,position:i,date:t.date,category:t.category,description:t.description})));
+  // Re-render to sync DOM with saved state
+  renderTasksEd(updated);
+  showToast('Tareas guardadas');
+}
 
 function renderDocsEd(docs){
   edDocs=[...docs];
