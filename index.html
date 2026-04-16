@@ -507,6 +507,57 @@ table.t tr:hover td{background:var(--d2)}
   </div>
 </div>
 
+<!-- ===== MALLA DE CONTENIDO ===== -->
+<div class="screen" id="s-malla" style="flex-direction:column">
+  <div class="portal-topbar">
+    <div class="ptb-left">
+      <button class="ptb-back" onclick="goHome()">← Inicio</button>
+      <div class="ptb-title">Malla de Contenido</div>
+    </div>
+    <span class="badge" style="background:rgba(139,92,246,.12);color:#a78bfa;border:1px solid rgba(139,92,246,.3)">MALLA</span>
+  </div>
+  <div style="display:flex;flex:1;overflow:hidden;height:calc(100vh - 50px)">
+    <div class="kpi-sidebar">
+      <div class="ksi-section">Malla</div>
+      <div class="ksi-item active" onclick="showMallaSec('tabla',this)">📋 Crear Tabla</div>
+      <div class="ksi-item" onclick="showMallaSec('ideas',this)">💡 Ideas de Contenido</div>
+    </div>
+    <div class="portal-body" style="flex:1">
+      <div class="kpi-wrap">
+
+        <!-- TABLA DE DOLORES -->
+        <div class="kpi-section active" id="msec-tabla">
+          <div style="margin-bottom:20px">
+            <div class="dst" style="font-size:15px">📋 Tabla de Dolores Generales del Cliente Ideal</div>
+            <div style="font-size:11px;color:var(--t3);margin-bottom:16px;line-height:1.6">Completa esta tabla con los dolores y deseos de tu cliente ideal. Esta información generará automáticamente tus ideas de contenido.</div>
+          </div>
+          <div id="malla-tabla-container"></div>
+          <div style="margin-top:24px">
+            <div class="dst" style="font-size:15px">🔍 Subdolores / Subdeseos</div>
+            <div style="font-size:11px;color:var(--t3);margin-bottom:16px">Para cada dolor, define 3 subdolores específicos. Estos se convierten en tus ideas de contenido.</div>
+            <div id="malla-subdolores-container"></div>
+          </div>
+          <button class="btn-save" style="margin-top:20px;width:100%" onclick="saveMalla()">Guardar Malla de Contenido</button>
+        </div>
+
+        <!-- IDEAS DE CONTENIDO -->
+        <div class="kpi-section" id="msec-ideas">
+          <div class="dst" style="font-size:15px">💡 Ideas de Contenido Listas para Ejecutar</div>
+          <div class="filter-bar" style="margin-bottom:16px">
+            <label>Filtrar por:</label>
+            <button class="pb active" onclick="filterMallaIdeas('reels',this)">🎬 Reels</button>
+            <button class="pb" onclick="filterMallaIdeas('historias',this)">📱 Historias</button>
+            <button class="pb" onclick="filterMallaIdeas('youtube',this)">▶️ YouTube</button>
+            <button class="pb" onclick="filterMallaIdeas('leadmagnet',this)">🎁 Lead Magnets</button>
+          </div>
+          <div id="malla-ideas-list"></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ===== ADMIN ===== -->
 <div class="screen" id="s-admin">
   <div class="portal-topbar">
@@ -751,6 +802,16 @@ function showClientHome(){
         <div class="hcp-row"><div class="hcp-dot"></div><div class="hcp-txt">Leads · Agendas · Ingresos</div></div>
         <div class="hcp-row"><div class="hcp-dot"></div><div class="hcp-txt">Reels · Historias · YouTube</div></div>
       </div>
+    </div>
+    <div class="home-card" onclick="openMalla(null)" style="border-color:rgba(139,92,246,.3)">
+      <div class="hc-icon" style="background:rgba(139,92,246,.1);border-color:rgba(139,92,246,.25)">📋</div>
+      <div class="hc-title">Malla de Contenido</div>
+      <div class="hc-desc">"Lleva tu contenido al siguiente nivel creando desde la claridad que nadie tiene"</div>
+      <div class="hc-preview">
+        <div class="hcp-row"><div class="hcp-dot" style="background:#a78bfa"></div><div class="hcp-txt">Tabla de dolores del cliente ideal</div></div>
+        <div class="hcp-row"><div class="hcp-dot" style="background:#a78bfa"></div><div class="hcp-txt">Subdolores → ideas de contenido</div></div>
+        <div class="hcp-row"><div class="hcp-dot" style="background:#a78bfa"></div><div class="hcp-txt">Reels · Historias · YouTube · Lead Magnets</div></div>
+      </div>
     </div>`;
   showScreen('s-home');
 }
@@ -829,6 +890,11 @@ async function adminViewClient(clientId,name,program){
         <div class="hcp-row"><div class="hcp-dot"></div><div class="hcp-txt">Dashboard operaciones</div></div>
         <div class="hcp-row"><div class="hcp-dot"></div><div class="hcp-txt">Leads · Agendas · Ingresos</div></div>
       </div>
+    </div>
+    <div class="home-card" onclick="openMalla('${clientId}')" style="border-color:rgba(139,92,246,.3)">
+      <div class="hc-icon" style="background:rgba(139,92,246,.1);border-color:rgba(139,92,246,.25)">📋</div>
+      <div class="hc-title">Malla de Contenido</div>
+      <div class="hc-desc">Ver la malla de contenido del cliente.</div>
     </div>`;
 }
 
@@ -1606,6 +1672,197 @@ function toggleExpand(id,btn){
   const collapsed=el.classList.contains('ic-collapsed');
   el.classList.toggle('ic-collapsed',!collapsed);
   btn.textContent=collapsed?'Ver menos ▲':'Ver más ▼';
+}
+
+
+// ===== MALLA DE CONTENIDO =====
+let mallaClientId = null;
+let mallaData = {};
+
+const DOLORES_COLS = [
+  {id:'mental', label:'Dolor Mental', color:'#7c3aed'},
+  {id:'tecnico1', label:'Dolor Técnico 1', color:'#1d4ed8'},
+  {id:'tecnico2', label:'Dolor Técnico 2', color:'#1d4ed8'},
+  {id:'dolor1', label:'Dolor 1', color:'#b45309'},
+  {id:'dolor2', label:'Dolor 2', color:'#b45309'},
+  {id:'deseo', label:'Deseo', color:'#065f46'},
+];
+const DOLOR_ROWS = ['cual','solucion_comun','nuestra_solucion','por_que_mejor','nombre_marketinero'];
+const DOLOR_ROW_LABELS = ['¿Cuál es?','Solución Común','Nuestra Solución','¿Por qué la nuestra es mejor?','Nombre Marketinero'];
+
+const EST_OPTS = `<option>Respondiendo a comentario polémico</option><option>La regla de 3</option><option>Gancho controversial</option><option>La paradoja personal</option><option>El espejo</option><option>Video 100% viral</option><option>El roba audiencia</option><option>Vacío de información</option><option>How to template</option><option>El momento WTF</option><option>El desafío contracorriente</option><option>El efecto boomerang</option><option>Viaje del héroe</option><option>Caída doble</option><option>El efecto mariposa</option><option>La teoría del loco</option><option>Pitch de venta perfecto</option><option>Construcción de autoridad para venta</option><option>Testimonio corto + venta directa</option>`;
+const FMT_OPTS = `<option>Hablando a cámara</option><option>POV (Point of View)</option><option>Entrevista</option><option>Vlog</option><option>Selfie (modo celular)</option><option>B-roll</option><option>Comparación A/B</option><option>Reaccionando</option><option>Respuesta a comentario</option><option>Pantalla dividida</option><option>Ranking (Top 3, Top 5...)</option>`;
+const HIST_OPTS = `<option>POV / Reflexión</option><option>Caja de Preguntas</option><option>Todos hacen esto</option><option>Lo que decían</option><option>Lo que dejo fuera es tan importante</option><option>Cómo piensa tu mente</option><option>Mini-Reel</option><option>Directo + Final</option><option>Mi punto de quiebre</option><option>Fórmula AIDA</option><option>Problema-Solución</option><option>Caso de éxito</option><option>3 pasos</option><option>P.A.S</option><option>P.S.A</option><option>Pastor</option><option>Doble CTA</option><option>Casos de éxito + entregable</option><option>Pregunta trampa</option><option>Explicar qué haces</option><option>Casos de éxitos masivos</option>`;
+
+async function openMalla(clientId){
+  mallaClientId = clientId || CU.id;
+  await loadMallaData();
+  renderMallaTabla();
+  showScreen('s-malla');
+  showMallaSec('tabla', document.querySelector('#s-malla .ksi-item'));
+}
+
+async function loadMallaData(){
+  const {data} = await sb.from('malla_contenido').select('*').eq('user_id', mallaClientId).maybeSingle();
+  mallaData = data?.data ? JSON.parse(data.data) : {};
+}
+
+async function saveMalla(){
+  // Read all current values
+  DOLORES_COLS.forEach(col => {
+    if(!mallaData[col.id]) mallaData[col.id] = {};
+    DOLOR_ROWS.forEach(row => {
+      const el = document.getElementById(`md-${col.id}-${row}`);
+      if(el) mallaData[col.id][row] = el.value;
+    });
+    [1,2,3].forEach(n => {
+      const sd = document.getElementById(`sd-${col.id}-${n}-text`);
+      const fmt = document.getElementById(`sd-${col.id}-${n}-fmt`);
+      const est = document.getElementById(`sd-${col.id}-${n}-est`);
+      const hist = document.getElementById(`sd-${col.id}-${n}-hist`);
+      const yt = document.getElementById(`sd-${col.id}-${n}-yt`);
+      const lm = document.getElementById(`sd-${col.id}-${n}-lm`);
+      const estado = document.getElementById(`sd-${col.id}-${n}-estado`);
+      if(!mallaData[col.id].subdolores) mallaData[col.id].subdolores = {};
+      mallaData[col.id].subdolores[n] = {
+        text: sd?.value||'', formato_reel: fmt?.value||'', estructura: est?.value||'',
+        historia: hist?.value||'', youtube: yt?.value||'', lead_magnet: lm?.value||'',
+        estado: estado?.value||'idea', banco: mallaData[col.id]?.subdolores?.[n]?.banco||false
+      };
+    });
+  });
+  const {data:ex} = await sb.from('malla_contenido').select('id').eq('user_id', mallaClientId).maybeSingle();
+  const payload = {user_id: mallaClientId, data: JSON.stringify(mallaData)};
+  if(ex) await sb.from('malla_contenido').update(payload).eq('user_id', mallaClientId);
+  else await sb.from('malla_contenido').insert(payload);
+  showToast('Malla guardada');
+  // Refresh ideas
+  if(document.getElementById('msec-ideas').classList.contains('active')) filterMallaIdeas('reels', document.querySelector('#msec-ideas .pb.active'));
+}
+
+function renderMallaTabla(){
+  // Tabla de dolores generales
+  let html = '<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;margin-bottom:8px"><thead><tr><th style="padding:8px;font-size:10px;color:var(--t3);text-align:left;width:160px">Campo</th>';
+  DOLORES_COLS.forEach(c => {
+    html += `<th style="padding:8px;font-size:10px;font-weight:700;color:white;background:${c.color};border-radius:4px;text-align:center;min-width:140px">${c.label}</th>`;
+  });
+  html += '</tr></thead><tbody>';
+  DOLOR_ROWS.forEach((row, ri) => {
+    html += `<tr><td style="padding:8px;font-size:10px;color:var(--t3);font-weight:500;border-bottom:1px solid var(--br)">${DOLOR_ROW_LABELS[ri]}</td>`;
+    DOLORES_COLS.forEach(col => {
+      const val = (mallaData[col.id]?.[row]||'').replace(/"/g,'&quot;');
+      html += `<td style="padding:4px;border-bottom:1px solid var(--br)"><textarea id="md-${col.id}-${row}" style="width:100%;background:var(--d3);border:1px solid var(--br);border-radius:5px;padding:5px;color:var(--tx);font-size:10px;font-family:var(--font);resize:vertical;min-height:48px;outline:none">${val}</textarea></td>`;
+    });
+    html += '</tr>';
+  });
+  html += '</tbody></table></div>';
+  document.getElementById('malla-tabla-container').innerHTML = html;
+
+  // Subdolores
+  let sdHtml = '';
+  DOLORES_COLS.forEach(col => {
+    sdHtml += `<div class="tw" style="margin-bottom:16px"><div class="th2"><h3 style="color:white;background:${col.color};padding:4px 10px;border-radius:5px;font-size:12px">${col.label}</h3></div><div style="padding:12px">`;
+    sdHtml += '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">';
+    [1,2,3].forEach(n => {
+      const sd = mallaData[col.id]?.subdolores?.[n] || {};
+      sdHtml += `<div style="background:var(--d3);border:1px solid var(--br);border-radius:8px;padding:12px">
+        <div style="font-size:10px;color:var(--t3);font-weight:600;margin-bottom:6px">Subdolor ${n}</div>
+        <textarea id="sd-${col.id}-${n}-text" placeholder="Describe el subdolor..." style="width:100%;background:var(--d4);border:1px solid var(--br);border-radius:5px;padding:6px;color:var(--tx);font-size:11px;font-weight:500;font-family:var(--font);resize:vertical;min-height:52px;outline:none;margin-bottom:8px">${(sd.text||'').replace(/</g,'&lt;')}</textarea>
+        <div style="font-size:9px;color:var(--t3);margin-bottom:3px;text-transform:uppercase;letter-spacing:1px">Formato de Reel</div>
+        <select id="sd-${col.id}-${n}-fmt" style="width:100%;background:var(--d4);border:1px solid var(--br);border-radius:5px;padding:5px;color:var(--tx);font-size:10px;font-family:var(--font);outline:none;margin-bottom:6px">${FMT_OPTS}</select>
+        <div style="font-size:9px;color:var(--t3);margin-bottom:3px;text-transform:uppercase;letter-spacing:1px">Estructura de Guión</div>
+        <select id="sd-${col.id}-${n}-est" style="width:100%;background:var(--d4);border:1px solid var(--br);border-radius:5px;padding:5px;color:var(--tx);font-size:10px;font-family:var(--font);outline:none;margin-bottom:6px">${EST_OPTS}</select>
+        <div style="font-size:9px;color:var(--t3);margin-bottom:3px;text-transform:uppercase;letter-spacing:1px">Secuencia de Historia</div>
+        <select id="sd-${col.id}-${n}-hist" style="width:100%;background:var(--d4);border:1px solid var(--br);border-radius:5px;padding:5px;color:var(--tx);font-size:10px;font-family:var(--font);outline:none;margin-bottom:6px">${HIST_OPTS}</select>
+        <div style="font-size:9px;color:var(--t3);margin-bottom:3px;text-transform:uppercase;letter-spacing:1px">Idea de Video YouTube</div>
+        <input id="sd-${col.id}-${n}-yt" value="${(sd.youtube||'').replace(/"/g,'&quot;')}" placeholder="¿Qué video de YouTube harías?" style="width:100%;background:var(--d4);border:1px solid var(--br);border-radius:5px;padding:5px;color:var(--tx);font-size:10px;font-family:var(--font);outline:none;margin-bottom:6px">
+        <div style="font-size:9px;color:var(--t3);margin-bottom:3px;text-transform:uppercase;letter-spacing:1px">Idea de Lead Magnet</div>
+        <input id="sd-${col.id}-${n}-lm" value="${(sd.lead_magnet||'').replace(/"/g,'&quot;')}" placeholder="¿Qué lead magnet harías?" style="width:100%;background:var(--d4);border:1px solid var(--br);border-radius:5px;padding:5px;color:var(--tx);font-size:10px;font-family:var(--font);outline:none;margin-bottom:6px">
+        <div style="font-size:9px;color:var(--t3);margin-bottom:3px;text-transform:uppercase;letter-spacing:1px">Estado</div>
+        <select id="sd-${col.id}-${n}-estado" style="width:100%;background:var(--d4);border:1px solid var(--br);border-radius:5px;padding:5px;color:var(--tx);font-size:10px;font-family:var(--font);outline:none;margin-bottom:8px">
+          <option value="idea" ${sd.estado==='idea'?'selected':''}>Idea</option>
+          <option value="grabada" ${sd.estado==='grabada'?'selected':''}>Grabada</option>
+          <option value="editada" ${sd.estado==='editada'?'selected':''}>Editada</option>
+          <option value="subida" ${sd.estado==='subida'?'selected':''}>Subida</option>
+        </select>
+        <button onclick="addMallaToBanco('${col.id}',${n})" style="width:100%;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);color:var(--gold);padding:5px;border-radius:5px;font-size:9px;font-weight:600;cursor:pointer;font-family:var(--font)">+ Agregar al Banco de Ideas</button>
+      </div>`;
+    });
+    sdHtml += '</div></div></div>';
+  });
+  document.getElementById('malla-subdolores-container').innerHTML = sdHtml;
+  // Restore select values
+  DOLORES_COLS.forEach(col => {
+    [1,2,3].forEach(n => {
+      const sd = mallaData[col.id]?.subdolores?.[n] || {};
+      const fmt = document.getElementById(`sd-${col.id}-${n}-fmt`);
+      const est = document.getElementById(`sd-${col.id}-${n}-est`);
+      const hist = document.getElementById(`sd-${col.id}-${n}-hist`);
+      if(fmt && sd.formato_reel) fmt.value = sd.formato_reel;
+      if(est && sd.estructura) est.value = sd.estructura;
+      if(hist && sd.historia) hist.value = sd.historia;
+    });
+  });
+}
+
+function showMallaSec(sec, el){
+  document.querySelectorAll('#s-malla .kpi-section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('#s-malla .ksi-item').forEach(b=>b.classList.remove('active'));
+  document.getElementById('msec-'+sec).classList.add('active');
+  if(el) el.classList.add('active');
+  if(sec==='ideas') filterMallaIdeas('reels', document.querySelector('#msec-ideas .pb'));
+}
+
+function filterMallaIdeas(type, el){
+  document.querySelectorAll('#msec-ideas .pb').forEach(b=>b.classList.remove('active'));
+  if(el) el.classList.add('active');
+  const container = document.getElementById('malla-ideas-list');
+  const ideas = [];
+  DOLORES_COLS.forEach(col => {
+    [1,2,3].forEach(n => {
+      const sd = mallaData[col.id]?.subdolores?.[n];
+      if(!sd?.text) return;
+      const est = sd.estructura || '';
+      const fmt = sd.formato_reel || '';
+      const hist = sd.historia || '';
+      const yt = sd.youtube || '';
+      const lm = sd.lead_magnet || '';
+      const estado = sd.estado || 'idea';
+      const dolor = col.label;
+      if(type==='reels' && (fmt||est)) ideas.push({dolor, subdolor:sd.text, tipo:'Reel', detalle:`${fmt} · ${est}`, estado});
+      if(type==='historias' && hist) ideas.push({dolor, subdolor:sd.text, tipo:'Historia', detalle:hist, estado});
+      if(type==='youtube' && yt) ideas.push({dolor, subdolor:sd.text, tipo:'YouTube', detalle:yt, estado});
+      if(type==='leadmagnet' && lm) ideas.push({dolor, subdolor:sd.text, tipo:'Lead Magnet', detalle:lm, estado});
+    });
+  });
+  if(!ideas.length){container.innerHTML=emptyEl('Completa la tabla primero para ver ideas aquí');return;}
+  const estadoColors = {idea:'sb2',grabada:'sy',editada:'sy',subida:'sg'};
+  container.innerHTML = ideas.map((idea,i)=>`
+    <div class="tw" style="margin-bottom:10px;padding:14px 16px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+        <div style="display:flex;gap:6px;align-items:center">
+          <span style="font-size:9px;color:var(--t3);background:var(--d3);padding:2px 7px;border-radius:20px">${idea.dolor}</span>
+          <span class="st ${estadoColors[idea.estado]||'sm'}">${idea.estado}</span>
+        </div>
+      </div>
+      <div style="font-size:13px;font-weight:600;color:var(--tx);margin-bottom:4px">${idea.subdolor}</div>
+      <div style="font-size:11px;color:var(--t2)">${idea.detalle}</div>
+    </div>`).join('');
+}
+
+async function addMallaToBanco(colId, n){
+  await saveMalla();
+  const sd = mallaData[colId]?.subdolores?.[n];
+  if(!sd?.text){showToast('Completa el subdolor primero');return;}
+  const col = DOLORES_COLS.find(c=>c.id===colId);
+  const titulo = `[${col?.label}] ${sd.text}`;
+  const gancho = sd.estructura ? `Estructura: ${sd.estructura}` : '';
+  await sb.from('ideas').insert({
+    user_id: mallaClientId, titulo, gancho,
+    tipo: 'reel', estructura: sd.estructura||'',
+    formato: sd.formato_reel||'', estado: 'idea'
+  });
+  showToast('¡Agregado al Banco de Ideas del KPI!');
 }
 
 function initUniverse(){
