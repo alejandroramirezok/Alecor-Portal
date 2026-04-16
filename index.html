@@ -279,10 +279,10 @@ table.t tr:hover td{background:var(--d2)}
 .cal-day-header{font-size:9px;color:var(--t3);text-align:center;padding:4px;text-transform:uppercase;letter-spacing:1px;font-weight:600}
 .cal-day{min-height:80px;background:var(--d3);border-radius:7px;padding:4px;border:1px solid var(--br)}
 .cal-day-num{font-size:9px;color:var(--t3);margin-bottom:3px;font-weight:500}
-.cal-chip{border-radius:4px;padding:3px 5px;font-size:9px;margin-bottom:2px;cursor:pointer;transition:opacity .2s;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;display:flex;align-items:center;gap:3px}
+.cal-chip{border-radius:4px;padding:3px 5px;font-size:9px;margin-bottom:2px;cursor:pointer;transition:opacity .2s;display:flex;align-items:flex-start;gap:3px;word-break:break-word}
 .cal-chip:hover{opacity:.8}
-.cal-chip-icon{font-size:10px;flex-shrink:0}
-.cal-chip-txt{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cal-chip-icon{font-size:10px;flex-shrink:0;margin-top:1px}
+.cal-chip-txt{line-height:1.3;word-break:break-word;white-space:normal}
 .cal-task-popup{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--sb);border:1px solid var(--br);border-radius:12px;padding:20px;z-index:500;max-width:320px;width:90%}
 .cal-task-popup h4{font-size:14px;font-weight:600;color:var(--tx);margin-bottom:8px}
 .cal-task-popup p{font-size:12px;color:var(--t2);line-height:1.6}
@@ -588,7 +588,7 @@ table.t tr:hover td{background:var(--d2)}
 
 <!-- ===== MODALS ===== -->
 <!-- LEAD -->
-<input type="hidden" id="edit-mode-id"><input type="hidden" id="edit-mode-type"><div class="ov" id="m-lead"><div class="modal"><div class="mh"><h3 id="m-lead-t">Nuevo Lead</h3><button class="mc" onclick="closeM('m-lead')">✕</button></div><div class="mb"><input type="hidden" id="lead-idx"><div class="fg"><div class="fr"><label>Nombre</label><input id="l-n"></div><div class="fr"><label>Instagram</label><input id="l-ig" placeholder="@usuario"></div></div><div class="fg"><div class="fr"><label>Fecha</label><input type="date" id="l-f"></div><div class="fr"><label>Fuente</label><select id="l-fue"><option>Instagram Orgánico</option><option>Instagram ADS</option><option>Referido</option><option>TikTok</option><option>YouTube</option><option>Otro</option></select></div></div><div class="fg"><div class="fr"><label>Estado</label><select id="l-est"><option>Nuevo</option><option>En seguimiento</option><option>Agendado</option><option>Lead Magnet</option><option>Perdido</option></select></div><div class="fr"><label>¿Agendó?</label><select id="l-ag"><option value="No">No</option><option value="Si">Sí</option></select></div></div><button class="bp" onclick="saveLead()">Guardar</button></div></div></div>
+<input type="hidden" id="edit-mode-id"><input type="hidden" id="edit-mode-type"><div class="ov" id="m-lead"><div class="modal"><div class="mh"><h3 id="m-lead-t">Nuevo Lead</h3><button class="mc" onclick="closeM('m-lead')">✕</button></div><div class="mb"><input type="hidden" id="lead-idx"><div class="fg"><div class="fr"><label>Nombre</label><input id="l-n"></div><div class="fr"><label>Instagram</label><input id="l-ig" placeholder="@usuario"></div></div><div class="fg"><div class="fr"><label>Fecha</label><input type="date" id="l-f"></div></div><div class="fg"><div class="fr"><label>Estado</label><select id="l-est" onchange="onLeadEstadoChange()"><option>Nuevo</option><option>En seguimiento</option><option>Agendado</option><option>Lead Magnet</option><option>VSL enviado</option><option>Seguimiento post-VSL</option><option>Agenda enviada</option><option>Varios lead magnets vistos</option><option>Perdido</option></select></div><div class="fr"><label>¿Agendó?</label><select id="l-ag" onchange="onLeadEstadoChange()"><option value="No">No</option><option value="Si">Sí</option></select></div></div><div class="fr"><label>Fuente</label><select id="l-fue"><option>Instagram Orgánico</option><option>Instagram ADS</option><option>Referido</option><option>TikTok</option><option>YouTube</option><option>Prospección en frío</option><option>Otro</option></select></div><button class="bp" onclick="saveLead()">Guardar</button></div></div></div>
 
 <!-- AGENDA -->
 <div class="ov" id="m-agenda"><div class="modal"><div class="mh"><h3 id="m-ag-t">Nueva Agenda</h3><button class="mc" onclick="closeM('m-agenda')">✕</button></div><div class="mb"><input type="hidden" id="ag-idx">
@@ -1105,7 +1105,24 @@ function renderContentYT(){
   renderContentList('dc-yt-list',all,'yt');
 }
 
-function editPencilBtn(type,id){return`<button onclick="openEdit('${type}','${id}')" style="background:none;border:none;color:var(--t3);cursor:pointer;padding:2px 5px;font-size:13px;transition:color .2s" title="Editar" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--t3)'">✏️</button>`;}
+function editPencilBtn(type,id){return`<button onclick="openEdit('${type}','${id}')" style="background:none;border:none;color:var(--t3);cursor:pointer;padding:2px 5px;font-size:13px;transition:color .2s" title="Editar" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--t3)'">✏️</button><button class="del-btn" onclick="deleteRow('${type}','${id}')" title="Eliminar">✕</button>`;}
+
+async function deleteRow(type,id){
+  if(!confirm('¿Eliminar este registro?'))return;
+  const tblMap={leads:'leads',agendas:'agendas',ingresos:'ingresos',gastos:'gastos',clientes:'clientes_kpi',reels:'reels',historias:'historias',yt:'yt_videos'};
+  const tbl=tblMap[type];if(!tbl)return;
+  await sb.from(tbl).delete().eq('id',id);
+  await loadKPIData();
+  if(type==='leads')renderTbl('leads','tbl-leads');
+  else if(type==='agendas')renderTbl('agendas','tbl-agendas');
+  else if(type==='ingresos')renderTbl('ingresos','tbl-ingresos');
+  else if(type==='gastos')renderTbl('gastos','tbl-gastos');
+  else if(type==='clientes')renderTbl('clientes','tbl-clientes');
+  else if(type==='reels')renderTbl('reels','tbl-reels');
+  else if(type==='historias')renderTbl('historias','tbl-hist');
+  else if(type==='yt')renderTbl('yt','tbl-yt');
+  showToast('Eliminado');
+}
 
 function renderTbl(type,elId){
   const el=document.getElementById(elId);
@@ -1232,8 +1249,25 @@ async function saveInfo(){
 async function saveCalendario(){const cid=getCurCid();if(!cid)return;const url=document.getElementById('ed-cal').value.trim();const{data:ex}=await sb.from('client_info').select('id').eq('user_id',cid).maybeSingle();if(ex)await sb.from('client_info').update({cal_url:url}).eq('user_id',cid);else await sb.from('client_info').insert({user_id:cid,cal_url:url});updateCalPrev(url);showToast('Calendario actualizado');}
 
 let edTasks=[];let edDocs=[];
-function renderTasksEd(tasks){edTasks=[...tasks];const el=document.getElementById('tasks-ed');const cats=Object.keys(CAL_COLORS);el.innerHTML=edTasks.map((t,i)=>`<div class="task-er-full"><input type="text" value="${t.text||''}" id="te-${i}" placeholder="Tarea..."><input type="date" value="${t.date||''}" id="td-${i}"><select id="tc-${i}" style="max-width:130px">${cats.map(c=>`<option value="${c}"${t.category===c?' selected':''}>${c}</option>`).join('')}</select><button class="btn-danger" onclick="removeTaskEd(${i})">✕</button></div><div style="margin-bottom:8px"><input type="text" value="${t.description||''}" id="tdesc-${i}" placeholder="Descripción (opcional)..." style="width:100%;background:var(--d3);border:1px solid var(--br);border-radius:6px;padding:5px 8px;color:var(--tx);font-size:10px;font-family:var(--font);outline:none"></div>`).join('');}
-function addTaskEd(){edTasks.push({text:'Nueva tarea',done:false,position:edTasks.length,date:'',category:'Tarea',description:''});renderTasksEd(edTasks);}
+function taskEdRow(t,i){const cats=Object.keys(CAL_COLORS);return`<div class="task-er-full" id="ter-${i}"><input type="text" value="${(t.text||'').replace(/"/g,'&quot;')}" id="te-${i}" placeholder="Tarea..."><input type="date" value="${t.date||''}" id="td-${i}"><select id="tc-${i}" style="max-width:130px">${cats.map(c=>`<option value="${c}"${t.category===c?' selected':''}>${c}</option>`).join('')}</select><button title="Duplicar" onclick="dupTaskEd(${i})" style="background:none;border:none;color:var(--t3);cursor:pointer;padding:2px 5px;font-size:13px" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--t3)'">⧉</button><button class="btn-danger" onclick="removeTaskEd(${i})">✕</button></div><div style="margin-bottom:8px"><input type="text" value="${(t.description||'').replace(/"/g,'&quot;')}" id="tdesc-${i}" placeholder="Descripción (opcional)..." style="width:100%;background:var(--d3);border:1px solid var(--br);border-radius:6px;padding:5px 8px;color:var(--tx);font-size:10px;font-family:var(--font);outline:none"></div>`;}
+function renderTasksEd(tasks){edTasks=[...tasks];const el=document.getElementById('tasks-ed');el.innerHTML=edTasks.map((t,i)=>taskEdRow(t,i)).join('');}
+function addTaskEd(){
+  // Save current values before adding
+  edTasks=edTasks.map((t,i)=>({...t,text:document.getElementById('te-'+i)?.value??t.text,date:document.getElementById('td-'+i)?.value??t.date,category:document.getElementById('tc-'+i)?.value??t.category,description:document.getElementById('tdesc-'+i)?.value??t.description}));
+  const newTask={text:'',done:false,position:edTasks.length,date:'',category:'Tarea',description:''};
+  edTasks.push(newTask);
+  const el=document.getElementById('tasks-ed');
+  el.innerHTML+=taskEdRow(newTask,edTasks.length-1);
+  const newInput=document.getElementById('te-'+(edTasks.length-1));
+  if(newInput)newInput.focus();
+}
+function dupTaskEd(i){
+  edTasks=edTasks.map((t,j)=>({...t,text:document.getElementById('te-'+j)?.value??t.text,date:document.getElementById('td-'+j)?.value??t.date,category:document.getElementById('tc-'+j)?.value??t.category,description:document.getElementById('tdesc-'+j)?.value??t.description}));
+  const dup={...edTasks[i],done:false,position:edTasks.length};
+  edTasks.push(dup);
+  const el=document.getElementById('tasks-ed');
+  el.innerHTML+=taskEdRow(dup,edTasks.length-1);
+}
 function removeTaskEd(i){edTasks.splice(i,1);renderTasksEd(edTasks);}
 async function saveTareas(){const cid=getCurCid();if(!cid)return;const updated=edTasks.map((t,i)=>({...t,text:document.getElementById('te-'+i)?.value||t.text,date:document.getElementById('td-'+i)?.value||null,category:document.getElementById('tc-'+i)?.value||'Tarea',description:document.getElementById('tdesc-'+i)?.value||''}));await sb.from('tasks').delete().eq('user_id',cid);if(updated.length)await sb.from('tasks').insert(updated.map((t,i)=>({user_id:cid,text:t.text,done:t.done||false,position:i,date:t.date,category:t.category,description:t.description})));edTasks=updated;showToast('Tareas guardadas');}
 
@@ -1291,7 +1325,18 @@ async function saveLead(){
   const o={user_id:portalClientId,nombre:document.getElementById('l-n').value,ig:document.getElementById('l-ig').value,fecha:document.getElementById('l-f').value||null,estado:document.getElementById('l-est').value,fuente:document.getElementById('l-fue').value,agendo:document.getElementById('l-ag').value};
   if(id)await sb.from('leads').update(o).eq('id',id);
   else await sb.from('leads').insert(o);
-  closeM('m-lead');await loadKPIData();renderTbl('leads','tbl-leads');showToast(id?'Lead actualizado':'Lead guardado');
+  // Auto-create agenda if estado=Agendado and agendo=Si
+  if(o.estado==='Agendado'&&o.agendo==='Si'&&!id){
+    const agExist=KPI.agendas.find(a=>a.nombre===o.nombre&&a.ig===o.ig);
+    if(!agExist){
+      await sb.from('agendas').insert({user_id:portalClientId,nombre:o.nombre,ig:o.ig,fecha:null,telefono:'',calificacion:'Alta',resultado:'Pendiente',notas:''});
+      showToast('Lead guardado + Agenda creada automáticamente');
+    }
+  } else {
+    showToast(id?'Lead actualizado':'Lead guardado');
+  }
+  closeM('m-lead');await loadKPIData();renderTbl('leads','tbl-leads');
+  document.getElementById('agenda-prefill-notice')?.remove();
 }
 async function saveAgenda(){
   const id=document.getElementById('ag-idx').value;
@@ -1385,7 +1430,7 @@ function buildCalendar(tasks){
   const hasTasks=Object.keys(tasksByDay).length>0;
   if(!hasTasks)return'<div style="font-size:11px;color:var(--t3);padding:12px;text-align:center">Asigna fechas a las tareas para ver el calendario</div>';
   function calRow(indices){
-    let html='<div style="display:grid;grid-template-columns:repeat('+indices.length+',1fr);gap:4px;margin-bottom:4px">';
+    let html='<div style="display:grid;grid-template-columns:repeat('+indices.length+',minmax(0,1fr));gap:4px;margin-bottom:4px">';
     indices.forEach(i=>{
       const d=days[i];const dt=new Date(monday);dt.setDate(monday.getDate()+i);
       const dn=dt.getDate();const isToday=dt.toDateString()===today.toDateString();
@@ -1481,6 +1526,24 @@ function toggleFolder(id){
   const open=docs.style.display==='block';
   docs.style.display=open?'none':'block';
   if(arr)arr.style.transform=open?'':'rotate(90deg)';
+}
+
+function onLeadEstadoChange(){
+  const est=document.getElementById('l-est').value;
+  const ag=document.getElementById('l-ag').value;
+  if(est==='Agendado'&&ag==='Si'){
+    // Pre-fill agenda modal with lead data
+    const nombre=document.getElementById('l-n').value;
+    const ig=document.getElementById('l-ig').value;
+    document.getElementById('agenda-prefill-notice')&&document.getElementById('agenda-prefill-notice').remove();
+    const notice=document.createElement('div');
+    notice.id='agenda-prefill-notice';
+    notice.style.cssText='font-size:10px;color:var(--ok);padding:8px;background:rgba(29,158,117,.1);border-radius:6px;margin-top:8px';
+    notice.textContent='✓ Al guardar, se creará automáticamente una agenda con los datos de este lead.';
+    document.querySelector('#m-lead .mb')?.appendChild(notice);
+  } else {
+    document.getElementById('agenda-prefill-notice')?.remove();
+  }
 }
 
 function togglePasOtro(){
