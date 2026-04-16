@@ -1277,8 +1277,6 @@ async function loadEditor(){
   if(document.getElementById('ed-link-reels'))document.getElementById('ed-link-reels').value=info?.link_reels||'';
   if(document.getElementById('ed-link-historias'))document.getElementById('ed-link-historias').value=info?.link_historias||'';
   if(document.getElementById('ed-link-yt'))document.getElementById('ed-link-yt').value=info?.link_yt||'';
-  document.getElementById('ed-cal').value=info?.cal_url||'';
-  updateCalPrev(info?.cal_url||'');
   renderTasksEd(tasks||[]);
   renderDocsEd(docs||[]);
   renderLlamadasEd(llamadasEd||[]);
