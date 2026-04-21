@@ -472,7 +472,7 @@ table.t tr:hover td{background:var(--d2)}
       </div>
       <div class="kpi-section" id="ksec-wins-m">
         <div class="kcard" style="margin-bottom:14px;background:rgba(201,168,76,.06);border-color:rgba(201,168,76,.3)"><div class="kl">Total Wins de Clientes</div><div class="kv" id="wins-total-cnt" style="color:var(--gold)">0</div><div class="ks">Registradas</div></div>
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:13px"><div style="font-size:15px;font-weight:600;color:var(--tx)">Wins Clientes</div><button class="ba" onclick="openWinModal()">+ Nueva Win</button></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:13px"><div style="font-size:15px;font-weight:600;color:var(--tx)">Wins Clientes</div><button class="ba" onclick="openMod('m-win')">+ Nueva Win</button></div>
         <div id="wins-list"></div>
       </div>
       <div class="kpi-section" id="ksec-reels-m"><div class="tw"><div class="th2"><h3>Reels</h3><button class="ba" onclick="openMod('m-reel');resetMod('reel')">+ Nuevo Reel</button></div><div class="tbl-scroll"><div id="tbl-reels"></div></div></div></div>
@@ -647,35 +647,43 @@ table.t tr:hover td{background:var(--d2)}
 <div class="ov" id="m-cliente"><div class="modal"><div class="mh"><h3 id="m-cl-t">Nuevo Cliente</h3><button class="mc" onclick="closeM('m-cliente')">✕</button></div><div class="mb"><input type="hidden" id="cl-idx"><div class="fg"><div class="fr"><label>Nombre</label><input id="cl-n"></div><div class="fr"><label>Instagram</label><input id="cl-ig"></div></div><div class="fg"><div class="fr"><label>Teléfono</label><input id="cl-tel"></div><div class="fr"><label>Fecha ingreso</label><input type="date" id="cl-ing" oninput="calcCF()"></div></div><div class="fr"><label>Programa</label><select id="cl-prog" onchange="calcCF()"><option value="">— Seleccionar —</option></select></div><div class="fg"><div class="fr"><label>Cuotas</label><select id="cl-cuotas" onchange="calcCF()"><option value="1">1 cuota</option></select></div><div class="fr"><label>¿Activo?</label><select id="cl-activo"><option value="Si">Sí</option><option value="No">No</option></select></div></div><div id="cl-fp"></div><button class="bp" onclick="saveCliente()">Guardar</button></div></div></div>
 
 <!-- INGRESO -->
-<div class="ov" id="m-ingreso"><div class="modal"><div class="mh"><h3 id="m-ing-t">Nuevo Ingreso</h3><button class="mc" onclick="closeM('m-ingreso')">✕</button></div><div class="mb"><input type="hidden" id="ing-idx"><div class="ttog"><div class="tbtn active" id="t-n-btn" onclick="setTipo('nuevo')">Cliente Nuevo<br><span style="font-size:8px;font-weight:400">Facturación + Cash</span></div><div class="tbtn" id="t-c-btn" onclick="setTipo('cuota')">Cuota / Abono<br><span style="font-size:8px;font-weight:400">Solo Cash Collected</span></div></div><div class="ibox" id="ing-info"><b>Cliente Nuevo:</b> Registra la venta completa. Facturación = precio del programa. Cash = lo que entra hoy.</div><div class="fg"><div class="fr"><label>Nombre cliente</label><input id="in-n"></div><div class="fr"><label>Programa</label><select id="in-prog" onchange="onProgIngresoChange()"><option value="">— Seleccionar —</option></select></div></div>
-<div id="in-fac-row" class="fr"><label>Facturación (precio total del programa)</label><div style="padding:8px 10px;background:var(--d3);border-radius:6px;font-size:13px;font-weight:700;color:var(--gold)" id="in-fac-display">$0</div></div>
-<div class="fg"><div class="fr"><label>Fecha ingreso</label><input type="date" id="in-f" oninput="onIngFechaChange()"></div><div class="fr"><label>Cash Collected ($)</label><input type="number" id="in-m" placeholder="Lo que entra hoy" oninput="calcCom()"></div></div>
-<div id="in-fin-row" class="fr" style="display:none"><label>Fecha fin del programa (auto)</label><div style="padding:8px 10px;background:var(--d3);border-radius:6px;font-size:11px;color:var(--ok)" id="in-fin-display">—</div></div>
-<div class="fg"><div class="fr" id="in-cr"><label>Número de cuota</label><select id="in-cuotas"><option value="1">Cuota 1 (única)</option></select></div><div class="fr"><label>Pasarela</label><select id="in-pas" onchange="calcCom()"><option value="">— Seleccionar —</option></select></div></div>
-<div class="fr" id="in-cnr" style="display:none"><label>Número de cuota</label><input type="number" id="in-cn" value="2" min="2"></div>
+<div class="ov" id="m-ingreso"><div class="modal"><div class="mh"><h3 id="m-ing-t">Nuevo Ingreso</h3><button class="mc" onclick="closeM('m-ingreso')">✕</button></div><div class="mb"><input type="hidden" id="ing-idx">
+<div class="ttog"><div class="tbtn active" id="t-n-btn" onclick="setTipo('nuevo')">Cliente Nuevo<br><span style="font-size:8px;font-weight:400">Facturación + Cash</span></div><div class="tbtn" id="t-c-btn" onclick="setTipo('cuota')">Cuota / Abono<br><span style="font-size:8px;font-weight:400">Solo Cash Collected</span></div></div>
+<div class="ibox" id="ing-info"><b>Cliente Nuevo:</b> Facturación = precio total del programa. Cash = lo que entra hoy.</div>
+
+<!-- CLIENTE NUEVO -->
+<div id="ing-nuevo-fields">
+  <div class="fg"><div class="fr"><label>Nombre cliente</label><input id="in-n" placeholder="Nombre completo"></div><div class="fr"><label>Programa</label><select id="in-prog" onchange="onProgIngresoChange()"><option value="">— Seleccionar —</option></select></div></div>
+  <div class="fr" id="in-fac-row"><label>Facturación (precio total del programa)</label><div style="padding:8px 10px;background:var(--d3);border-radius:6px;font-size:14px;font-weight:700;color:var(--gold)" id="in-fac-display">$0</div></div>
+  <div class="fg"><div class="fr"><label>Fecha ingreso</label><input type="date" id="in-f" oninput="onIngFechaChange()"></div><div class="fr"><label>Cash Collected ($)</label><input type="number" id="in-m" placeholder="Lo que entra hoy" oninput="calcCom()"></div></div>
+  <div class="fr" id="in-fin-row" style="display:none"><label>Fecha fin del programa (auto)</label><div style="padding:8px 10px;background:var(--d3);border-radius:6px;font-size:11px;color:var(--ok)" id="in-fin-display">—</div></div>
+  <div class="fg"><div class="fr"><label>¿Cuántas cuotas acordaste?</label><select id="in-cuotas" onchange="onCuotasChange()"><option value="1">1 cuota (pago único)</option></select></div><div class="fr"><label>Pasarela</label><select id="in-pas" onchange="calcCom()"><option value="">— Seleccionar —</option></select></div></div>
+  <div id="in-fechas-cuotas" style="display:none;margin-bottom:10px"></div>
+</div>
+
+<!-- CUOTA / ABONO -->
+<div id="ing-cuota-fields" style="display:none">
+  <div class="fr"><label>Cliente (selecciona de producto)</label><select id="in-cliente-sel" onchange="onClienteSelChange()"><option value="">— Seleccionar cliente —</option></select></div>
+  <div id="in-cliente-info" style="display:none;margin-bottom:10px;padding:8px 10px;background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.2);border-radius:7px;font-size:10px;color:var(--t2)"></div>
+  <div class="fg"><div class="fr"><label>Fecha del abono</label><input type="date" id="in-f-cuota"></div><div class="fr"><label>Cash Collected ($)</label><input type="number" id="in-m-cuota" placeholder="Monto recibido" oninput="calcComCuota()"></div></div>
+  <div class="fr"><label>Pasarela</label><select id="in-pas-cuota" onchange="calcComCuota()"><option value="">— Seleccionar —</option></select></div>
+</div>
+
 <div id="in-com" style="display:none"><label style="font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:1px;font-weight:500;display:block;margin-bottom:4px">Desglose Cash</label><div style="padding:7px 10px;background:var(--d3);border-radius:6px;font-size:11px;color:var(--wn)" id="in-com-t">—</div></div>
-<button class="bp" onclick="saveIngreso()">Guardar</button></div></div></div>
+<button class="bp" onclick="saveIngreso()" style="margin-top:8px">Guardar</button>
+</div></div></div>
 
 <!-- GASTO -->
 <div class="ov" id="m-gasto"><div class="modal"><div class="mh"><h3 id="m-gas-t">Nuevo Gasto</h3><button class="mc" onclick="closeM('m-gasto')">✕</button></div><div class="mb"><input type="hidden" id="gas-idx"><div class="fg"><div class="fr"><label>Detalle</label><input id="g-d"></div><div class="fr"><label>Fecha</label><input type="date" id="g-f"></div></div><div class="fg"><div class="fr"><label>Monto ($)</label><input type="number" id="g-m"></div><div class="fr"><label>Categoría</label><select id="g-cat"><option>Herramientas</option><option>Publicidad</option><option>Educación</option><option>Equipo</option><option>Servicios</option><option>Otro</option></select></div></div><div class="fr"><label>Descripción</label><input id="g-desc"></div><button class="bp" onclick="saveGasto()">Guardar</button></div></div></div>
 
 <!-- WIN -->
-<div class="ov" id="m-win"><div class="modal"><div class="mh"><h3 id="m-win-t">Nueva Win</h3><button class="mc" onclick="closeM('m-win')">✕</button></div><div class="mb"><input type="hidden" id="win-idx"><div class="fg"><div class="fr"><label>Cliente</label><input id="w-cl"></div><div class="fr"><label>Fecha</label><input type="date" id="w-f"></div></div><div class="fr"><label>Win / Resultado</label><textarea id="w-t" rows="3" style="resize:none"></textarea></div><div class="fr"><label>Grandeza</label><select id="w-g"><option>Grande</option><option>Media</option><option>Pequeña</option></select></div>
-<div style="display:flex;align-items:center;gap:10px;margin-top:8px;padding:10px;background:var(--d3);border-radius:8px;border:1px solid var(--br)">
-  <input type="checkbox" id="w-u-cb" style="width:16px;height:16px;accent-color:var(--gold);cursor:pointer;flex-shrink:0">
-  <label for="w-u-cb" style="font-size:11px;color:var(--t2);cursor:pointer">Win ya utilizada en contenido</label>
-</div>
-<button class="bp" onclick="saveWin()" style="margin-top:12px">Guardar</button></div></div></div>
+<div class="ov" id="m-win"><div class="modal"><div class="mh"><h3>Nueva Win</h3><button class="mc" onclick="closeM('m-win')">✕</button></div><div class="mb"><div class="fg"><div class="fr"><label>Cliente</label><input id="w-cl"></div><div class="fr"><label>Fecha</label><input type="date" id="w-f"></div></div><div class="fr"><label>Win / Resultado</label><textarea id="w-t" rows="3" style="resize:none"></textarea></div><div class="fg"><div class="fr"><label>Grandeza</label><select id="w-g"><option>Grande</option><option>Media</option><option>Pequeña</option></select></div><div class="fr"><label>¿Usada en historias?</label><select id="w-u"><option value="No">No</option><option value="Si">Sí</option></select></div></div><button class="bp" onclick="saveWin()">Guardar</button></div></div></div>
 
 <!-- REEL -->
 <div class="ov" id="m-reel"><div class="modal"><div class="mh"><h3 id="m-reel-t">Nuevo Reel</h3><button class="mc" onclick="closeM('m-reel')">✕</button></div><div class="mb"><input type="hidden" id="reel-idx"><div class="fr"><label>Link del video (opcional)</label><input id="r-link" placeholder="https://..." oninput="detectYTThumb(this.value)"></div><div id="r-thumb-preview" style="margin-bottom:8px"></div><div class="fg"><div class="fr"><label>Nombre</label><input id="r-n"></div><div class="fr"><label>Estructura</label><select id="r-est"><option>Respondiendo a comentario polémico</option><option>La regla de 3</option><option>Gancho controversial</option><option>La paradoja personal</option><option>El espejo</option><option>Video 100% viral</option><option>El roba audiencia</option><option>Vacío de información</option><option>How to template</option><option>El momento WTF</option><option>El desafío contracorriente</option><option>El efecto boomerang</option><option>Viaje del héroe</option><option>Caída doble</option><option>El efecto mariposa</option><option>La teoría del loco</option><option>Pitch de venta perfecto</option><option>Construcción de autoridad para venta</option><option>Testimonio corto + venta directa</option></select></div></div><div class="fr"><label>Gancho (frase de apertura)</label><input id="r-gancho" placeholder="Ej: El 90% de los emprendedores cometen este error..."></div><div class="fg"><div class="fr"><label>Formato visual</label><select id="r-fmt"><option>Hablando a cámara</option><option>POV (Point of View)</option><option>Entrevista</option><option>Vlog</option><option>Selfie (modo celular)</option><option>B-roll</option><option>Comparación A/B</option><option>Reaccionando</option><option>Respuesta a comentario</option><option>Pantalla dividida</option><option>Ranking (Top 3, Top 5...)</option></select></div><div class="fr"><label>Fecha</label><input type="date" id="r-f"></div></div><div class="fg"><div class="fr"><label>Views</label><input type="number" id="r-v" value="0"></div><div class="fr"><label>Comentarios</label><input type="number" id="r-c" value="0"></div></div><div class="fg"><div class="fr"><label>Seguidores Nuevos</label><input type="number" id="r-s" value="0"></div><div class="fr"><label>Likes</label><input type="number" id="r-l" value="0"></div></div><button class="bp" onclick="saveReel()">Guardar</button></div></div></div>
 
 <!-- HISTORIA -->
-<div class="ov" id="m-hist"><div class="modal"><div class="mh"><h3 id="m-hist-t">Nueva Secuencia</h3><button class="mc" onclick="closeM('m-hist')">✕</button></div><div class="mb"><input type="hidden" id="hist-idx"><div class="fg"><div class="fr"><label>Idea de secuencia</label><input id="h-idea"></div><div class="fr"><label>Formato</label><select id="h-fmt"><option>POV / Reflexión</option><option>Caja de Preguntas</option><option>Todos hacen esto</option><option>Lo que decían</option><option>Lo que dejo fuera es tan importante</option><option>Cómo piensa tu mente</option><option>Mini-Reel</option><option>Directo + Final</option><option>Mi punto de quiebre</option><option>Fórmula AIDA</option><option>Problema-Solución</option><option>Caso de éxito</option><option>3 pasos</option><option>P.A.S</option><option>P.S.A</option><option>Pastor</option><option>Doble CTA</option><option>Casos de éxito + entregable</option><option>Pregunta trampa</option><option>Explicar qué haces</option><option>Casos de éxitos masivos</option></select></div></div>
-<div class="fr"><label>Gancho (primera historia)</label><input id="h-gancho" placeholder="Ej: ¿Sabías que el 90% de los terapeutas..."></div>
-<div class="fr"><label>CTA utilizado</label><input id="h-cta-txt" placeholder="Ej: Escríbeme MÉTODO y te mando el PDF gratis"></div>
-<div class="fr"><label>Lead Magnet utilizado</label><input id="h-lm" placeholder="Ej: Checklist de alta demanda, PDF de 3 errores..."></div>
-<div class="fg"><div class="fr"><label>Fecha</label><input type="date" id="h-f"></div><div class="fr"><label>Views última historia</label><input type="number" id="h-v" value="0" oninput="calcTasa()"></div></div><div class="fg"><div class="fr"><label>Respuestas al CTA</label><input type="number" id="h-cta" value="0" oninput="calcTasa()"></div><div class="fr"><label>Tasa interacción (auto)</label><input id="h-tasa" readonly style="background:var(--d4);cursor:default"></div></div><button class="bp" onclick="saveHist()">Guardar</button></div></div></div>
+<div class="ov" id="m-hist"><div class="modal"><div class="mh"><h3 id="m-hist-t">Nueva Secuencia</h3><button class="mc" onclick="closeM('m-hist')">✕</button></div><div class="mb"><input type="hidden" id="hist-idx"><div class="fg"><div class="fr"><label>Idea de secuencia</label><input id="h-idea"></div><div class="fr"><label>Formato</label><select id="h-fmt"><option>POV / Reflexión</option><option>Caja de Preguntas</option><option>Todos hacen esto</option><option>Lo que decían</option><option>Lo que dejo fuera es tan importante</option><option>Cómo piensa tu mente</option><option>Mini-Reel</option><option>Directo + Final</option><option>Mi punto de quiebre</option><option>Fórmula AIDA</option><option>Problema-Solución</option><option>Caso de éxito</option><option>3 pasos</option><option>P.A.S</option><option>P.S.A</option><option>Pastor</option><option>Doble CTA</option><option>Casos de éxito + entregable</option><option>Pregunta trampa</option><option>Explicar qué haces</option><option>Casos de éxitos masivos</option></select></div></div><div class="fg"><div class="fr"><label>Fecha</label><input type="date" id="h-f"></div><div class="fr"><label>Views última historia</label><input type="number" id="h-v" value="0" oninput="calcTasa()"></div></div><div class="fg"><div class="fr"><label>Respuestas al CTA</label><input type="number" id="h-cta" value="0" oninput="calcTasa()"></div><div class="fr"><label>Tasa interacción (auto)</label><input id="h-tasa" readonly style="background:var(--d4);cursor:default"></div></div><button class="bp" onclick="saveHist()">Guardar</button></div></div></div>
 
 <!-- YOUTUBE -->
 <div class="ov" id="m-yt"><div class="modal"><div class="mh"><h3 id="m-yt-t">Nuevo Video YouTube</h3><button class="mc" onclick="closeM('m-yt')">✕</button></div><div class="mb"><input type="hidden" id="yt-idx"><div class="fg"><div class="fr"><label>Título</label><input id="y-t"></div><div class="fr"><label>Fecha</label><input type="date" id="y-f"></div></div><div class="fg"><div class="fr"><label>Duración (min)</label><input type="number" id="y-d" step="0.5"></div><div class="fr"><label>Views</label><input type="number" id="y-v" value="0"></div></div><div class="fg"><div class="fr"><label>% CTR</label><input type="number" id="y-ctr" step="0.1"></div><div class="fr"><label>% Retención</label><input type="number" id="y-ret" step="0.1"></div></div><button class="bp" onclick="saveYT()">Guardar</button></div></div></div>
@@ -691,7 +699,7 @@ table.t tr:hover td{background:var(--d2)}
   <button class="bp" onclick="saveIdea()">Guardar Idea</button>
 </div></div></div>
 
-<div class="ov" id="m-prog"><div class="modal"><div class="mh"><h3 id="m-prog-t">Nuevo Programa</h3><button class="mc" onclick="closeM('m-prog')">✕</button></div><div class="mb"><input type="hidden" id="prog-idx"><div class="fg"><div class="fr"><label>Nombre</label><input id="p-nom"></div><div class="fr"><label>Precio Total ($)</label><input type="number" id="p-precio"></div></div><div class="fg"><div class="fr"><label>Duración (días)</label><input type="number" id="p-dias"></div><div class="fr"><label>Cuotas máximas aceptadas</label><input type="number" id="p-cuotas" value="1" min="1"></div></div><div class="fr"><label>Descripción</label><textarea id="p-desc" rows="2" style="resize:none"></textarea></div><button class="bp" onclick="saveProg()">Guardar</button></div></div></div>
+<div class="ov" id="m-prog"><div class="modal"><div class="mh"><h3 id="m-prog-t">Nuevo Programa</h3><button class="mc" onclick="closeM('m-prog')">✕</button></div><div class="mb"><input type="hidden" id="prog-idx"><div class="fg"><div class="fr"><label>Nombre</label><input id="p-nom"></div><div class="fr"><label>Precio ($)</label><input type="number" id="p-precio"></div></div><div class="fg"><div class="fr"><label>Duración (días)</label><input type="number" id="p-dias"></div><div class="fr"><label>Cuotas</label><input type="number" id="p-cuotas" value="1"></div></div><div class="fr"><label>Descripción</label><textarea id="p-desc" rows="2" style="resize:none"></textarea></div><button class="bp" onclick="saveProg()">Guardar</button></div></div></div>
 
 <!-- PASARELA -->
 <div class="ov" id="m-pas"><div class="modal"><div class="mh"><h3 id="m-pas-t">Nueva Pasarela</h3><button class="mc" onclick="closeM('m-pas')">✕</button></div><div class="mb"><input type="hidden" id="pas-idx"><div class="fg"><div class="fr"><label>Nombre</label><select id="pas-n" onchange="togglePasOtro()"><option>Stripe</option><option>PayPal</option><option>Hotmart</option><option>Transferencia</option><option>MercadoPago</option><option>Otro</option></select></div><div class="fr"><label>% Comisión</label><input type="number" id="pas-com" step="0.1"></div></div><div class="fr" id="pas-otro-row" style="display:none"><label>Especificar nombre</label><input id="pas-otro" placeholder="Nombre de la pasarela..."></div><div class="fr"><label>Notas</label><input id="pas-nota"></div><button class="bp" onclick="savePas()">Guardar</button></div></div></div>
@@ -715,7 +723,6 @@ function fM(n){return'$'+Number(n||0).toLocaleString('es-ES');}
 function emptyEl(m){return`<div class="empty-s"><div class="ei">◈</div><p>${m}</p></div>`;}
 function addDays(d,n){if(!d)return null;const dt=new Date(d+'T12:00:00');dt.setDate(dt.getDate()+n);return dt.toISOString().slice(0,10);}
 function isWithin90(d){if(!d)return false;return(now-new Date(d+'T12:00:00'))/(864e5)<=90;}
-function isWithin30(d){if(!d)return false;return(now-new Date(d+'T12:00:00'))/(864e5)<=30;}
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,5);}
 function getSeg(){return parseInt(document.getElementById('seg-n').value)||0;}
 let segTimer=null;
@@ -1085,15 +1092,18 @@ function setPeriod(p){curPeriod=p;['month','year','life'].forEach(x=>document.ge
 
 function renderOps(){
   const ing=filterP(KPI.ingresos,'fecha');
-  // Facturación = suma de campo facturacion (solo cliente nuevo, precio total programa)
-  const fac=ing.filter(i=>i.tipo==='nuevo').reduce((s,i)=>s+Number(i.facturacion||i.monto||0),0);
-  // Cash collected = suma de monto (ya es neto post-pasarela)
+  // Facturación = precio total del programa (campo facturacion, solo cliente nuevo)
+  const fac=ing.filter(i=>i.tipo==='nuevo').reduce((s,i)=>s+Number(i.facturacion||0),0);
+  // Cash collected = suma de monto_neto (post-pasarela) de todos los ingresos del período
   const cash=ing.reduce((s,i)=>s+Number(i.monto||0),0);
-  // Por cobrar = facturación de clientes nuevos - todo el cash cobrado de esos clientes
-  const porCobrar=KPI.ingresos.filter(i=>i.tipo==='nuevo').reduce((s,i)=>{
-    const precioTotal=Number(i.facturacion||i.monto||0);
-    const cobrado=KPI.ingresos.filter(x=>x.nombre===i.nombre&&x.programa===i.programa).reduce((a,x)=>a+Number(x.monto||0),0);
-    return s+Math.max(0,precioTotal-cobrado);
+  // Por cobrar: para cada cliente nuevo, precio_programa - total_monto_bruto_cobrado (no descontar comisión)
+  const clientesConDeuda=KPI.clientes.filter(c=>c.activo==='Si');
+  const porCobrar=clientesConDeuda.reduce((total,c)=>{
+    const prog=KPI.programas.find(p=>p.id===c.prog_id);
+    const precio=Number(prog?.precio||0);
+    if(!precio)return total;
+    const cobradoBruto=KPI.ingresos.filter(i=>i.cliente_id===c.id||i.nombre===c.nombre).reduce((s,i)=>s+Number(i.monto_bruto||i.monto||0),0);
+    return total+Math.max(0,precio-cobradoBruto);
   },0);
   const gas=filterP(KPI.gastos,'fecha').reduce((s,g)=>s+Number(g.monto||0),0);
   const bal=cash-gas;const marg=cash>0?Math.round(bal/cash*100):0;
@@ -1112,7 +1122,7 @@ function renderOps(){
   const nsp=ag.length?Math.round(ns/ag.length*100):0;
   const aov=cerr>0?Math.round(fac/cerr):0;
   document.getElementById('ops-alerts').innerHTML='';
-  const lifeTotal=KPI.ingresos.filter(i=>i.tipo==='nuevo').reduce((s,i)=>s+Number(i.facturacion||i.monto||0),0);
+  const lifeTotal=KPI.ingresos.filter(i=>i.tipo==='nuevo').reduce((s,i)=>s+Number(i.facturacion||0),0);
   const LEVELS=[5000,10000,20000,30000,50000,100000];
   const curLevel=LEVELS.findIndex(l=>lifeTotal<l);
   const prevL=curLevel>0?LEVELS[curLevel-1]:0;
@@ -1130,11 +1140,17 @@ function renderOps(){
   </div>`;
   const wEl=document.getElementById('wins-total-cnt');if(wEl)wEl.textContent=KPI.wins.length;
   document.getElementById('ops-ventas').innerHTML=`<div class="ds"><div class="dst"><span>💰</span>Dashboard Ventas</div>
-  <div class="kg"><div class="kcard${fac===0?' r':''}"><div class="kl">Facturación</div><div class="kv">${fM(fac)}</div><div class="ks">Período</div></div><div class="kcard"><div class="kl">Cash Collected</div><div class="kv">${fM(cash)}</div><div class="ks">Real cobrado (neto)</div></div><div class="kcard y"><div class="kl">Por Cobrar</div><div class="kv">${fM(porCobrar)}</div><div class="ks">Cuotas pendientes</div></div><div class="kcard"><div class="kl">Gastos</div><div class="kv">${fM(gas)}</div><div class="ks">Período</div></div><div class="kcard${marg<20&&cash>0?' y':marg>=40?' g':''}"><div class="kl">Margen</div><div class="kv">${marg}%</div><div class="ks">Meta: +40%</div></div><div class="kcard"><div class="kl">Cuotas Recibidas</div><div class="kv">${cQ}</div><div class="ks">Abonos</div></div></div></div>
-`;
+  <div class="kg">
+    <div class="kcard${fac===0?' r':''}"><div class="kl">Facturación</div><div class="kv">${fM(fac)}</div><div class="ks">Precio total vendido</div></div>
+    <div class="kcard"><div class="kl">Cash Collected</div><div class="kv">${fM(cash)}</div><div class="ks">Neto recibido</div></div>
+    <div class="kcard y"><div class="kl">Por Cobrar</div><div class="kv">${fM(porCobrar)}</div><div class="ks">Cuotas pendientes</div></div>
+    <div class="kcard"><div class="kl">Gastos</div><div class="kv">${fM(gas)}</div><div class="ks">Período</div></div>
+    <div class="kcard${marg<20&&cash>0?' y':marg>=40?' g':''}"><div class="kl">Margen</div><div class="kv">${marg}%</div><div class="ks">Meta: +40%</div></div>
+    <div class="kcard"><div class="kl">Cuotas Recibidas</div><div class="kv">${cQ}</div><div class="ks">Abonos</div></div>
+  </div></div>`;
   document.getElementById('ops-leads').innerHTML=`<div class="ds"><div class="dst"><span>🧍</span>Dashboard Leads</div><div class="kg"><div class="kcard${leads.length<5?' y':''}"><div class="kl">Leads Totales</div><div class="kv">${leads.length}</div><div class="ks">Período</div></div><div class="kcard"><div class="kl">Leads Agendados</div><div class="kv">${la}</div><div class="ks">Marcados</div></div><div class="kcard${pL<20&&leads.length>0?' r':pL>=40?' g':''}"><div class="kl">% Leads→Agenda</div><div class="kv">${pL}%</div><div class="ks">Meta: +40%</div></div><div class="kcard"><div class="kl">En Seguimiento</div><div class="kv">${ls}</div><div class="ks">Activos</div></div><div class="kcard b"><div class="kl">Lead Magnet</div><div class="kv">${llm}</div><div class="ks">Nurturing</div></div><div class="kcard${lp>5?' y':''}"><div class="kl">Lead Perdido</div><div class="kv">${lp}</div><div class="ks">No convirtieron</div></div></div></div>`;
   document.getElementById('ops-agendas').innerHTML=`<div class="ds"><div class="dst"><span>☎️</span>Dashboard Agendas</div><div class="kg"><div class="kcard"><div class="kl">Llamadas Totales</div><div class="kv">${ag.length}</div><div class="ks">Período</div></div><div class="kcard g"><div class="kl">Llamadas Cerradas</div><div class="kv">${cerr}</div><div class="ks">Ventas</div></div><div class="kcard${cr<30&&ag.length>0?' r':cr>=50?' g':''}"><div class="kl">Close Rate</div><div class="kv">${cr}%</div><div class="ks">Meta: +50%</div></div><div class="kcard${nsp>20?' y':''}"><div class="kl">% No Show</div><div class="kv">${nsp}%</div><div class="ks">${ns} llamadas</div></div><div class="kcard"><div class="kl">Calificadas</div><div class="kv">${calA}</div><div class="ks">Alta calificación</div></div><div class="kcard"><div class="kl">AOV Promedio</div><div class="kv">${fM(aov)}</div><div class="ks">Por venta</div></div></div></div>`;
-  const mD=MESES.map((_,i)=>KPI.ingresos.filter(v=>{if(!v.fecha||v.tipo!=='nuevo')return false;const d=new Date(v.fecha+'T12:00:00');return d.getMonth()===i&&d.getFullYear()===CY}).reduce((s,v)=>s+Number(v.facturacion||v.monto||0),0));
+  const mD=MESES.map((_,i)=>KPI.ingresos.filter(v=>{if(!v.fecha||v.tipo!=='nuevo')return false;const d=new Date(v.fecha+'T12:00:00');return d.getMonth()===i&&d.getFullYear()===CY}).reduce((s,v)=>s+Number(v.facturacion||0),0));
   if(chartOps)chartOps.destroy();
   chartOps=new Chart(document.getElementById('chart-ops'),{type:'bar',data:{labels:MESES.map(m=>m.slice(0,3)),datasets:[{label:'Facturación',data:mD,backgroundColor:'rgba(201,168,76,0.6)',borderColor:'#C9A84C',borderWidth:1,borderRadius:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#666',font:{family:'Poppins',size:9}},grid:{color:'rgba(128,128,128,0.05)'}},y:{ticks:{color:'#666',font:{family:'Poppins',size:9},callback:v=>'$'+v.toLocaleString()},grid:{color:'rgba(128,128,128,0.05)'}}}}});
 }
@@ -1156,33 +1172,30 @@ function onSegChange(){const at=document.querySelector('.ctab-panel.active');if(
 function getYTThumb(link){if(!link)return null;const m=link.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|shorts\/))([a-zA-Z0-9_-]{11})/);return m?`https://img.youtube.com/vi/${m[1]}/mqdefault.jpg`:null;}
 function detectYTThumb(link){const thumb=getYTThumb(link);const prev=document.getElementById('r-thumb-preview');if(!prev)return;prev.innerHTML=thumb?`<img src="${thumb}" style="width:80px;height:56px;border-radius:6px;object-fit:cover;margin-bottom:4px" onerror="this.style.display='none'">`:''}
 function renderContentReels(){
-  const seg=getSeg();const all=KPI.reels;const r90=all.filter(r=>isWithin90(r.fecha));const r30=all.filter(r=>isWithin30(r.fecha));
+  const seg=getSeg();const all=KPI.reels;const r90=all.filter(r=>isWithin90(r.fecha));
   const avgV=all.length?Math.round(all.reduce((s,r)=>s+Number(r.views||0),0)/all.length):0;
   const avgC=all.length?Math.round(all.reduce((s,r)=>s+Number(r.comentarios||0),0)/all.length):0;
   const avgS=all.length?Math.round(all.reduce((s,r)=>s+Number(r.seguidores_nuevos||0),0)/all.length):0;
   const rr=seg>0&&avgV>0?Math.round(avgV/seg*100):0;
   document.getElementById('dc-reels-kpis').innerHTML=`<div class="dst"><span>🎬</span>Reels — ${all.length} total · ${r90.length} últimos 90 días</div><div class="kg"><div class="kcard"><div class="kl">Promedio Views</div><div class="kv">${avgV.toLocaleString()}</div><div class="ks">${seg>0?rendRV(avgV,seg):'—'}</div></div><div class="kcard"><div class="kl">Prom. Comentarios</div><div class="kv">${avgC}</div><div class="ks">${avgC&&avgV?rendRC(avgC,avgV):'—'}</div></div><div class="kcard"><div class="kl">Prom. Seg. Nuevos</div><div class="kv">${avgS}</div><div class="ks">${avgS&&avgV?rendRS(avgS,avgV):'—'}</div></div>${seg>0?`<div class="kcard${rr<12?' r':rr>=35?' g':'y'}"><div class="kl">Reach Rate</div><div class="kv">${rr}%</div><div class="ks">Views/Seguidores</div></div>`:''}</div>`;
-  const top30=sortD(r30.length?r30:all,'comentarios').slice(0,3);
-  document.getElementById('dc-reels-top').innerHTML=top30.length?top30.map((it,i)=>`<div class="top-card" style="flex-direction:column;align-items:flex-start;gap:6px"><div style="display:flex;align-items:center;gap:11px;width:100%"><div class="tr-rank">${['🥇','🥈','🥉'][i]}</div><div class="tr-info"><div class="tr-name">${it.nombre||'—'}</div><div class="tr-meta">${fD(it.fecha)}</div></div><div class="tr-stat"><div class="tv">${Number(it.comentarios||0).toLocaleString()}</div><div class="tl">comentarios</div></div></div>${it.gancho?`<div style="font-size:10px;color:var(--t2);padding:6px 8px;background:var(--d3);border-radius:6px;width:100%">🎣 <b style="color:var(--gold)">Gancho:</b> ${it.gancho}</div>`:''}${it.estructura?`<div style="font-size:10px;color:var(--t2);padding:4px 8px;background:var(--d3);border-radius:6px;width:100%">📢 <b style="color:var(--t2)">Estructura:</b> ${it.estructura}</div>`:''}</div>`).join(''):`<div style="font-size:10px;color:var(--t3);padding:10px 0">Sin reels en los últimos 30 días</div>`;
+  document.getElementById('dc-reels-top').innerHTML=top3Cards(sortD(r90.length?r90:all,'comentarios').slice(0,3),'nombre','comentarios','comentarios','Sin reels registrados');
   renderContentList('dc-reels-list',all,'reels');
 }
 function renderContentHist(){
-  const seg=getSeg();const all=KPI.historias;const h90=all.filter(h=>isWithin90(h.fecha));const h30=all.filter(h=>isWithin30(h.fecha));
+  const seg=getSeg();const all=KPI.historias;const h90=all.filter(h=>isWithin90(h.fecha));
   const avgV=all.length?Math.round(all.reduce((s,h)=>s+Number(h.views||0),0)/all.length):0;
   const avgC=all.length?Math.round(all.reduce((s,h)=>s+Number(h.respuestas_cta||0),0)/all.length):0;
   document.getElementById('dc-hist-kpis').innerHTML=`<div class="dst"><span>📱</span>Historias — ${all.length} total · ${h90.length} últimos 90 días</div><div class="kg"><div class="kcard"><div class="kl">Promedio Views</div><div class="kv">${avgV.toLocaleString()}</div><div class="ks">${seg>0?rendHV(avgV,seg):'—'}</div></div><div class="kcard"><div class="kl">Prom. Resp. CTA</div><div class="kv">${avgC}</div><div class="ks">${seg>0?rendHC(avgC,seg):'—'}</div></div></div>`;
-  const top30h=sortD(h30.length?h30:all,'respuestas_cta').slice(0,3);
-  document.getElementById('dc-hist-top').innerHTML=top30h.length?top30h.map((it,i)=>`<div class="top-card" style="flex-direction:column;align-items:flex-start;gap:6px"><div style="display:flex;align-items:center;gap:11px;width:100%"><div class="tr-rank">${['🥇','🥈','🥉'][i]}</div><div class="tr-info"><div class="tr-name">${it.idea||'—'}</div><div class="tr-meta">${fD(it.fecha)}</div></div><div class="tr-stat"><div class="tv">${Number(it.respuestas_cta||0).toLocaleString()}</div><div class="tl">resp. CTA</div></div></div>${it.formato?`<div style="font-size:10px;color:var(--t2);padding:4px 8px;background:var(--d3);border-radius:6px;width:100%">📋 <b style="color:var(--gold)">Formato:</b> ${it.formato}</div>`:''}${it.lead_magnet?`<div style="font-size:10px;color:var(--t2);padding:4px 8px;background:rgba(29,158,117,0.1);border-radius:6px;width:100%;border:1px solid rgba(29,158,117,0.2)">🎁 <b style="color:var(--ok)">Lead Magnet:</b> ${it.lead_magnet}</div>`:''}</div>`).join(''):`<div style="font-size:10px;color:var(--t3);padding:10px 0">Sin historias en los últimos 30 días</div>`;
+  document.getElementById('dc-hist-top').innerHTML=top3Cards(sortD(h90.length?h90:all,'respuestas_cta').slice(0,3),'idea','respuestas_cta','resp. CTA','Sin historias registradas');
   renderContentList('dc-hist-list',all,'historias');
 }
 function renderContentYT(){
-  const all=KPI.yt;const y90=all.filter(y=>isWithin90(y.fecha));const y30=all.filter(y=>isWithin30(y.fecha));
+  const all=KPI.yt;const y90=all.filter(y=>isWithin90(y.fecha));
   const avgV=all.length?Math.round(all.reduce((s,y)=>s+Number(y.views||0),0)/all.length):0;
   const avgC=all.length?(all.reduce((s,y)=>s+Number(y.ctr||0),0)/all.length).toFixed(1):0;
   const avgR=all.length?(all.reduce((s,y)=>s+Number(y.retencion||0),0)/all.length).toFixed(1):0;
   document.getElementById('dc-yt-kpis').innerHTML=`<div class="dst"><span>▶️</span>YouTube — ${all.length} total · ${y90.length} últimos 90 días</div><div class="kg"><div class="kcard"><div class="kl">Promedio Views</div><div class="kv">${avgV.toLocaleString()}</div><div class="ks">Por video</div></div><div class="kcard"><div class="kl">CTR Promedio</div><div class="kv">${avgC}%</div><div class="ks">${rendYC(avgC)}</div></div><div class="kcard"><div class="kl">Retención Prom.</div><div class="kv">${avgR}%</div><div class="ks">Meta: +40%</div></div></div>`;
-  const top30y=sortD(y30.length?y30:all,'views').slice(0,3);
-  document.getElementById('dc-yt-top').innerHTML=top30y.length?top30y.map((it,i)=>`<div class="top-card" style="flex-direction:column;align-items:flex-start;gap:6px"><div style="display:flex;align-items:center;gap:11px;width:100%"><div class="tr-rank">${['🥇','🥈','🥉'][i]}</div><div class="tr-info"><div class="tr-name">${it.titulo||'—'}</div><div class="tr-meta">${fD(it.fecha)}</div></div><div class="tr-stat"><div class="tv">${Number(it.views||0).toLocaleString()}</div><div class="tl">views</div></div></div>${it.ctr?`<div style="font-size:10px;color:var(--t2);padding:4px 8px;background:var(--d3);border-radius:6px;width:100%">📊 <b style="color:var(--gold)">CTR:</b> ${it.ctr}% · <b style="color:var(--gold)">Retención:</b> ${it.retencion||0}%</div>`:''}</div>`).join(''):`<div style="font-size:10px;color:var(--t3);padding:10px 0">Sin videos en los últimos 30 días</div>`;
+  document.getElementById('dc-yt-top').innerHTML=top3Cards(sortD(y90.length?y90:all,'views').slice(0,3),'titulo','views','views','Sin videos registrados');
   renderContentList('dc-yt-list',all,'yt');
 }
 
@@ -1208,41 +1221,49 @@ async function deleteRow(type,id){
 function renderTbl(type,elId){
   const el=document.getElementById(elId);
   if(type==='leads'){renderLeadsTbl(el);return;}
-  const keyMap={agendas:{cols:['Nombre','Fecha','Cal.','Resultado','Notas',''],keys:['nombre','fecha','calificacion','resultado','notas','_edit'],fmt:{fecha:fD,calificacion:v=>`<span class="st ${v==='Alta'?'sg':v==='Media'?'sy':'sm'}">${v||'-'}</span>`,resultado:v=>`<span class="st ${v==='Cerrado'?'sg':v==='No Show'?'sr':v==='Pendiente'?'sy':'sm'}">${v||'-'}</span>`}},ingresos:{cols:['Nombre','Tipo','Programa','Fecha','Facturación','Cash Neto',''],keys:['nombre','tipo','programa','fecha','facturacion','monto','_edit'],fmt:{tipo:v=>`<span class="st ${v==='nuevo'?'sg':'sb2'}">${v==='nuevo'?'Nuevo':'Cuota'}</span>`,fecha:fD,facturacion:v=>v?`<b style="color:var(--gold)">${fM(v)}</b>`:'—',monto:v=>`<span style="color:var(--ok)">${fM(v)}</span>`}},gastos:{cols:['Detalle','Fecha','Monto','Categoría',''],keys:['detalle','fecha','monto','categoria','_edit'],fmt:{fecha:fD,monto:v=>`<span style="color:var(--er)">${fM(v)}</span>`}},reels:{cols:['Nombre','Estructura','Fecha','Views','Coms','Segs',''],keys:['nombre','estructura','fecha','views','comentarios','seguidores_nuevos','_edit'],fmt:{fecha:fD,views:v=>Number(v||0).toLocaleString()}},historias:{cols:['Idea','Formato','Fecha','Views','Resp. CTA',''],keys:['idea','formato','fecha','views','respuestas_cta','_edit'],fmt:{fecha:fD,views:v=>Number(v||0).toLocaleString()}},yt:{cols:['Título','Fecha','Views','%CTR','%Ret.',''],keys:['titulo','fecha','views','ctr','retencion','_edit'],fmt:{fecha:fD,views:v=>Number(v||0).toLocaleString(),ctr:v=>v+'%',retencion:v=>v+'%'}}};
-  // Clientes: custom render with cuotas detalle
-  if(type==='clientes'){
-    const actEl=document.getElementById('cli-activos-cnt');const inEl=document.getElementById('cli-inactivos-cnt');
-    if(actEl)actEl.textContent=KPI.clientes.filter(c=>c.activo==='Si').length;
-    if(inEl)inEl.textContent=KPI.clientes.filter(c=>c.activo!=='Si').length;
-    el.innerHTML=`<table class="t"><thead><tr><th>Nombre</th><th>Programa</th><th>Ingreso</th><th>Fin</th><th>Cuotas</th><th>Por Cobrar</th><th>Estado</th><th></th></tr></thead><tbody>${KPI.clientes.map(c=>{
-      // Calculate por cobrar for this client
-      const cobrado=KPI.ingresos.filter(i=>i.nombre===c.nombre).reduce((s,i)=>s+Number(i.monto||0),0);
-      const prog=KPI.programas.find(p=>p.id===c.prog_id);
-      const precioTotal=Number(prog?.precio||0);
-      const porCobrar=Math.max(0,precioTotal-cobrado);
-      // Parse cuotas detalle
-      let cuotasHTML='—';
-      try{
-        const cd=JSON.parse(c.cuotas_detalle||'[]');
-        if(cd.length>0){cuotasHTML=cd.map(q=>`<div style="font-size:9px;color:var(--t3)">C${q.num}: ${fD(q.fecha)} · ${fM(q.monto)}</div>`).join('');}
-        else if(c.cuotas>1){cuotasHTML=`${c.cuotas} cuotas`;}
-      }catch(e){cuotasHTML=c.cuotas>1?`${c.cuotas} cuotas`:'1 cuota';}
-      return`<tr ondblclick="openEdit('clientes','${c.id}')" style="cursor:pointer">
-        <td><b>${c.nombre||'—'}</b>${c.ig?`<div style="font-size:9px;color:var(--t3)">${c.ig}</div>`:''}</td>
-        <td>${prog?.nombre||c.prog_id||'—'}</td>
-        <td>${fD(c.fecha_ingreso)}</td>
-        <td>${fD(c.fecha_fin)}</td>
-        <td>${cuotasHTML}</td>
-        <td>${porCobrar>0?`<b style="color:var(--wn)">${fM(porCobrar)}</b>`:`<span style="color:var(--ok)">✓ Al día</span>`}</td>
-        <td><span class="st ${c.activo==='Si'?'sg':'sm'}">${c.activo==='Si'?'Activo':'Inactivo'}</span></td>
-        <td>${editPencilBtn('clientes',c.id)}</td>
-      </tr>`;
-    }).join('')}</tbody></table>`;
-    return;
-  }
-  const cfg=keyMap[type];const data2=KPI[type==='yt'?'yt':type];
-  if(!data2||!data2.length){el.innerHTML=emptyEl('Sin registros aún');return;}
-  el.innerHTML=`<table class="t"><thead><tr>${cfg.cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead><tbody>${data2.map(row=>`<tr ondblclick="openEdit('${type}','${row.id}')" style="cursor:pointer">${cfg.keys.map(k=>{if(k==='_edit')return`<td>${editPencilBtn(type,row.id)}</td>`;let v=row[k]??'—';if(cfg.fmt&&cfg.fmt[k])v=cfg.fmt[k](row[k]);return`<td>${v}</td>`;}).join('')}</tr>`).join('')}</tbody></table>`;
+  if(type==='clientes'){renderClientesTbl(el);return;}
+  const keyMap={
+    agendas:{cols:['Nombre','Fecha','Cal.','Resultado','Notas',''],keys:['nombre','fecha','calificacion','resultado','notas','_edit'],fmt:{fecha:fD,calificacion:v=>`<span class="st ${v==='Alta'?'sg':v==='Media'?'sy':'sm'}">${v||'-'}</span>`,resultado:v=>`<span class="st ${v==='Cerrado'?'sg':v==='No Show'?'sr':v==='Pendiente'?'sy':'sm'}">${v||'-'}</span>`}},
+    ingresos:{cols:['Nombre','Tipo','Programa','Fecha','Facturación','Cash Neto',''],keys:['nombre','tipo','programa','fecha','facturacion','monto','_edit'],fmt:{tipo:v=>`<span class="st ${v==='nuevo'?'sg':'sb2'}">${v==='nuevo'?'Nuevo':'Cuota'}</span>`,fecha:fD,facturacion:v=>v?`<b style="color:var(--gold)">${fM(v)}</b>`:'—',monto:v=>`<span style="color:var(--ok)">${fM(v)}</span>`}},
+    gastos:{cols:['Detalle','Fecha','Monto','Categoría',''],keys:['detalle','fecha','monto','categoria','_edit'],fmt:{fecha:fD,monto:v=>`<span style="color:var(--er)">${fM(v)}</span>`}},
+    reels:{cols:['Nombre','Estructura','Fecha','Views','Coms','Segs',''],keys:['nombre','estructura','fecha','views','comentarios','seguidores_nuevos','_edit'],fmt:{fecha:fD,views:v=>Number(v||0).toLocaleString()}},
+    historias:{cols:['Idea','Formato','Fecha','Views','Resp. CTA',''],keys:['idea','formato','fecha','views','respuestas_cta','_edit'],fmt:{fecha:fD,views:v=>Number(v||0).toLocaleString()}},
+    yt:{cols:['Título','Fecha','Views','%CTR','%Ret.',''],keys:['titulo','fecha','views','ctr','retencion','_edit'],fmt:{fecha:fD,views:v=>Number(v||0).toLocaleString(),ctr:v=>v+'%',retencion:v=>v+'%'}}
+  };
+  const cfg=keyMap[type];const data=KPI[type==='yt'?'yt':type];
+  if(!data||!data.length){el.innerHTML=emptyEl('Sin registros aún');return;}
+  el.innerHTML=`<table class="t"><thead><tr>${cfg.cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead><tbody>${data.map(row=>`<tr ondblclick="openEdit('${type}','${row.id}')" style="cursor:pointer">${cfg.keys.map(k=>{if(k==='_edit')return`<td>${editPencilBtn(type,row.id)}</td>`;let v=row[k]??'—';if(cfg.fmt&&cfg.fmt[k])v=cfg.fmt[k](row[k]);return`<td>${v}</td>`;}).join('')}</tr>`).join('')}</tbody></table>`;
+}
+
+function renderClientesTbl(el){
+  const data=KPI.clientes;
+  const actEl=document.getElementById('cli-activos-cnt');const inEl=document.getElementById('cli-inactivos-cnt');
+  if(actEl)actEl.textContent=data.filter(c=>c.activo==='Si').length;
+  if(inEl)inEl.textContent=data.filter(c=>c.activo!=='Si').length;
+  if(!data||!data.length){el.innerHTML=emptyEl('Sin clientes aún');return;}
+  el.innerHTML=`<table class="t"><thead><tr><th>Nombre</th><th>Programa</th><th>Ingreso</th><th>Fin</th><th>Fechas cuotas</th><th>Pagado</th><th>Por Cobrar</th><th>Estado</th><th></th></tr></thead><tbody>${data.map(c=>{
+    const prog=KPI.programas.find(p=>p.id===c.prog_id);
+    const precio=Number(prog?.precio||0);
+    const pagadoBruto=KPI.ingresos.filter(i=>i.cliente_id===c.id||i.nombre===c.nombre).reduce((s,i)=>s+Number(i.monto_bruto||i.monto||0),0);
+    const porCobrar=Math.max(0,precio-pagadoBruto);
+    let cuotasHTML='—';
+    try{
+      const cd=JSON.parse(c.cuotas_detalle||'[]');
+      if(cd.length>1)cuotasHTML=cd.map(q=>`<div style="font-size:9px;white-space:nowrap">C${q.num}: ${fD(q.fecha)}</div>`).join('');
+      else cuotasHTML='Pago único';
+    }catch(e){cuotasHTML=c.cuotas>1?`${c.cuotas} cuotas`:'Pago único';}
+    return`<tr ondblclick="openEdit('clientes','${c.id}')" style="cursor:pointer">
+      <td><b>${c.nombre||'—'}</b>${c.ig?`<div style="font-size:9px;color:var(--t3)">${c.ig}</div>`:''}</td>
+      <td style="font-size:10px">${prog?.nombre||'—'}</td>
+      <td>${fD(c.fecha_ingreso)}</td>
+      <td>${fD(c.fecha_fin)}</td>
+      <td>${cuotasHTML}</td>
+      <td><b style="color:var(--ok)">${fM(pagadoBruto)}</b></td>
+      <td>${porCobrar>0?`<b style="color:var(--wn)">${fM(porCobrar)}</b>`:`<span style="color:var(--ok)">✓ Saldado</span>`}</td>
+      <td><span class="st ${c.activo==='Si'?'sg':'sm'}">${c.activo==='Si'?'Activo':'Inactivo'}</span></td>
+      <td>${editPencilBtn('clientes',c.id)}</td>
+    </tr>`;
+  }).join('')}</tbody></table>`;
 }
 
 function renderLeadsTbl(el){
@@ -1300,41 +1321,10 @@ function fillIngresoEdit(r){populateIngDD();document.getElementById('ing-idx').v
 function fillGastoEdit(r){document.getElementById('gas-idx').value=r.id;document.getElementById('g-d').value=r.detalle||'';document.getElementById('g-f').value=r.fecha||'';document.getElementById('g-m').value=r.monto||0;document.getElementById('g-cat').value=r.categoria||'Herramientas';document.getElementById('g-desc').value=r.descripcion||'';document.getElementById('m-gas-t').textContent='Editar Gasto';}
 function fillClienteEdit(r){populateCProg();document.getElementById('cl-idx').value=r.id;document.getElementById('cl-n').value=r.nombre||'';document.getElementById('cl-ig').value=r.ig||'';document.getElementById('cl-tel').value=r.telefono||'';document.getElementById('cl-ing').value=r.fecha_ingreso||'';document.getElementById('cl-activo').value=r.activo||'Si';document.getElementById('m-cl-t').textContent='Editar Cliente';}
 function fillReelEdit(r){document.getElementById('reel-idx').value=r.id;document.getElementById('r-n').value=r.nombre||'';document.getElementById('r-est').value=r.estructura||'';document.getElementById('r-gancho').value=r.gancho||'';document.getElementById('r-fmt').value=r.formato||'';document.getElementById('r-f').value=r.fecha||'';document.getElementById('r-v').value=r.views||0;document.getElementById('r-c').value=r.comentarios||0;document.getElementById('r-s').value=r.seguidores_nuevos||0;document.getElementById('r-l').value=r.likes||0;if(document.getElementById('r-link'))document.getElementById('r-link').value=r.link||'';document.getElementById('m-reel-t').textContent='Editar Reel';}
-function fillHistEdit(r){document.getElementById('hist-idx').value=r.id;document.getElementById('h-idea').value=r.idea||'';document.getElementById('h-fmt').value=r.formato||'';document.getElementById('h-gancho').value=r.gancho||'';document.getElementById('h-cta-txt').value=r.cta_txt||'';document.getElementById('h-lm').value=r.lead_magnet||'';document.getElementById('h-f').value=r.fecha||'';document.getElementById('h-v').value=r.views||0;document.getElementById('h-cta').value=r.respuestas_cta||0;document.getElementById('h-tasa').value=r.tasa||'';document.getElementById('m-hist-t').textContent='Editar Historia';}
+function fillHistEdit(r){document.getElementById('hist-idx').value=r.id;document.getElementById('h-idea').value=r.idea||'';document.getElementById('h-fmt').value=r.formato||'';document.getElementById('h-f').value=r.fecha||'';document.getElementById('h-v').value=r.views||0;document.getElementById('h-cta').value=r.respuestas_cta||0;document.getElementById('h-tasa').value=r.tasa||'';document.getElementById('m-hist-t').textContent='Editar Historia';}
 function fillYTEdit(r){document.getElementById('yt-idx').value=r.id;document.getElementById('y-t').value=r.titulo||'';document.getElementById('y-f').value=r.fecha||'';document.getElementById('y-d').value=r.duracion||0;document.getElementById('y-v').value=r.views||0;document.getElementById('y-ctr').value=r.ctr||0;document.getElementById('y-ret').value=r.retencion||0;document.getElementById('m-yt-t').textContent='Editar Video';}
 
-function renderWins(){
-  const el=document.getElementById('wins-list');
-  if(!KPI.wins.length){el.innerHTML=emptyEl('Sin wins');return;}
-  el.innerHTML=KPI.wins.map(w=>`<div class="wc" style="position:relative">
-    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
-      <div style="flex:1">
-        <div style="display:flex;gap:5px;margin-bottom:5px;flex-wrap:wrap"><span class="st sy">${w.grandeza}</span>${w.usada_historias==='Si'?'<span class="st sg">✓ Usada en contenido</span>':'<span class="st sm">No usada aún</span>'}</div>
-        <div style="font-size:12px;color:var(--tx);margin:4px 0;line-height:1.6">${w.win}</div>
-        <div style="font-size:9px;color:var(--t3)">${w.cliente} · ${fD(w.fecha)}</div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0">
-        <button onclick="editWin('${w.id}')" style="background:none;border:none;color:var(--t3);cursor:pointer;padding:3px 6px;font-size:14px;transition:color .2s" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--t3)'" title="Editar">✏️</button>
-        <button onclick="toggleWinUsada('${w.id}','${w.usada_historias==='Si'?'No':'Si'}')" style="background:none;border:1px solid ${w.usada_historias==='Si'?'rgba(29,158,117,0.4)':'var(--br)'};border-radius:5px;color:${w.usada_historias==='Si'?'var(--ok)':'var(--t3)'};cursor:pointer;padding:3px 7px;font-size:9px;font-family:var(--font);transition:all .2s" title="${w.usada_historias==='Si'?'Marcar como no usada':'Marcar como usada en contenido'}">${w.usada_historias==='Si'?'✓':'○'}</button>
-      </div>
-    </div>
-  </div>`).join('');
-}
-function editWin(id){
-  const w=KPI.wins.find(x=>x.id===id);if(!w)return;
-  document.getElementById('win-idx').value=w.id;
-  document.getElementById('w-cl').value=w.cliente||'';
-  document.getElementById('w-f').value=w.fecha||'';
-  document.getElementById('w-t').value=w.win||'';
-  document.getElementById('w-g').value=w.grandeza||'Grande';
-  document.getElementById('w-u-cb').checked=w.usada_historias==='Si';
-  document.getElementById('m-win-t').textContent='Editar Win';
-  openMod('m-win');
-}
-async function toggleWinUsada(id,val){
-  await sb.from('wins').update({usada_historias:val}).eq('id',id);
-  await loadKPIData();renderWins();
-}
+function renderWins(){const el=document.getElementById('wins-list');if(!KPI.wins.length){el.innerHTML=emptyEl('Sin wins');return}el.innerHTML=KPI.wins.map(w=>`<div class="wc"><div style="display:flex;gap:5px;margin-bottom:5px"><span class="st sy">${w.grandeza}</span>${w.usada_historias==='Si'?'<span class="st sg">En historias</span>':''}</div><div style="font-size:12px;color:var(--tx);margin:4px 0">${w.win}</div><div style="font-size:9px;color:var(--t3)">${w.cliente} · ${fD(w.fecha)}</div></div>`).join('');}
 
 function renderViralidad(){const cr=[{k:'n',l:'Entiende niño 10 años'},{k:'r',l:'¿Referencia viral?'},{k:'c',l:'Camino A→B claro'},{k:'p',l:'¿Pagarían $3?'},{k:'m',l:'¿Mercado viral?'},{k:'t',l:'¿Tendencia activa?'},{k:'co',l:'¿Genera controversia?'},{k:'g',l:'Gancho visual fuerte'},{k:'cu',l:'Genera curiosidad'},{k:'s',l:'Satisfacción visual'},{k:'nu',l:'Nuevo/diferente/tuyo'},{k:'mo',l:'¿Placer/Morbo?'}];document.getElementById('crit-grid').innerHTML=cr.map(c=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:var(--d3);border-radius:6px;border:1px solid var(--br)"><label for="cr-${c.k}" style="font-size:10px;color:var(--t3);cursor:pointer">${c.l}</label><input type="checkbox" id="cr-${c.k}" onchange="calcScore()" style="accent-color:var(--gold);width:13px;height:13px;cursor:pointer"></div>`).join('');const vt=document.getElementById('tbl-viral');if(!KPI.viralidad.length){vt.innerHTML=emptyEl('Sin evaluaciones');return}vt.innerHTML=`<table class="t"><thead><tr><th>Reel</th><th>Score</th><th>Nivel</th><th>Fecha</th></tr></thead><tbody>${KPI.viralidad.map(v=>`<tr><td>${v.nombre}</td><td>${v.score}/12</td><td><span class="st ${v.score>=9?'sg':v.score>=6?'sy':'sr'}">${v.score>=9?'Alto':v.score>=6?'Medio':'Bajo'}</span></td><td>${fD(v.fecha)}</td></tr>`).join('')}</tbody></table>`;}
 function calcScore(){const n=document.querySelectorAll('#crit-grid input:checked').length;document.getElementById('sc-n').textContent=n;document.getElementById('sc-f').style.width=Math.round(n/12*100)+'%';document.getElementById('sc-l').textContent=n>=9?'Potencial ALTO':n>=6?'Potencial MEDIO':'Potencial BAJO';}
@@ -1449,19 +1439,11 @@ function removeDocEd(i){edDocs.splice(i,1);renderDocsEd(edDocs);}
 async function saveDocs(){const cid=getCurCid();if(!cid)return;const updated=edDocs.map((d,i)=>({name:document.getElementById('dn-'+i)?.value||d.name||'',url:document.getElementById('du-'+i)?.value||d.url||'',etapa:d.etapa||'etapa1'}));await sb.from('documents').delete().eq('user_id',cid);if(updated.length)await sb.from('documents').insert(updated.map((d,i)=>({user_id:cid,name:d.name,url:d.url,position:i,etapa:d.etapa})));edDocs=updated;showToast('Documentos guardados');}
 
 function showNegTab(t,el){document.getElementById('neg-prog-panel').style.display=t==='prog'?'block':'none';document.getElementById('neg-pas-panel').style.display=t==='pas'?'block':'none';document.querySelectorAll('#ksec-negocio-m .knav').forEach(b=>b.classList.remove('active'));el.classList.add('active');if(t==='prog')renderProgs();else renderPas();}
-function renderProgs(){const el=document.getElementById('prog-list');if(!KPI.programas.length){el.innerHTML=emptyEl('Agrega tu primer programa');return}el.innerHTML=KPI.programas.map(p=>`<div class="pc-card"><div><div class="pc-n">${p.nombre}</div><div class="pc-m">${fM(p.precio)} · ${p.dias||'?'} días · máx. ${p.cuotas||1} cuota(s)</div></div><div style="display:flex;gap:6px"><button onclick="editProg('${p.id}')" style="background:none;border:none;color:var(--t3);cursor:pointer;padding:3px 6px;font-size:14px;transition:color .2s" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--t3)'">✏️</button><button class="bd" onclick="delProg('${p.id}')">✕</button></div></div>`).join('');}
-function editProg(id){const p=KPI.programas.find(x=>x.id===id);if(!p)return;document.getElementById('prog-idx').value=p.id;document.getElementById('p-nom').value=p.nombre||'';document.getElementById('p-precio').value=p.precio||'';document.getElementById('p-dias').value=p.dias||'';document.getElementById('p-cuotas').value=p.cuotas||1;document.getElementById('p-desc').value=p.descripcion||'';document.getElementById('m-prog-t').textContent='Editar Programa';openMod('m-prog');}
+function renderProgs(){const el=document.getElementById('prog-list');if(!KPI.programas.length){el.innerHTML=emptyEl('Agrega tu primer programa');return}el.innerHTML=KPI.programas.map(p=>`<div class="pc-card"><div><div class="pc-n">${p.nombre}</div><div class="pc-m">${fM(p.precio)} · ${p.dias||'?'} días · ${p.cuotas||1} cuota(s)</div></div><button class="bd" onclick="delProg('${p.id}')">✕</button></div>`).join('');}
 function renderPas(){const el=document.getElementById('pas-list');if(!KPI.pasarelas.length){el.innerHTML=emptyEl('Agrega tus pasarelas');return}el.innerHTML=KPI.pasarelas.map(p=>`<div class="pc-card"><div><div class="pc-n">${p.nombre}</div><div class="pc-m">Comisión: ${p.comision||0}%</div></div><button class="bd" onclick="delPas('${p.id}')">✕</button></div>`).join('');}
 function openNewProg(){document.getElementById('prog-idx').value='';['p-nom','p-desc'].forEach(id=>document.getElementById(id).value='');document.getElementById('p-precio').value='';document.getElementById('p-dias').value='';document.getElementById('p-cuotas').value=1;document.getElementById('m-prog-t').textContent='Nuevo Programa';openMod('m-prog');}
 function openNewPas(){document.getElementById('pas-idx').value='';document.getElementById('pas-com').value='';document.getElementById('pas-nota').value='';document.getElementById('m-pas-t').textContent='Nueva Pasarela';openMod('m-pas');}
-async function saveProg(){
-  const id=document.getElementById('prog-idx').value;
-  const nombre=document.getElementById('p-nom').value;if(!nombre)return;
-  const o={user_id:portalClientId,nombre,precio:document.getElementById('p-precio').value,dias:document.getElementById('p-dias').value,cuotas:document.getElementById('p-cuotas').value,descripcion:document.getElementById('p-desc').value};
-  if(id)await sb.from('programas').update(o).eq('id',id);
-  else await sb.from('programas').insert(o);
-  closeM('m-prog');await loadKPIData();renderProgs();showToast(id?'Programa actualizado':'Programa guardado');
-}
+async function saveProg(){const nombre=document.getElementById('p-nom').value;if(!nombre)return;await sb.from('programas').insert({user_id:portalClientId,nombre,precio:document.getElementById('p-precio').value,dias:document.getElementById('p-dias').value,cuotas:document.getElementById('p-cuotas').value,descripcion:document.getElementById('p-desc').value});closeM('m-prog');await loadKPIData();renderProgs();showToast('Programa guardado');}
 async function savePas(){
   const sel=document.getElementById('pas-n').value;
   const nombre=sel==='Otro'?(document.getElementById('pas-otro').value||'Otro'):sel;
@@ -1483,63 +1465,94 @@ function openIngModal(){
   document.getElementById('in-prog').value='';
   document.getElementById('in-fac-display').textContent='$0';
   document.getElementById('in-fin-row').style.display='none';
-  document.getElementById('in-fin-display').textContent='—';
-  document.getElementById('in-cuotas').innerHTML='<option value="1">Cuota 1 (única)</option>';
+  document.getElementById('in-fechas-cuotas').style.display='none';
+  document.getElementById('in-com').style.display='none';
   document.getElementById('m-ing-t').textContent='Nuevo Ingreso';
   openMod('m-ingreso');
 }
+
 function populateIngDD(){
+  // Programa dropdown with data attrs
   const ps=document.getElementById('in-prog');
   ps.innerHTML='<option value="">— Seleccionar —</option>';
-  KPI.programas.forEach(p=>ps.innerHTML+=`<option value="${p.nombre}" data-precio="${p.precio}" data-dias="${p.dias}" data-cuotas="${p.cuotas||1}">${p.nombre} (${fM(p.precio)})</option>`);
-  const pa=document.getElementById('in-pas');
-  pa.innerHTML='<option value="">— Seleccionar —</option>';
-  KPI.pasarelas.forEach(p=>pa.innerHTML+=`<option value="${p.nombre}">${p.nombre} (${p.comision||0}%)</option>`);
+  KPI.programas.forEach(p=>ps.innerHTML+=`<option value="${p.nombre}" data-id="${p.id}" data-precio="${p.precio||0}" data-dias="${p.dias||0}" data-cuotas="${p.cuotas||1}">${p.nombre} (${fM(p.precio)})</option>`);
+  // Pasarela dropdowns
+  ['in-pas','in-pas-cuota'].forEach(pid=>{
+    const pa=document.getElementById(pid);
+    if(!pa)return;
+    pa.innerHTML='<option value="">— Sin pasarela —</option>';
+    KPI.pasarelas.forEach(p=>pa.innerHTML+=`<option value="${p.nombre}" data-com="${p.comision||0}">${p.nombre} (${p.comision||0}%)</option>`);
+  });
+  // Clientes dropdown for cuota/abono
+  const cs=document.getElementById('in-cliente-sel');
+  cs.innerHTML='<option value="">— Seleccionar cliente —</option>';
+  KPI.clientes.filter(c=>c.activo==='Si').forEach(c=>cs.innerHTML+=`<option value="${c.id}" data-nombre="${c.nombre||''}">${c.nombre||'—'}</option>`);
 }
+
+function setTipo(t){
+  tipoIng=t;
+  document.getElementById('t-n-btn').classList.toggle('active',t==='nuevo');
+  document.getElementById('t-c-btn').classList.toggle('active',t==='cuota');
+  document.getElementById('ing-nuevo-fields').style.display=t==='nuevo'?'block':'none';
+  document.getElementById('ing-cuota-fields').style.display=t==='cuota'?'block':'none';
+  document.getElementById('in-com').style.display='none';
+  document.getElementById('ing-info').innerHTML=t==='nuevo'
+    ?'<b>Cliente Nuevo:</b> Facturación = precio total del programa. Cash = lo que entra hoy.'
+    :'<b>Cuota / Abono:</b> Solo impacta Cash Collected. Selecciona el cliente para descontarle la deuda.';
+}
+
 function onProgIngresoChange(){
   const sel=document.getElementById('in-prog');
   const opt=sel.options[sel.selectedIndex];
   const precio=Number(opt?.dataset?.precio||0);
   const dias=Number(opt?.dataset?.dias||0);
   const maxCuotas=Number(opt?.dataset?.cuotas||1);
-  // Show facturacion only for nuevo
-  document.getElementById('in-fac-display').textContent=tipoIng==='nuevo'?fM(precio):'$0';
-  // Build dynamic cuotas dropdown
+  document.getElementById('in-fac-display').textContent=fM(precio);
+  // Build cuotas dropdown — just quantity, no amount
   const csel=document.getElementById('in-cuotas');
   csel.innerHTML='';
   for(let i=1;i<=maxCuotas;i++){
-    const montoCuota=precio>0?fM(Math.round(precio/maxCuotas)):'-';
-    csel.innerHTML+=`<option value="${i}">Cuota ${i}${maxCuotas>1?' de '+maxCuotas:' (única)'}${maxCuotas>1?' — '+montoCuota:''}</option>`;
+    csel.innerHTML+=`<option value="${i}">${i===1?'1 cuota (pago único)':i+' cuotas'}</option>`;
   }
-  // Auto fecha fin
   onIngFechaChange();
 }
+
 function onIngFechaChange(){
   const fecha=document.getElementById('in-f').value;
   const sel=document.getElementById('in-prog');
   const opt=sel.options[sel.selectedIndex];
   const dias=Number(opt?.dataset?.dias||0);
   const finRow=document.getElementById('in-fin-row');
-  if(fecha&&dias&&tipoIng==='nuevo'){
+  if(fecha&&dias){
     const fin=addDays(fecha,dias);
-    document.getElementById('in-fin-display').textContent=fD(fin);
+    document.getElementById('in-fin-display').textContent=`Fin: ${fD(fin)}`;
     finRow.style.display='block';
   }else{
     finRow.style.display='none';
   }
+  onCuotasChange();
 }
-function setTipo(t){
-  tipoIng=t;
-  document.getElementById('t-n-btn').classList.toggle('active',t==='nuevo');
-  document.getElementById('t-c-btn').classList.toggle('active',t==='cuota');
-  document.getElementById('in-cr').style.display='block';
-  document.getElementById('in-cnr').style.display='none';
-  document.getElementById('in-fac-row').style.display=t==='nuevo'?'block':'none';
-  document.getElementById('in-fin-row').style.display='none';
-  document.getElementById('ing-info').innerHTML=t==='nuevo'?'<b>Cliente Nuevo:</b> Facturación = precio total del programa. Cash Collected = lo que entra hoy menos comisión de pasarela.':'<b>Cuota / Abono:</b> Solo impacta Cash Collected. No suma a Facturación.';
-  // Re-trigger prog change to update facturacion display
-  onProgIngresoChange();
+
+function onCuotasChange(){
+  const fecha=document.getElementById('in-f').value;
+  const sel=document.getElementById('in-prog');
+  const opt=sel.options[sel.selectedIndex];
+  const dias=Number(opt?.dataset?.dias||0);
+  const nCuotas=parseInt(document.getElementById('in-cuotas').value)||1;
+  const el=document.getElementById('in-fechas-cuotas');
+  if(nCuotas<=1||!fecha||!dias){el.style.display='none';return;}
+  const interval=Math.round(dias/nCuotas);
+  let html='<div style="background:var(--d3);border-radius:7px;padding:8px 10px;font-size:10px;color:var(--t2)">';
+  html+='<div style="font-size:9px;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;font-weight:600">📅 Fechas de cobro estimadas</div>';
+  for(let i=0;i<nCuotas;i++){
+    const fc=addDays(fecha,i*interval);
+    html+=`<div style="padding:3px 0;border-bottom:1px solid rgba(255,255,255,0.05)">Cuota ${i+1}: <b style="color:var(--tx)">${fD(fc)}</b></div>`;
+  }
+  html+='</div>';
+  el.innerHTML=html;
+  el.style.display='block';
 }
+
 function calcCom(){
   const pas=document.getElementById('in-pas').value;
   const m=Number(document.getElementById('in-m').value||0);
@@ -1547,15 +1560,40 @@ function calcCom(){
   const el=document.getElementById('in-com');
   if(f&&m>0){
     const com=Math.round(m*Number(f.comision||0)/100);
-    const neto=m-com;
-    document.getElementById('in-com-t').textContent=`Comisión ${f.comision||0}% = ${fM(com)} · Cash neto: ${fM(neto)}`;
+    document.getElementById('in-com-t').textContent=`Comisión ${f.comision||0}% = ${fM(com)} · Cash neto: ${fM(m-com)}`;
     el.style.display='block';
-  }else{
-    el.style.display='none';
-  }
+  }else{el.style.display='none';}
 }
+
+function calcComCuota(){
+  const pas=document.getElementById('in-pas-cuota').value;
+  const m=Number(document.getElementById('in-m-cuota').value||0);
+  const f=KPI.pasarelas.find(p=>p.nombre===pas);
+  const el=document.getElementById('in-com');
+  if(f&&m>0){
+    const com=Math.round(m*Number(f.comision||0)/100);
+    document.getElementById('in-com-t').textContent=`Comisión ${f.comision||0}% = ${fM(com)} · Cash neto: ${fM(m-com)}`;
+    el.style.display='block';
+  }else{el.style.display='none';}
+}
+
+function onClienteSelChange(){
+  const sel=document.getElementById('in-cliente-sel');
+  const cid=sel.value;
+  const infoEl=document.getElementById('in-cliente-info');
+  if(!cid){infoEl.style.display='none';return;}
+  const c=KPI.clientes.find(x=>x.id===cid);
+  const prog=KPI.programas.find(p=>p.id===c?.prog_id);
+  const cobrado=KPI.ingresos.filter(i=>i.cliente_id===cid||i.nombre===c?.nombre).reduce((s,i)=>s+Number(i.monto_bruto||i.monto||0),0);
+  const precioTotal=Number(prog?.precio||0);
+  const porCobrar=Math.max(0,precioTotal-cobrado);
+  infoEl.innerHTML=`<b style="color:var(--tx)">${c?.nombre||'—'}</b> · ${prog?.nombre||'—'}<br>Precio programa: <b style="color:var(--gold)">${fM(precioTotal)}</b> · Pagado: <b style="color:var(--ok)">${fM(cobrado)}</b> · Por cobrar: <b style="color:${porCobrar>0?'var(--wn)':'var(--ok)'}">${fM(porCobrar)}</b>`;
+  infoEl.style.display='block';
+}
+
 document.addEventListener('change',e=>{
   if(e.target.id==='in-pas'||e.target.id==='in-m')calcCom();
+  if(e.target.id==='in-pas-cuota'||e.target.id==='in-m-cuota')calcComCuota();
 });
 
 function openAgModal(){document.getElementById('ag-idx').value='';['ag-n','ag-ig','ag-tel','ag-search'].forEach(id=>document.getElementById(id).value='');document.getElementById('ag-not').value='';document.getElementById('ag-dd').classList.remove('show');document.getElementById('m-ag-t').textContent='Nueva Agenda';openMod('m-agenda');}
@@ -1566,8 +1604,7 @@ function openClienteModal(){populateCProg();document.getElementById('cl-idx').va
 function populateCProg(){const s=document.getElementById('cl-prog');s.innerHTML='<option value="">—</option>';KPI.programas.forEach(p=>s.innerHTML+=`<option value="${p.id}">${p.nombre} (${p.dias||'?'} días)</option>`);}
 function calcCF(){const pid=document.getElementById('cl-prog').value;const ing=document.getElementById('cl-ing').value;const prog=KPI.programas.find(p=>p.id===pid);const el=document.getElementById('cl-fp');if(!prog||!ing){el.innerHTML='';return}const dias=parseInt(prog.dias||90);const fin=addDays(ing,dias);const cuotasD=parseInt(prog.cuotas||1);const csel=document.getElementById('cl-cuotas');const cv=csel.value;csel.innerHTML='';for(let i=1;i<=cuotasD;i++)csel.innerHTML+=`<option value="${i}">${i} cuota${i>1?'s':''}</option>`;if(cv&&parseInt(cv)<=cuotasD)csel.value=cv;const cuotas=parseInt(csel.value)||1;const inter=cuotas>1?Math.round(dias/cuotas):0;let html=`<div class="fcp"><b>Fin de servicio:</b> ${fD(fin)}<br>`;if(cuotas>1){html+=`<b>Fechas de cobro:</b><br>`;for(let i=1;i<=cuotas;i++){const fc=addDays(ing,(i-1)*inter);html+=`· Cuota ${i}: ${fD(fc)}<br>`;}}html+='</div>';el.innerHTML=html;}
 function calcTasa(){const seg=getSeg();const v=parseInt(document.getElementById('h-v').value)||0;const cta=parseInt(document.getElementById('h-cta').value)||0;const base=v>0?v:(seg>0?seg:0);if(base>0)document.getElementById('h-tasa').value=(cta/base*100).toFixed(1)+'%';else document.getElementById('h-tasa').value='';}
-function openWinModal(){document.getElementById('win-idx').value='';document.getElementById('w-cl').value='';document.getElementById('w-f').value='';document.getElementById('w-t').value='';document.getElementById('w-g').value='Grande';document.getElementById('w-u-cb').checked=false;document.getElementById('m-win-t').textContent='Nueva Win';openMod('m-win');}
-function resetMod(t){const maps={lead:['l-n','l-ig','l-f'],gasto:['g-d','g-f','g-m','g-desc'],reel:['r-n','r-gancho','r-f','r-link'],hist:['h-idea','h-f','h-tasa','h-gancho','h-cta-txt','h-lm'],yt:['y-t','y-f','y-d']};(maps[t]||[]).forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});['r-v','r-c','r-s','r-l','h-v','h-cta','y-v','y-ctr','y-ret'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=0;});['lead-idx','ag-idx','gas-idx','reel-idx','hist-idx','yt-idx'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});document.getElementById('m-lead-t')&&(document.getElementById('m-lead-t').textContent='Nuevo Lead');}
+function resetMod(t){const maps={lead:['l-n','l-ig','l-f'],gasto:['g-d','g-f','g-m','g-desc'],reel:['r-n','r-gancho','r-f','r-link'],hist:['h-idea','h-f','h-tasa'],yt:['y-t','y-f','y-d']};(maps[t]||[]).forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});['r-v','r-c','r-s','r-l','h-v','h-cta','y-v','y-ctr','y-ret'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=0;});['lead-idx','ag-idx','gas-idx','reel-idx','hist-idx','yt-idx'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});document.getElementById('m-lead-t')&&(document.getElementById('m-lead-t').textContent='Nuevo Lead');}
 
 async function saveLead(){
   const id=document.getElementById('lead-idx').value;
@@ -1597,67 +1634,64 @@ async function saveAgenda(){
 async function saveCliente(){const pid=document.getElementById('cl-prog').value;const ing=document.getElementById('cl-ing').value;const prog=KPI.programas.find(p=>p.id===pid);const dias=prog?parseInt(prog.dias||90):0;const fin=ing&&dias?addDays(ing,dias):null;const o={user_id:portalClientId,nombre:document.getElementById('cl-n').value,ig:document.getElementById('cl-ig').value,telefono:document.getElementById('cl-tel').value,fecha_ingreso:ing||null,fecha_fin:fin,prog_id:pid||null,cuotas:parseInt(document.getElementById('cl-cuotas').value)||1,activo:document.getElementById('cl-activo').value};await sb.from('clientes_kpi').insert(o);closeM('m-cliente');await loadKPIData();renderTbl('clientes','tbl-clientes');showToast('Cliente guardado');}
 async function saveIngreso(){
   const id=document.getElementById('ing-idx').value;
-  const nombre=document.getElementById('in-n').value;
-  const progNombre=document.getElementById('in-prog').value;
-  const fecha=document.getElementById('in-f').value||null;
-  const cashCollected=Number(document.getElementById('in-m').value)||0;
-  const pasarela=document.getElementById('in-pas').value;
-  const cuotaNum=parseInt(document.getElementById('in-cuotas').value)||1;
-  // Find program for facturacion and dias
-  const prog=KPI.programas.find(p=>p.nombre===progNombre);
-  const facturacion=tipoIng==='nuevo'?Number(prog?.precio||0):0;
-  const maxCuotas=parseInt(prog?.cuotas||1);
-  const dias=parseInt(prog?.dias||0);
-  // Cash neto after pasarela
-  const pasObj=KPI.pasarelas.find(p=>p.nombre===pasarela);
-  const comision=pasObj?Number(pasObj.comision||0):0;
-  const cashNeto=Math.round(cashCollected*(1-comision/100));
-  const o={
-    user_id:portalClientId,
-    tipo:tipoIng,
-    nombre,
-    programa:progNombre,
-    fecha,
-    monto:cashNeto,           // cash_collected neto (post-pasarela)
-    monto_bruto:cashCollected, // bruto ingresado
-    facturacion,               // precio total del programa (solo cliente nuevo)
-    cuotas:maxCuotas,
-    cuota_num:cuotaNum,
-    pasarela
-  };
-  if(id)await sb.from('ingresos').update(o).eq('id',id);
-  else await sb.from('ingresos').insert(o);
-  // Auto-crear cliente en clientes_kpi si es cliente nuevo
-  if(tipoIng==='nuevo'&&!id&&nombre){
-    const yaExiste=KPI.clientes.find(c=>(c.nombre||'').toLowerCase()===nombre.toLowerCase());
-    if(!yaExiste&&prog){
-      const fechaFin=fecha&&dias?addDays(fecha,dias):null;
-      // Calcular fechas de cuotas
-      const cuotasData=[];
-      if(maxCuotas>1&&fecha&&dias){
-        const interval=Math.round(dias/maxCuotas);
-        for(let i=0;i<maxCuotas;i++){
-          const fc=addDays(fecha,i*interval);
-          const montoCuota=Math.round(Number(prog.precio||0)/maxCuotas);
-          cuotasData.push({num:i+1,fecha:fc,monto:montoCuota});
-        }
-      }
-      await sb.from('clientes_kpi').insert({
-        user_id:portalClientId,
-        nombre,
-        fecha_ingreso:fecha,
-        fecha_fin:fechaFin,
-        prog_id:prog.id||null,
-        cuotas:maxCuotas,
-        activo:'Si',
-        cuotas_detalle:JSON.stringify(cuotasData)
-      });
+  let o;
+  if(tipoIng==='nuevo'){
+    const nombre=document.getElementById('in-n').value;
+    const progNombre=document.getElementById('in-prog').value;
+    const fecha=document.getElementById('in-f').value||null;
+    const cashBruto=Number(document.getElementById('in-m').value)||0;
+    const pasarela=document.getElementById('in-pas').value;
+    const nCuotas=parseInt(document.getElementById('in-cuotas').value)||1;
+    const prog=KPI.programas.find(p=>p.nombre===progNombre);
+    const facturacion=Number(prog?.precio||0);
+    const dias=parseInt(prog?.dias||0);
+    const pasObj=KPI.pasarelas.find(p=>p.nombre===pasarela);
+    const comision=pasObj?Number(pasObj.comision||0):0;
+    const cashNeto=Math.round(cashBruto*(1-comision/100));
+    // Build cuotas fechas
+    let cuotasDetalle=[];
+    if(nCuotas>1&&fecha&&dias){
+      const interval=Math.round(dias/nCuotas);
+      for(let i=0;i<nCuotas;i++){cuotasDetalle.push({num:i+1,fecha:addDays(fecha,i*interval)});}
     }
+    o={user_id:portalClientId,tipo:'nuevo',nombre,programa:progNombre,fecha,
+      monto:cashNeto,monto_bruto:cashBruto,facturacion,cuotas:nCuotas,pasarela};
+    if(id)await sb.from('ingresos').update(o).eq('id',id);
+    else await sb.from('ingresos').insert(o);
+    // Auto-crear cliente
+    if(!id&&nombre&&prog){
+      const yaExiste=KPI.clientes.find(c=>(c.nombre||'').toLowerCase()===nombre.toLowerCase());
+      if(!yaExiste){
+        const fechaFin=fecha&&dias?addDays(fecha,dias):null;
+        await sb.from('clientes_kpi').insert({
+          user_id:portalClientId,nombre,fecha_ingreso:fecha,fecha_fin:fechaFin,
+          prog_id:prog.id||null,cuotas:nCuotas,activo:'Si',
+          cuotas_detalle:JSON.stringify(cuotasDetalle)
+        });
+      }
+    }
+  }else{
+    // Cuota / Abono
+    const cid=document.getElementById('in-cliente-sel').value;
+    const cliente=KPI.clientes.find(c=>c.id===cid);
+    const nombre=cliente?.nombre||'';
+    const prog=KPI.programas.find(p=>p.id===cliente?.prog_id);
+    const fecha=document.getElementById('in-f-cuota').value||null;
+    const cashBruto=Number(document.getElementById('in-m-cuota').value)||0;
+    const pasarela=document.getElementById('in-pas-cuota').value;
+    const pasObj=KPI.pasarelas.find(p=>p.nombre===pasarela);
+    const comision=pasObj?Number(pasObj.comision||0):0;
+    const cashNeto=Math.round(cashBruto*(1-comision/100));
+    o={user_id:portalClientId,tipo:'cuota',nombre,programa:prog?.nombre||'',fecha,
+      monto:cashNeto,monto_bruto:cashBruto,facturacion:0,cliente_id:cid,pasarela};
+    if(id)await sb.from('ingresos').update(o).eq('id',id);
+    else await sb.from('ingresos').insert(o);
   }
   closeM('m-ingreso');
   await loadKPIData();
   renderTbl('ingresos','tbl-ingresos');
   renderTbl('clientes','tbl-clientes');
+  renderOps();
   showToast(id?'Ingreso actualizado':'Ingreso guardado');
 }
 async function saveGasto(){
@@ -1667,13 +1701,7 @@ async function saveGasto(){
   else await sb.from('gastos').insert(o);
   closeM('m-gasto');await loadKPIData();renderTbl('gastos','tbl-gastos');showToast(id?'Gasto actualizado':'Gasto guardado');
 }
-async function saveWin(){
-  const id=document.getElementById('win-idx').value;
-  const o={user_id:portalClientId,cliente:document.getElementById('w-cl').value,fecha:document.getElementById('w-f').value||null,win:document.getElementById('w-t').value,grandeza:document.getElementById('w-g').value,usada_historias:document.getElementById('w-u-cb').checked?'Si':'No'};
-  if(id)await sb.from('wins').update(o).eq('id',id);
-  else await sb.from('wins').insert(o);
-  closeM('m-win');await loadKPIData();renderWins();showToast(id?'Win actualizada':'Win guardada');
-}
+async function saveWin(){const o={user_id:portalClientId,cliente:document.getElementById('w-cl').value,fecha:document.getElementById('w-f').value||null,win:document.getElementById('w-t').value,grandeza:document.getElementById('w-g').value,usada_historias:document.getElementById('w-u').value};await sb.from('wins').insert(o);closeM('m-win');await loadKPIData();renderWins();showToast('Win guardada');}
 async function saveReel(){
   const id=document.getElementById('reel-idx').value;
   const o={user_id:portalClientId,nombre:document.getElementById('r-n').value,estructura:document.getElementById('r-est').value,gancho:document.getElementById('r-gancho').value,formato:document.getElementById('r-fmt').value,fecha:document.getElementById('r-f').value||null,views:parseInt(document.getElementById('r-v').value)||0,comentarios:parseInt(document.getElementById('r-c').value)||0,seguidores_nuevos:parseInt(document.getElementById('r-s').value)||0,likes:parseInt(document.getElementById('r-l').value)||0,link:document.getElementById('r-link')?.value||''};
@@ -1683,7 +1711,7 @@ async function saveReel(){
 }
 async function saveHist(){
   const id=document.getElementById('hist-idx').value;
-  const o={user_id:portalClientId,idea:document.getElementById('h-idea').value,formato:document.getElementById('h-fmt').value,gancho:document.getElementById('h-gancho').value||'',cta_txt:document.getElementById('h-cta-txt').value||'',lead_magnet:document.getElementById('h-lm').value||'',fecha:document.getElementById('h-f').value||null,views:parseInt(document.getElementById('h-v').value)||0,respuestas_cta:parseInt(document.getElementById('h-cta').value)||0,tasa:document.getElementById('h-tasa').value};
+  const o={user_id:portalClientId,idea:document.getElementById('h-idea').value,formato:document.getElementById('h-fmt').value,fecha:document.getElementById('h-f').value||null,views:parseInt(document.getElementById('h-v').value)||0,respuestas_cta:parseInt(document.getElementById('h-cta').value)||0,tasa:document.getElementById('h-tasa').value};
   if(id)await sb.from('historias').update(o).eq('id',id);
   else await sb.from('historias').insert(o);
   closeM('m-hist');await loadKPIData();renderTbl('historias','tbl-hist');showToast(id?'Historia actualizada':'Historia guardada');
