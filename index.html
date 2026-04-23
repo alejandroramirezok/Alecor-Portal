@@ -1698,7 +1698,6 @@ async function loadMallaData(){
     if(data?.data){
       try{
         const parsed = JSON.parse(data.data);
-        // Only assign if parsed result is a non-null object
         mallaData = (parsed && typeof parsed === 'object') ? parsed : {};
       }catch(parseErr){
         console.error('Error parsing malla data:', parseErr);
@@ -1714,9 +1713,8 @@ async function loadMallaData(){
 }
 
 async function saveMalla(){
-  // Safety check: never save if mallaClientId is not set
   if(!mallaClientId){showToast('Error: cliente no identificado');return;}
-  // Read all current values
+  // Read all current values from DOM
   DOLORES_COLS.forEach(col => {
     if(!mallaData[col.id]) mallaData[col.id] = {};
     DOLOR_ROWS.forEach(row => {
@@ -1739,17 +1737,15 @@ async function saveMalla(){
       };
     });
   });
-  // Final safety check: verify mallaClientId is still correct before writing
-  if(!mallaClientId){showToast('Error: cliente no identificado');return;}
   const jsonStr = JSON.stringify(mallaData);
-  // Don't allow saving '{}' over an existing record
-  const {data:ex} = await sb.from('malla_contenido').select('id').eq('user_id', mallaClientId).maybeSingle();
-  if(ex && jsonStr==='{}'){showToast('Error: datos vacíos, no se guardó');return;}
-  const payload = {user_id: mallaClientId, data: jsonStr};
-  if(ex) await sb.from('malla_contenido').update(payload).eq('user_id', mallaClientId);
-  else await sb.from('malla_contenido').insert(payload);
+  if(jsonStr==='{}'){showToast('Sin datos para guardar');return;}
+  // upsert — gracias a la constraint UNIQUE(user_id) nunca duplica
+  const {error} = await sb.from('malla_contenido').upsert(
+    {user_id: mallaClientId, data: jsonStr},
+    {onConflict: 'user_id'}
+  );
+  if(error){console.error('Error saving malla:',error);showToast('Error al guardar');return;}
   showToast('Malla guardada');
-  // Refresh ideas
   if(document.getElementById('msec-ideas').classList.contains('active')) filterMallaIdeas('reels', document.querySelector('#msec-ideas .pb.active'));
 }
 
@@ -1965,15 +1961,14 @@ async function deleteMallaIdea(colId, n){
 
 async function saveMallaDirecto(){
   if(!mallaClientId){console.error('saveMallaDirecto: no mallaClientId');return;}
-  // Safety: never save an empty object over existing data
   if(!mallaData||Object.keys(mallaData).length===0){
-    console.warn('saveMallaDirecto: mallaData is empty, skipping save to protect existing data');
-    return;
+    console.warn('saveMallaDirecto: mallaData vacío, no se guarda');return;
   }
-  const {data:ex} = await sb.from('malla_contenido').select('id').eq('user_id', mallaClientId).maybeSingle();
-  const payload = {user_id: mallaClientId, data: JSON.stringify(mallaData)};
-  if(ex) await sb.from('malla_contenido').update(payload).eq('user_id', mallaClientId);
-  else await sb.from('malla_contenido').insert(payload);
+  const {error} = await sb.from('malla_contenido').upsert(
+    {user_id: mallaClientId, data: JSON.stringify(mallaData)},
+    {onConflict: 'user_id'}
+  );
+  if(error) console.error('Error en saveMallaDirecto:',error);
 }
 
 async function addMallaToBancoFromIdea(colId, n){
