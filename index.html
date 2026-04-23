@@ -647,31 +647,7 @@ table.t tr:hover td{background:var(--d2)}
 <div class="ov" id="m-cliente"><div class="modal"><div class="mh"><h3 id="m-cl-t">Nuevo Cliente</h3><button class="mc" onclick="closeM('m-cliente')">✕</button></div><div class="mb"><input type="hidden" id="cl-idx"><div class="fg"><div class="fr"><label>Nombre</label><input id="cl-n"></div><div class="fr"><label>Instagram</label><input id="cl-ig"></div></div><div class="fg"><div class="fr"><label>Teléfono</label><input id="cl-tel"></div><div class="fr"><label>Fecha ingreso</label><input type="date" id="cl-ing" oninput="calcCF()"></div></div><div class="fr"><label>Programa</label><select id="cl-prog" onchange="calcCF()"><option value="">— Seleccionar —</option></select></div><div class="fg"><div class="fr"><label>Cuotas</label><select id="cl-cuotas" onchange="calcCF()"><option value="1">1 cuota</option></select></div><div class="fr"><label>¿Activo?</label><select id="cl-activo"><option value="Si">Sí</option><option value="No">No</option></select></div></div><div id="cl-fp"></div><button class="bp" onclick="saveCliente()">Guardar</button></div></div></div>
 
 <!-- INGRESO -->
-<div class="ov" id="m-ingreso"><div class="modal"><div class="mh"><h3 id="m-ing-t">Nuevo Ingreso</h3><button class="mc" onclick="closeM('m-ingreso')">✕</button></div><div class="mb"><input type="hidden" id="ing-idx">
-<div class="ttog"><div class="tbtn active" id="t-n-btn" onclick="setTipo('nuevo')">Cliente Nuevo<br><span style="font-size:8px;font-weight:400">Facturación + Cash</span></div><div class="tbtn" id="t-c-btn" onclick="setTipo('cuota')">Cuota / Abono<br><span style="font-size:8px;font-weight:400">Solo Cash Collected</span></div></div>
-<div class="ibox" id="ing-info"><b>Cliente Nuevo:</b> Facturación = precio total del programa. Cash = lo que entra hoy.</div>
-
-<!-- CLIENTE NUEVO -->
-<div id="ing-nuevo-fields">
-  <div class="fg"><div class="fr"><label>Nombre cliente</label><input id="in-n" placeholder="Nombre completo"></div><div class="fr"><label>Programa</label><select id="in-prog" onchange="onProgIngresoChange()"><option value="">— Seleccionar —</option></select></div></div>
-  <div class="fr" id="in-fac-row"><label>Facturación (precio total del programa)</label><div style="padding:8px 10px;background:var(--d3);border-radius:6px;font-size:14px;font-weight:700;color:var(--gold)" id="in-fac-display">$0</div></div>
-  <div class="fg"><div class="fr"><label>Fecha ingreso</label><input type="date" id="in-f" oninput="onIngFechaChange()"></div><div class="fr"><label>Cash Collected ($)</label><input type="number" id="in-m" placeholder="Lo que entra hoy" oninput="calcCom()"></div></div>
-  <div class="fr" id="in-fin-row" style="display:none"><label>Fecha fin del programa (auto)</label><div style="padding:8px 10px;background:var(--d3);border-radius:6px;font-size:11px;color:var(--ok)" id="in-fin-display">—</div></div>
-  <div class="fg"><div class="fr"><label>¿Cuántas cuotas acordaste?</label><select id="in-cuotas" onchange="onCuotasChange()"><option value="1">1 cuota (pago único)</option></select></div><div class="fr"><label>Pasarela</label><select id="in-pas" onchange="calcCom()"><option value="">— Seleccionar —</option></select></div></div>
-  <div id="in-fechas-cuotas" style="display:none;margin-bottom:10px"></div>
-</div>
-
-<!-- CUOTA / ABONO -->
-<div id="ing-cuota-fields" style="display:none">
-  <div class="fr"><label>Cliente (selecciona de producto)</label><select id="in-cliente-sel" onchange="onClienteSelChange()"><option value="">— Seleccionar cliente —</option></select></div>
-  <div id="in-cliente-info" style="display:none;margin-bottom:10px;padding:8px 10px;background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.2);border-radius:7px;font-size:10px;color:var(--t2)"></div>
-  <div class="fg"><div class="fr"><label>Fecha del abono</label><input type="date" id="in-f-cuota"></div><div class="fr"><label>Cash Collected ($)</label><input type="number" id="in-m-cuota" placeholder="Monto recibido" oninput="calcComCuota()"></div></div>
-  <div class="fr"><label>Pasarela</label><select id="in-pas-cuota" onchange="calcComCuota()"><option value="">— Seleccionar —</option></select></div>
-</div>
-
-<div id="in-com" style="display:none"><label style="font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:1px;font-weight:500;display:block;margin-bottom:4px">Desglose Cash</label><div style="padding:7px 10px;background:var(--d3);border-radius:6px;font-size:11px;color:var(--wn)" id="in-com-t">—</div></div>
-<button class="bp" onclick="saveIngreso()" style="margin-top:8px">Guardar</button>
-</div></div></div>
+<div class="ov" id="m-ingreso"><div class="modal"><div class="mh"><h3 id="m-ing-t">Nuevo Ingreso</h3><button class="mc" onclick="closeM('m-ingreso')">✕</button></div><div class="mb"><input type="hidden" id="ing-idx"><div class="ttog"><div class="tbtn active" id="t-n-btn" onclick="setTipo('nuevo')">Cliente Nuevo<br><span style="font-size:8px;font-weight:400">Facturación + Cash</span></div><div class="tbtn" id="t-c-btn" onclick="setTipo('cuota')">Cuota / Abono<br><span style="font-size:8px;font-weight:400">Solo Cash Collected</span></div></div><div class="ibox" id="ing-info"><b>Cliente Nuevo:</b> Suma a Facturación y Cash Collected.</div><div class="fg"><div class="fr"><label>Nombre cliente</label><input id="in-n"></div><div class="fr"><label>Programa</label><select id="in-prog"><option value="">— Seleccionar —</option></select></div></div><div class="fg"><div class="fr"><label>Fecha</label><input type="date" id="in-f"></div><div class="fr"><label>Monto ($)</label><input type="number" id="in-m" oninput="calcCom()"></div></div><div class="fg"><div class="fr" id="in-cr"><label>Cuotas</label><input type="number" id="in-cuotas" value="1"></div><div class="fr"><label>Pasarela</label><select id="in-pas" onchange="calcCom()"><option value="">— Seleccionar —</option></select></div></div><div class="fr" id="in-cnr" style="display:none"><label>Número de cuota</label><input type="number" id="in-cn" value="2" min="2"></div><div id="in-com" style="display:none"><label style="font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:1px;font-weight:500;display:block;margin-bottom:4px">Comisión estimada</label><div style="padding:7px 10px;background:var(--d3);border-radius:6px;font-size:11px;color:var(--wn)" id="in-com-t">—</div></div><button class="bp" onclick="saveIngreso()">Guardar</button></div></div></div>
 
 <!-- GASTO -->
 <div class="ov" id="m-gasto"><div class="modal"><div class="mh"><h3 id="m-gas-t">Nuevo Gasto</h3><button class="mc" onclick="closeM('m-gasto')">✕</button></div><div class="mb"><input type="hidden" id="gas-idx"><div class="fg"><div class="fr"><label>Detalle</label><input id="g-d"></div><div class="fr"><label>Fecha</label><input type="date" id="g-f"></div></div><div class="fg"><div class="fr"><label>Monto ($)</label><input type="number" id="g-m"></div><div class="fr"><label>Categoría</label><select id="g-cat"><option>Herramientas</option><option>Publicidad</option><option>Educación</option><option>Equipo</option><option>Servicios</option><option>Otro</option></select></div></div><div class="fr"><label>Descripción</label><input id="g-desc"></div><button class="bp" onclick="saveGasto()">Guardar</button></div></div></div>
@@ -1092,22 +1068,13 @@ function setPeriod(p){curPeriod=p;['month','year','life'].forEach(x=>document.ge
 
 function renderOps(){
   const ing=filterP(KPI.ingresos,'fecha');
-  // Facturación = precio total del programa (campo facturacion, solo cliente nuevo)
-  const fac=ing.filter(i=>i.tipo==='nuevo').reduce((s,i)=>s+Number(i.facturacion||0),0);
-  // Cash collected = suma de monto_neto (post-pasarela) de todos los ingresos del período
+  const fac=ing.filter(i=>i.tipo==='nuevo').reduce((s,i)=>s+Number(i.monto||0),0);
   const cash=ing.reduce((s,i)=>s+Number(i.monto||0),0);
-  // Por cobrar: para cada cliente nuevo, precio_programa - total_monto_bruto_cobrado (no descontar comisión)
-  const clientesConDeuda=KPI.clientes.filter(c=>c.activo==='Si');
-  const porCobrar=clientesConDeuda.reduce((total,c)=>{
-    const prog=KPI.programas.find(p=>p.id===c.prog_id);
-    const precio=Number(prog?.precio||0);
-    if(!precio)return total;
-    const cobradoBruto=KPI.ingresos.filter(i=>i.cliente_id===c.id||i.nombre===c.nombre).reduce((s,i)=>s+Number(i.monto_bruto||i.monto||0),0);
-    return total+Math.max(0,precio-cobradoBruto);
-  },0);
+  const porCobrar=ing.filter(i=>i.tipo==='nuevo'&&Number(i.cuotas||1)>1).reduce((s,i)=>s+Number(i.monto||0)*(Number(i.cuotas||1)-1),0);
   const gas=filterP(KPI.gastos,'fecha').reduce((s,g)=>s+Number(g.monto||0),0);
   const bal=cash-gas;const marg=cash>0?Math.round(bal/cash*100):0;
-  const cQ=ing.filter(i=>i.tipo==='cuota').length;
+  const cN=ing.filter(i=>i.tipo==='nuevo').length;const cQ=ing.filter(i=>i.tipo==='cuota').length;
+  const cA=KPI.clientes.filter(c=>c.activo==='Si').length;
   const leads=filterP(KPI.leads,'fecha');
   const la=leads.filter(l=>l.agendo==='Si').length;
   const ls=leads.filter(l=>l.estado==='En seguimiento').length;
@@ -1122,7 +1089,7 @@ function renderOps(){
   const nsp=ag.length?Math.round(ns/ag.length*100):0;
   const aov=cerr>0?Math.round(fac/cerr):0;
   document.getElementById('ops-alerts').innerHTML='';
-  const lifeTotal=KPI.ingresos.filter(i=>i.tipo==='nuevo').reduce((s,i)=>s+Number(i.facturacion||0),0);
+  const lifeTotal=KPI.ingresos.filter(i=>i.tipo==='nuevo').reduce((s,i)=>s+Number(i.monto||0),0);
   const LEVELS=[5000,10000,20000,30000,50000,100000];
   const curLevel=LEVELS.findIndex(l=>lifeTotal<l);
   const prevL=curLevel>0?LEVELS[curLevel-1]:0;
@@ -1138,19 +1105,14 @@ function renderOps(){
     <div class="prog-bar-track" style="height:10px"><div class="prog-bar-fill" style="width:${lifePct}%"></div></div>
     <div class="billing-levels">${levelBadges}</div>
   </div>`;
+  // Update wins counter
   const wEl=document.getElementById('wins-total-cnt');if(wEl)wEl.textContent=KPI.wins.length;
   document.getElementById('ops-ventas').innerHTML=`<div class="ds"><div class="dst"><span>💰</span>Dashboard Ventas</div>
-  <div class="kg">
-    <div class="kcard${fac===0?' r':''}"><div class="kl">Facturación</div><div class="kv">${fM(fac)}</div><div class="ks">Precio total vendido</div></div>
-    <div class="kcard"><div class="kl">Cash Collected</div><div class="kv">${fM(cash)}</div><div class="ks">Neto recibido</div></div>
-    <div class="kcard y"><div class="kl">Por Cobrar</div><div class="kv">${fM(porCobrar)}</div><div class="ks">Cuotas pendientes</div></div>
-    <div class="kcard"><div class="kl">Gastos</div><div class="kv">${fM(gas)}</div><div class="ks">Período</div></div>
-    <div class="kcard${marg<20&&cash>0?' y':marg>=40?' g':''}"><div class="kl">Margen</div><div class="kv">${marg}%</div><div class="ks">Meta: +40%</div></div>
-    <div class="kcard"><div class="kl">Cuotas Recibidas</div><div class="kv">${cQ}</div><div class="ks">Abonos</div></div>
-  </div></div>`;
+  <div class="kg"><div class="kcard${fac===0?' r':''}"><div class="kl">Facturación</div><div class="kv">${fM(fac)}</div><div class="ks">Período</div></div><div class="kcard"><div class="kl">Cash Collected</div><div class="kv">${fM(cash)}</div><div class="ks">Real cobrado</div></div><div class="kcard y"><div class="kl">Por Cobrar</div><div class="kv">${fM(porCobrar)}</div><div class="ks">Cuotas pendientes</div></div><div class="kcard"><div class="kl">Gastos</div><div class="kv">${fM(gas)}</div><div class="ks">Período</div></div><div class="kcard${marg<20&&cash>0?' y':marg>=40?' g':''}"><div class="kl">Margen</div><div class="kv">${marg}%</div><div class="ks">Meta: +40%</div></div><div class="kcard"><div class="kl">Cuotas Recibidas</div><div class="kv">${cQ}</div><div class="ks">Abonos</div></div></div></div>
+`;
   document.getElementById('ops-leads').innerHTML=`<div class="ds"><div class="dst"><span>🧍</span>Dashboard Leads</div><div class="kg"><div class="kcard${leads.length<5?' y':''}"><div class="kl">Leads Totales</div><div class="kv">${leads.length}</div><div class="ks">Período</div></div><div class="kcard"><div class="kl">Leads Agendados</div><div class="kv">${la}</div><div class="ks">Marcados</div></div><div class="kcard${pL<20&&leads.length>0?' r':pL>=40?' g':''}"><div class="kl">% Leads→Agenda</div><div class="kv">${pL}%</div><div class="ks">Meta: +40%</div></div><div class="kcard"><div class="kl">En Seguimiento</div><div class="kv">${ls}</div><div class="ks">Activos</div></div><div class="kcard b"><div class="kl">Lead Magnet</div><div class="kv">${llm}</div><div class="ks">Nurturing</div></div><div class="kcard${lp>5?' y':''}"><div class="kl">Lead Perdido</div><div class="kv">${lp}</div><div class="ks">No convirtieron</div></div></div></div>`;
   document.getElementById('ops-agendas').innerHTML=`<div class="ds"><div class="dst"><span>☎️</span>Dashboard Agendas</div><div class="kg"><div class="kcard"><div class="kl">Llamadas Totales</div><div class="kv">${ag.length}</div><div class="ks">Período</div></div><div class="kcard g"><div class="kl">Llamadas Cerradas</div><div class="kv">${cerr}</div><div class="ks">Ventas</div></div><div class="kcard${cr<30&&ag.length>0?' r':cr>=50?' g':''}"><div class="kl">Close Rate</div><div class="kv">${cr}%</div><div class="ks">Meta: +50%</div></div><div class="kcard${nsp>20?' y':''}"><div class="kl">% No Show</div><div class="kv">${nsp}%</div><div class="ks">${ns} llamadas</div></div><div class="kcard"><div class="kl">Calificadas</div><div class="kv">${calA}</div><div class="ks">Alta calificación</div></div><div class="kcard"><div class="kl">AOV Promedio</div><div class="kv">${fM(aov)}</div><div class="ks">Por venta</div></div></div></div>`;
-  const mD=MESES.map((_,i)=>KPI.ingresos.filter(v=>{if(!v.fecha||v.tipo!=='nuevo')return false;const d=new Date(v.fecha+'T12:00:00');return d.getMonth()===i&&d.getFullYear()===CY}).reduce((s,v)=>s+Number(v.facturacion||0),0));
+  const mD=MESES.map((_,i)=>KPI.ingresos.filter(v=>{if(!v.fecha||v.tipo!=='nuevo')return false;const d=new Date(v.fecha+'T12:00:00');return d.getMonth()===i&&d.getFullYear()===CY}).reduce((s,v)=>s+Number(v.monto||0),0));
   if(chartOps)chartOps.destroy();
   chartOps=new Chart(document.getElementById('chart-ops'),{type:'bar',data:{labels:MESES.map(m=>m.slice(0,3)),datasets:[{label:'Facturación',data:mD,backgroundColor:'rgba(201,168,76,0.6)',borderColor:'#C9A84C',borderWidth:1,borderRadius:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#666',font:{family:'Poppins',size:9}},grid:{color:'rgba(128,128,128,0.05)'}},y:{ticks:{color:'#666',font:{family:'Poppins',size:9},callback:v=>'$'+v.toLocaleString()},grid:{color:'rgba(128,128,128,0.05)'}}}}});
 }
@@ -1221,49 +1183,16 @@ async function deleteRow(type,id){
 function renderTbl(type,elId){
   const el=document.getElementById(elId);
   if(type==='leads'){renderLeadsTbl(el);return;}
-  if(type==='clientes'){renderClientesTbl(el);return;}
-  const keyMap={
-    agendas:{cols:['Nombre','Fecha','Cal.','Resultado','Notas',''],keys:['nombre','fecha','calificacion','resultado','notas','_edit'],fmt:{fecha:fD,calificacion:v=>`<span class="st ${v==='Alta'?'sg':v==='Media'?'sy':'sm'}">${v||'-'}</span>`,resultado:v=>`<span class="st ${v==='Cerrado'?'sg':v==='No Show'?'sr':v==='Pendiente'?'sy':'sm'}">${v||'-'}</span>`}},
-    ingresos:{cols:['Nombre','Tipo','Programa','Fecha','Facturación','Cash Neto',''],keys:['nombre','tipo','programa','fecha','facturacion','monto','_edit'],fmt:{tipo:v=>`<span class="st ${v==='nuevo'?'sg':'sb2'}">${v==='nuevo'?'Nuevo':'Cuota'}</span>`,fecha:fD,facturacion:v=>v?`<b style="color:var(--gold)">${fM(v)}</b>`:'—',monto:v=>`<span style="color:var(--ok)">${fM(v)}</span>`}},
-    gastos:{cols:['Detalle','Fecha','Monto','Categoría',''],keys:['detalle','fecha','monto','categoria','_edit'],fmt:{fecha:fD,monto:v=>`<span style="color:var(--er)">${fM(v)}</span>`}},
-    reels:{cols:['Nombre','Estructura','Fecha','Views','Coms','Segs',''],keys:['nombre','estructura','fecha','views','comentarios','seguidores_nuevos','_edit'],fmt:{fecha:fD,views:v=>Number(v||0).toLocaleString()}},
-    historias:{cols:['Idea','Formato','Fecha','Views','Resp. CTA',''],keys:['idea','formato','fecha','views','respuestas_cta','_edit'],fmt:{fecha:fD,views:v=>Number(v||0).toLocaleString()}},
-    yt:{cols:['Título','Fecha','Views','%CTR','%Ret.',''],keys:['titulo','fecha','views','ctr','retencion','_edit'],fmt:{fecha:fD,views:v=>Number(v||0).toLocaleString(),ctr:v=>v+'%',retencion:v=>v+'%'}}
-  };
+  const keyMap={agendas:{cols:['Nombre','Fecha','Cal.','Resultado','Notas',''],keys:['nombre','fecha','calificacion','resultado','notas','_edit'],fmt:{fecha:fD,calificacion:v=>`<span class="st ${v==='Alta'?'sg':v==='Media'?'sy':'sm'}">${v||'-'}</span>`,resultado:v=>`<span class="st ${v==='Cerrado'?'sg':v==='No Show'?'sr':v==='Pendiente'?'sy':'sm'}">${v||'-'}</span>`}},ingresos:{cols:['Nombre','Tipo','Programa','Fecha','Monto',''],keys:['nombre','tipo','programa','fecha','monto','_edit'],fmt:{tipo:v=>`<span class="st ${v==='nuevo'?'sg':'sb2'}">${v==='nuevo'?'Nuevo':'Cuota'}</span>`,fecha:fD,monto:v=>`<b style="color:var(--gold)">${fM(v)}</b>`}},gastos:{cols:['Detalle','Fecha','Monto','Categoría',''],keys:['detalle','fecha','monto','categoria','_edit'],fmt:{fecha:fD,monto:v=>`<span style="color:var(--er)">${fM(v)}</span>`}},clientes:{cols:['Nombre','Instagram','Ingreso','Fin','Activo',''],keys:['nombre','ig','fecha_ingreso','fecha_fin','activo','_edit'],fmt:{fecha_ingreso:fD,fecha_fin:fD,activo:v=>`<span class="st ${v==='Si'?'sg':'sm'}">${v==='Si'?'Activo':'Inactivo'}</span>`}},reels:{cols:['Nombre','Estructura','Fecha','Views','Coms','Segs',''],keys:['nombre','estructura','fecha','views','comentarios','seguidores_nuevos','_edit'],fmt:{fecha:fD,views:v=>Number(v||0).toLocaleString()}},historias:{cols:['Idea','Formato','Fecha','Views','Resp. CTA',''],keys:['idea','formato','fecha','views','respuestas_cta','_edit'],fmt:{fecha:fD,views:v=>Number(v||0).toLocaleString()}},yt:{cols:['Título','Fecha','Views','%CTR','%Ret.',''],keys:['titulo','fecha','views','ctr','retencion','_edit'],fmt:{fecha:fD,views:v=>Number(v||0).toLocaleString(),ctr:v=>v+'%',retencion:v=>v+'%'}}};
   const cfg=keyMap[type];const data=KPI[type==='yt'?'yt':type];
   if(!data||!data.length){el.innerHTML=emptyEl('Sin registros aún');return;}
+  // Update clientes counters
+  if(type==='clientes'){
+    const actEl=document.getElementById('cli-activos-cnt');const inEl=document.getElementById('cli-inactivos-cnt');
+    if(actEl)actEl.textContent=data.filter(c=>c.activo==='Si').length;
+    if(inEl)inEl.textContent=data.filter(c=>c.activo!=='Si').length;
+  }
   el.innerHTML=`<table class="t"><thead><tr>${cfg.cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead><tbody>${data.map(row=>`<tr ondblclick="openEdit('${type}','${row.id}')" style="cursor:pointer">${cfg.keys.map(k=>{if(k==='_edit')return`<td>${editPencilBtn(type,row.id)}</td>`;let v=row[k]??'—';if(cfg.fmt&&cfg.fmt[k])v=cfg.fmt[k](row[k]);return`<td>${v}</td>`;}).join('')}</tr>`).join('')}</tbody></table>`;
-}
-
-function renderClientesTbl(el){
-  const data=KPI.clientes;
-  const actEl=document.getElementById('cli-activos-cnt');const inEl=document.getElementById('cli-inactivos-cnt');
-  if(actEl)actEl.textContent=data.filter(c=>c.activo==='Si').length;
-  if(inEl)inEl.textContent=data.filter(c=>c.activo!=='Si').length;
-  if(!data||!data.length){el.innerHTML=emptyEl('Sin clientes aún');return;}
-  el.innerHTML=`<table class="t"><thead><tr><th>Nombre</th><th>Programa</th><th>Ingreso</th><th>Fin</th><th>Fechas cuotas</th><th>Pagado</th><th>Por Cobrar</th><th>Estado</th><th></th></tr></thead><tbody>${data.map(c=>{
-    const prog=KPI.programas.find(p=>p.id===c.prog_id);
-    const precio=Number(prog?.precio||0);
-    const pagadoBruto=KPI.ingresos.filter(i=>i.cliente_id===c.id||i.nombre===c.nombre).reduce((s,i)=>s+Number(i.monto_bruto||i.monto||0),0);
-    const porCobrar=Math.max(0,precio-pagadoBruto);
-    let cuotasHTML='—';
-    try{
-      const cd=JSON.parse(c.cuotas_detalle||'[]');
-      if(cd.length>1)cuotasHTML=cd.map(q=>`<div style="font-size:9px;white-space:nowrap">C${q.num}: ${fD(q.fecha)}</div>`).join('');
-      else cuotasHTML='Pago único';
-    }catch(e){cuotasHTML=c.cuotas>1?`${c.cuotas} cuotas`:'Pago único';}
-    return`<tr ondblclick="openEdit('clientes','${c.id}')" style="cursor:pointer">
-      <td><b>${c.nombre||'—'}</b>${c.ig?`<div style="font-size:9px;color:var(--t3)">${c.ig}</div>`:''}</td>
-      <td style="font-size:10px">${prog?.nombre||'—'}</td>
-      <td>${fD(c.fecha_ingreso)}</td>
-      <td>${fD(c.fecha_fin)}</td>
-      <td>${cuotasHTML}</td>
-      <td><b style="color:var(--ok)">${fM(pagadoBruto)}</b></td>
-      <td>${porCobrar>0?`<b style="color:var(--wn)">${fM(porCobrar)}</b>`:`<span style="color:var(--ok)">✓ Saldado</span>`}</td>
-      <td><span class="st ${c.activo==='Si'?'sg':'sm'}">${c.activo==='Si'?'Activo':'Inactivo'}</span></td>
-      <td>${editPencilBtn('clientes',c.id)}</td>
-    </tr>`;
-  }).join('')}</tbody></table>`;
 }
 
 function renderLeadsTbl(el){
@@ -1455,146 +1384,11 @@ async function delPas(id){await sb.from('pasarelas').delete().eq('id',id);await 
 
 function openMod(id){document.getElementById(id).classList.add('open');}
 function closeM(id){document.getElementById(id).classList.remove('open');}
-function openIngModal(){
-  populateIngDD();
-  document.getElementById('ing-idx').value='';
-  setTipo('nuevo');
-  document.getElementById('in-n').value='';
-  document.getElementById('in-f').value='';
-  document.getElementById('in-m').value='';
-  document.getElementById('in-prog').value='';
-  document.getElementById('in-fac-display').textContent='$0';
-  document.getElementById('in-fin-row').style.display='none';
-  document.getElementById('in-fechas-cuotas').style.display='none';
-  document.getElementById('in-com').style.display='none';
-  document.getElementById('m-ing-t').textContent='Nuevo Ingreso';
-  openMod('m-ingreso');
-}
-
-function populateIngDD(){
-  // Programa dropdown with data attrs
-  const ps=document.getElementById('in-prog');
-  ps.innerHTML='<option value="">— Seleccionar —</option>';
-  KPI.programas.forEach(p=>ps.innerHTML+=`<option value="${p.nombre}" data-id="${p.id}" data-precio="${p.precio||0}" data-dias="${p.dias||0}" data-cuotas="${p.cuotas||1}">${p.nombre} (${fM(p.precio)})</option>`);
-  // Pasarela dropdowns
-  ['in-pas','in-pas-cuota'].forEach(pid=>{
-    const pa=document.getElementById(pid);
-    if(!pa)return;
-    pa.innerHTML='<option value="">— Sin pasarela —</option>';
-    KPI.pasarelas.forEach(p=>pa.innerHTML+=`<option value="${p.nombre}" data-com="${p.comision||0}">${p.nombre} (${p.comision||0}%)</option>`);
-  });
-  // Clientes dropdown for cuota/abono
-  const cs=document.getElementById('in-cliente-sel');
-  cs.innerHTML='<option value="">— Seleccionar cliente —</option>';
-  KPI.clientes.filter(c=>c.activo==='Si').forEach(c=>cs.innerHTML+=`<option value="${c.id}" data-nombre="${c.nombre||''}">${c.nombre||'—'}</option>`);
-}
-
-function setTipo(t){
-  tipoIng=t;
-  document.getElementById('t-n-btn').classList.toggle('active',t==='nuevo');
-  document.getElementById('t-c-btn').classList.toggle('active',t==='cuota');
-  document.getElementById('ing-nuevo-fields').style.display=t==='nuevo'?'block':'none';
-  document.getElementById('ing-cuota-fields').style.display=t==='cuota'?'block':'none';
-  document.getElementById('in-com').style.display='none';
-  document.getElementById('ing-info').innerHTML=t==='nuevo'
-    ?'<b>Cliente Nuevo:</b> Facturación = precio total del programa. Cash = lo que entra hoy.'
-    :'<b>Cuota / Abono:</b> Solo impacta Cash Collected. Selecciona el cliente para descontarle la deuda.';
-}
-
-function onProgIngresoChange(){
-  const sel=document.getElementById('in-prog');
-  const opt=sel.options[sel.selectedIndex];
-  const precio=Number(opt?.dataset?.precio||0);
-  const dias=Number(opt?.dataset?.dias||0);
-  const maxCuotas=Number(opt?.dataset?.cuotas||1);
-  document.getElementById('in-fac-display').textContent=fM(precio);
-  // Build cuotas dropdown — just quantity, no amount
-  const csel=document.getElementById('in-cuotas');
-  csel.innerHTML='';
-  for(let i=1;i<=maxCuotas;i++){
-    csel.innerHTML+=`<option value="${i}">${i===1?'1 cuota (pago único)':i+' cuotas'}</option>`;
-  }
-  onIngFechaChange();
-}
-
-function onIngFechaChange(){
-  const fecha=document.getElementById('in-f').value;
-  const sel=document.getElementById('in-prog');
-  const opt=sel.options[sel.selectedIndex];
-  const dias=Number(opt?.dataset?.dias||0);
-  const finRow=document.getElementById('in-fin-row');
-  if(fecha&&dias){
-    const fin=addDays(fecha,dias);
-    document.getElementById('in-fin-display').textContent=`Fin: ${fD(fin)}`;
-    finRow.style.display='block';
-  }else{
-    finRow.style.display='none';
-  }
-  onCuotasChange();
-}
-
-function onCuotasChange(){
-  const fecha=document.getElementById('in-f').value;
-  const sel=document.getElementById('in-prog');
-  const opt=sel.options[sel.selectedIndex];
-  const dias=Number(opt?.dataset?.dias||0);
-  const nCuotas=parseInt(document.getElementById('in-cuotas').value)||1;
-  const el=document.getElementById('in-fechas-cuotas');
-  if(nCuotas<=1||!fecha||!dias){el.style.display='none';return;}
-  const interval=Math.round(dias/nCuotas);
-  let html='<div style="background:var(--d3);border-radius:7px;padding:8px 10px;font-size:10px;color:var(--t2)">';
-  html+='<div style="font-size:9px;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;font-weight:600">📅 Fechas de cobro estimadas</div>';
-  for(let i=0;i<nCuotas;i++){
-    const fc=addDays(fecha,i*interval);
-    html+=`<div style="padding:3px 0;border-bottom:1px solid rgba(255,255,255,0.05)">Cuota ${i+1}: <b style="color:var(--tx)">${fD(fc)}</b></div>`;
-  }
-  html+='</div>';
-  el.innerHTML=html;
-  el.style.display='block';
-}
-
-function calcCom(){
-  const pas=document.getElementById('in-pas').value;
-  const m=Number(document.getElementById('in-m').value||0);
-  const f=KPI.pasarelas.find(p=>p.nombre===pas);
-  const el=document.getElementById('in-com');
-  if(f&&m>0){
-    const com=Math.round(m*Number(f.comision||0)/100);
-    document.getElementById('in-com-t').textContent=`Comisión ${f.comision||0}% = ${fM(com)} · Cash neto: ${fM(m-com)}`;
-    el.style.display='block';
-  }else{el.style.display='none';}
-}
-
-function calcComCuota(){
-  const pas=document.getElementById('in-pas-cuota').value;
-  const m=Number(document.getElementById('in-m-cuota').value||0);
-  const f=KPI.pasarelas.find(p=>p.nombre===pas);
-  const el=document.getElementById('in-com');
-  if(f&&m>0){
-    const com=Math.round(m*Number(f.comision||0)/100);
-    document.getElementById('in-com-t').textContent=`Comisión ${f.comision||0}% = ${fM(com)} · Cash neto: ${fM(m-com)}`;
-    el.style.display='block';
-  }else{el.style.display='none';}
-}
-
-function onClienteSelChange(){
-  const sel=document.getElementById('in-cliente-sel');
-  const cid=sel.value;
-  const infoEl=document.getElementById('in-cliente-info');
-  if(!cid){infoEl.style.display='none';return;}
-  const c=KPI.clientes.find(x=>x.id===cid);
-  const prog=KPI.programas.find(p=>p.id===c?.prog_id);
-  const cobrado=KPI.ingresos.filter(i=>i.cliente_id===cid||i.nombre===c?.nombre).reduce((s,i)=>s+Number(i.monto_bruto||i.monto||0),0);
-  const precioTotal=Number(prog?.precio||0);
-  const porCobrar=Math.max(0,precioTotal-cobrado);
-  infoEl.innerHTML=`<b style="color:var(--tx)">${c?.nombre||'—'}</b> · ${prog?.nombre||'—'}<br>Precio programa: <b style="color:var(--gold)">${fM(precioTotal)}</b> · Pagado: <b style="color:var(--ok)">${fM(cobrado)}</b> · Por cobrar: <b style="color:${porCobrar>0?'var(--wn)':'var(--ok)'}">${fM(porCobrar)}</b>`;
-  infoEl.style.display='block';
-}
-
-document.addEventListener('change',e=>{
-  if(e.target.id==='in-pas'||e.target.id==='in-m')calcCom();
-  if(e.target.id==='in-pas-cuota'||e.target.id==='in-m-cuota')calcComCuota();
-});
+function openIngModal(){populateIngDD();document.getElementById('ing-idx').value='';setTipo('nuevo');document.getElementById('in-n').value='';document.getElementById('in-f').value='';document.getElementById('in-m').value='';document.getElementById('in-cuotas').value=1;document.getElementById('m-ing-t').textContent='Nuevo Ingreso';openMod('m-ingreso');}
+function populateIngDD(){const ps=document.getElementById('in-prog');ps.innerHTML='<option value="">—</option>';KPI.programas.forEach(p=>ps.innerHTML+=`<option value="${p.nombre}">${p.nombre} (${fM(p.precio)})</option>`);const pa=document.getElementById('in-pas');pa.innerHTML='<option value="">—</option>';KPI.pasarelas.forEach(p=>pa.innerHTML+=`<option value="${p.nombre}">${p.nombre} (${p.comision||0}%)</option>`);}
+function setTipo(t){tipoIng=t;document.getElementById('t-n-btn').classList.toggle('active',t==='nuevo');document.getElementById('t-c-btn').classList.toggle('active',t==='cuota');document.getElementById('in-cr').style.display=t==='nuevo'?'block':'none';document.getElementById('in-cnr').style.display=t==='cuota'?'block':'none';document.getElementById('ing-info').innerHTML=t==='nuevo'?'<b>Cliente Nuevo:</b> Suma a Facturación y Cash Collected.':'<b>Cuota / Abono:</b> Solo Cash Collected.';}
+function calcCom(){const pas=document.getElementById('in-pas').value;const m=Number(document.getElementById('in-m').value||0);const f=KPI.pasarelas.find(p=>p.nombre===pas);const el=document.getElementById('in-com');if(f&&m>0){const c=Math.round(m*Number(f.comision||0)/100);document.getElementById('in-com-t').textContent=`${f.comision||0}% = ${fM(c)} · Neto: ${fM(m-c)}`;el.style.display='block';}else el.style.display='none';}
+document.addEventListener('change',e=>{if(e.target.id==='in-pas'||e.target.id==='in-m')calcCom();});
 
 function openAgModal(){document.getElementById('ag-idx').value='';['ag-n','ag-ig','ag-tel','ag-search'].forEach(id=>document.getElementById(id).value='');document.getElementById('ag-not').value='';document.getElementById('ag-dd').classList.remove('show');document.getElementById('m-ag-t').textContent='Nueva Agenda';openMod('m-agenda');}
 function filterLS(){const q=document.getElementById('ag-search').value.trim().toLowerCase();const dd=document.getElementById('ag-dd');if(!q){dd.classList.remove('show');return}const m=KPI.leads.filter(l=>(l.nombre||'').toLowerCase().includes(q)||(l.ig||'').toLowerCase().includes(q)).slice(0,8);dd.innerHTML=m.length?m.map((l,i)=>`<div class="lo" onclick="selLead(${KPI.leads.indexOf(l)})"><div>${l.nombre||'—'}</div><div class="lm">${l.ig||''} · ${l.fuente||''} · ${l.estado||''}</div></div>`).join(''):'<div class="lo" style="color:var(--t3)">Sin resultados</div>';dd.classList.add('show');}
@@ -1632,68 +1426,7 @@ async function saveAgenda(){
   closeM('m-agenda');await loadKPIData();renderTbl('agendas','tbl-agendas');showToast(id?'Agenda actualizada':'Agenda guardada');
 }
 async function saveCliente(){const pid=document.getElementById('cl-prog').value;const ing=document.getElementById('cl-ing').value;const prog=KPI.programas.find(p=>p.id===pid);const dias=prog?parseInt(prog.dias||90):0;const fin=ing&&dias?addDays(ing,dias):null;const o={user_id:portalClientId,nombre:document.getElementById('cl-n').value,ig:document.getElementById('cl-ig').value,telefono:document.getElementById('cl-tel').value,fecha_ingreso:ing||null,fecha_fin:fin,prog_id:pid||null,cuotas:parseInt(document.getElementById('cl-cuotas').value)||1,activo:document.getElementById('cl-activo').value};await sb.from('clientes_kpi').insert(o);closeM('m-cliente');await loadKPIData();renderTbl('clientes','tbl-clientes');showToast('Cliente guardado');}
-async function saveIngreso(){
-  const id=document.getElementById('ing-idx').value;
-  let o;
-  if(tipoIng==='nuevo'){
-    const nombre=document.getElementById('in-n').value;
-    const progNombre=document.getElementById('in-prog').value;
-    const fecha=document.getElementById('in-f').value||null;
-    const cashBruto=Number(document.getElementById('in-m').value)||0;
-    const pasarela=document.getElementById('in-pas').value;
-    const nCuotas=parseInt(document.getElementById('in-cuotas').value)||1;
-    const prog=KPI.programas.find(p=>p.nombre===progNombre);
-    const facturacion=Number(prog?.precio||0);
-    const dias=parseInt(prog?.dias||0);
-    const pasObj=KPI.pasarelas.find(p=>p.nombre===pasarela);
-    const comision=pasObj?Number(pasObj.comision||0):0;
-    const cashNeto=Math.round(cashBruto*(1-comision/100));
-    // Build cuotas fechas
-    let cuotasDetalle=[];
-    if(nCuotas>1&&fecha&&dias){
-      const interval=Math.round(dias/nCuotas);
-      for(let i=0;i<nCuotas;i++){cuotasDetalle.push({num:i+1,fecha:addDays(fecha,i*interval)});}
-    }
-    o={user_id:portalClientId,tipo:'nuevo',nombre,programa:progNombre,fecha,
-      monto:cashNeto,monto_bruto:cashBruto,facturacion,cuotas:nCuotas,pasarela};
-    if(id)await sb.from('ingresos').update(o).eq('id',id);
-    else await sb.from('ingresos').insert(o);
-    // Auto-crear cliente
-    if(!id&&nombre&&prog){
-      const yaExiste=KPI.clientes.find(c=>(c.nombre||'').toLowerCase()===nombre.toLowerCase());
-      if(!yaExiste){
-        const fechaFin=fecha&&dias?addDays(fecha,dias):null;
-        await sb.from('clientes_kpi').insert({
-          user_id:portalClientId,nombre,fecha_ingreso:fecha,fecha_fin:fechaFin,
-          prog_id:prog.id||null,cuotas:nCuotas,activo:'Si',
-          cuotas_detalle:JSON.stringify(cuotasDetalle)
-        });
-      }
-    }
-  }else{
-    // Cuota / Abono
-    const cid=document.getElementById('in-cliente-sel').value;
-    const cliente=KPI.clientes.find(c=>c.id===cid);
-    const nombre=cliente?.nombre||'';
-    const prog=KPI.programas.find(p=>p.id===cliente?.prog_id);
-    const fecha=document.getElementById('in-f-cuota').value||null;
-    const cashBruto=Number(document.getElementById('in-m-cuota').value)||0;
-    const pasarela=document.getElementById('in-pas-cuota').value;
-    const pasObj=KPI.pasarelas.find(p=>p.nombre===pasarela);
-    const comision=pasObj?Number(pasObj.comision||0):0;
-    const cashNeto=Math.round(cashBruto*(1-comision/100));
-    o={user_id:portalClientId,tipo:'cuota',nombre,programa:prog?.nombre||'',fecha,
-      monto:cashNeto,monto_bruto:cashBruto,facturacion:0,cliente_id:cid,pasarela};
-    if(id)await sb.from('ingresos').update(o).eq('id',id);
-    else await sb.from('ingresos').insert(o);
-  }
-  closeM('m-ingreso');
-  await loadKPIData();
-  renderTbl('ingresos','tbl-ingresos');
-  renderTbl('clientes','tbl-clientes');
-  renderOps();
-  showToast(id?'Ingreso actualizado':'Ingreso guardado');
-}
+async function saveIngreso(){const o={user_id:portalClientId,tipo:tipoIng,nombre:document.getElementById('in-n').value,programa:document.getElementById('in-prog').value,fecha:document.getElementById('in-f').value||null,monto:Number(document.getElementById('in-m').value)||0,cuotas:tipoIng==='nuevo'?parseInt(document.getElementById('in-cuotas').value)||1:1,cuota_num:tipoIng==='cuota'?parseInt(document.getElementById('in-cn').value)||null:null,pasarela:document.getElementById('in-pas').value};await sb.from('ingresos').insert(o);closeM('m-ingreso');await loadKPIData();renderTbl('ingresos','tbl-ingresos');showToast('Ingreso guardado');}
 async function saveGasto(){
   const id=document.getElementById('gas-idx').value;
   const o={user_id:portalClientId,detalle:document.getElementById('g-d').value,fecha:document.getElementById('g-f').value||null,monto:Number(document.getElementById('g-m').value)||0,categoria:document.getElementById('g-cat').value,descripcion:document.getElementById('g-desc').value};
@@ -1959,11 +1692,30 @@ async function openMalla(clientId){
 }
 
 async function loadMallaData(){
-  const {data} = await sb.from('malla_contenido').select('*').eq('user_id', mallaClientId).maybeSingle();
-  mallaData = data?.data ? JSON.parse(data.data) : {};
+  try{
+    const {data,error} = await sb.from('malla_contenido').select('*').eq('user_id', mallaClientId).maybeSingle();
+    if(error) throw error;
+    if(data?.data){
+      try{
+        const parsed = JSON.parse(data.data);
+        // Only assign if parsed result is a non-null object
+        mallaData = (parsed && typeof parsed === 'object') ? parsed : {};
+      }catch(parseErr){
+        console.error('Error parsing malla data:', parseErr);
+        mallaData = {};
+      }
+    }else{
+      mallaData = {};
+    }
+  }catch(e){
+    console.error('Error loading malla:', e);
+    mallaData = {};
+  }
 }
 
 async function saveMalla(){
+  // Safety check: never save if mallaClientId is not set
+  if(!mallaClientId){showToast('Error: cliente no identificado');return;}
   // Read all current values
   DOLORES_COLS.forEach(col => {
     if(!mallaData[col.id]) mallaData[col.id] = {};
@@ -1987,8 +1739,13 @@ async function saveMalla(){
       };
     });
   });
+  // Final safety check: verify mallaClientId is still correct before writing
+  if(!mallaClientId){showToast('Error: cliente no identificado');return;}
+  const jsonStr = JSON.stringify(mallaData);
+  // Don't allow saving '{}' over an existing record
   const {data:ex} = await sb.from('malla_contenido').select('id').eq('user_id', mallaClientId).maybeSingle();
-  const payload = {user_id: mallaClientId, data: JSON.stringify(mallaData)};
+  if(ex && jsonStr==='{}'){showToast('Error: datos vacíos, no se guardó');return;}
+  const payload = {user_id: mallaClientId, data: jsonStr};
   if(ex) await sb.from('malla_contenido').update(payload).eq('user_id', mallaClientId);
   else await sb.from('malla_contenido').insert(payload);
   showToast('Malla guardada');
@@ -2207,6 +1964,12 @@ async function deleteMallaIdea(colId, n){
 }
 
 async function saveMallaDirecto(){
+  if(!mallaClientId){console.error('saveMallaDirecto: no mallaClientId');return;}
+  // Safety: never save an empty object over existing data
+  if(!mallaData||Object.keys(mallaData).length===0){
+    console.warn('saveMallaDirecto: mallaData is empty, skipping save to protect existing data');
+    return;
+  }
   const {data:ex} = await sb.from('malla_contenido').select('id').eq('user_id', mallaClientId).maybeSingle();
   const payload = {user_id: mallaClientId, data: JSON.stringify(mallaData)};
   if(ex) await sb.from('malla_contenido').update(payload).eq('user_id', mallaClientId);
