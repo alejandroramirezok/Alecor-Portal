@@ -514,7 +514,10 @@ table.t tr:hover td{background:var(--d2)}
       <button class="ptb-back" onclick="goHome()">← Inicio</button>
       <div class="ptb-title">Malla de Contenido</div>
     </div>
-    <span class="badge" style="background:rgba(139,92,246,.12);color:#a78bfa;border:1px solid rgba(139,92,246,.3)">MALLA</span>
+    <div style="display:flex;align-items:center;gap:10px">
+      <button onclick="saveMalla()" style="background:linear-gradient(135deg,var(--gd),var(--gold));color:#000;border:none;padding:7px 18px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font);letter-spacing:0.3px">💾 Guardar Malla</button>
+      <span class="badge" style="background:rgba(139,92,246,.12);color:#a78bfa;border:1px solid rgba(139,92,246,.3)">MALLA</span>
+    </div>
   </div>
   <div style="display:flex;flex:1;overflow:hidden;height:calc(100vh - 50px)">
     <div class="kpi-sidebar">
@@ -1692,29 +1695,12 @@ async function openMalla(clientId){
 }
 
 async function loadMallaData(){
-  try{
-    const {data,error} = await sb.from('malla_contenido').select('*').eq('user_id', mallaClientId).maybeSingle();
-    if(error) throw error;
-    if(data?.data){
-      try{
-        const parsed = JSON.parse(data.data);
-        mallaData = (parsed && typeof parsed === 'object') ? parsed : {};
-      }catch(parseErr){
-        console.error('Error parsing malla data:', parseErr);
-        mallaData = {};
-      }
-    }else{
-      mallaData = {};
-    }
-  }catch(e){
-    console.error('Error loading malla:', e);
-    mallaData = {};
-  }
+  const {data} = await sb.from('malla_contenido').select('*').eq('user_id', mallaClientId).maybeSingle();
+  mallaData = data?.data ? JSON.parse(data.data) : {};
 }
 
 async function saveMalla(){
-  if(!mallaClientId){showToast('Error: cliente no identificado');return;}
-  // Read all current values from DOM
+  // Read all current values
   DOLORES_COLS.forEach(col => {
     if(!mallaData[col.id]) mallaData[col.id] = {};
     DOLOR_ROWS.forEach(row => {
@@ -1737,15 +1723,12 @@ async function saveMalla(){
       };
     });
   });
-  const jsonStr = JSON.stringify(mallaData);
-  if(jsonStr==='{}'){showToast('Sin datos para guardar');return;}
-  // upsert — gracias a la constraint UNIQUE(user_id) nunca duplica
-  const {error} = await sb.from('malla_contenido').upsert(
-    {user_id: mallaClientId, data: jsonStr},
-    {onConflict: 'user_id'}
-  );
-  if(error){console.error('Error saving malla:',error);showToast('Error al guardar');return;}
+  const {data:ex} = await sb.from('malla_contenido').select('id').eq('user_id', mallaClientId).maybeSingle();
+  const payload = {user_id: mallaClientId, data: JSON.stringify(mallaData)};
+  if(ex) await sb.from('malla_contenido').update(payload).eq('user_id', mallaClientId);
+  else await sb.from('malla_contenido').insert(payload);
   showToast('Malla guardada');
+  // Refresh ideas
   if(document.getElementById('msec-ideas').classList.contains('active')) filterMallaIdeas('reels', document.querySelector('#msec-ideas .pb.active'));
 }
 
@@ -1960,15 +1943,10 @@ async function deleteMallaIdea(colId, n){
 }
 
 async function saveMallaDirecto(){
-  if(!mallaClientId){console.error('saveMallaDirecto: no mallaClientId');return;}
-  if(!mallaData||Object.keys(mallaData).length===0){
-    console.warn('saveMallaDirecto: mallaData vacío, no se guarda');return;
-  }
-  const {error} = await sb.from('malla_contenido').upsert(
-    {user_id: mallaClientId, data: JSON.stringify(mallaData)},
-    {onConflict: 'user_id'}
-  );
-  if(error) console.error('Error en saveMallaDirecto:',error);
+  const {data:ex} = await sb.from('malla_contenido').select('id').eq('user_id', mallaClientId).maybeSingle();
+  const payload = {user_id: mallaClientId, data: JSON.stringify(mallaData)};
+  if(ex) await sb.from('malla_contenido').update(payload).eq('user_id', mallaClientId);
+  else await sb.from('malla_contenido').insert(payload);
 }
 
 async function addMallaToBancoFromIdea(colId, n){
