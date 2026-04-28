@@ -514,10 +514,7 @@ table.t tr:hover td{background:var(--d2)}
       <button class="ptb-back" onclick="goHome()">← Inicio</button>
       <div class="ptb-title">Malla de Contenido</div>
     </div>
-    <div style="display:flex;align-items:center;gap:10px">
-      <button onclick="saveMalla()" style="background:linear-gradient(135deg,var(--gd),var(--gold));color:#000;border:none;padding:7px 18px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font);letter-spacing:0.3px">💾 Guardar Malla</button>
-      <span class="badge" style="background:rgba(139,92,246,.12);color:#a78bfa;border:1px solid rgba(139,92,246,.3)">MALLA</span>
-    </div>
+    <span class="badge" style="background:rgba(139,92,246,.12);color:#a78bfa;border:1px solid rgba(139,92,246,.3)">MALLA</span>
   </div>
   <div style="display:flex;flex:1;overflow:hidden;height:calc(100vh - 50px)">
     <div class="kpi-sidebar">
@@ -606,6 +603,10 @@ table.t tr:hover td{background:var(--d2)}
             <div class="ec"><div class="ect" style="display:flex;align-items:center;justify-content:space-between"><span>Tareas semanales</span><button class="btn-add-sm" onclick="addTaskEd()">+ Agregar</button></div>
               <div id="tasks-ed"></div>
               <button class="btn-save" style="margin-top:12px" onclick="saveTareas()">Guardar tareas</button>
+            </div>
+            <div class="ec" style="margin-top:16px">
+              <div class="ect" style="margin-bottom:10px">📅 Vista previa del calendario</div>
+              <div id="admin-cal-preview" style="padding:4px"></div>
             </div>
           </div>
           <div class="ep" id="ep-documentos">
@@ -1319,9 +1320,21 @@ function taskEdRow(t,i){const cats=Object.keys(CAL_COLORS);return`
   </div>
   <input type="text" value="${(t.description||'').replace(/"/g,'&quot;')}" id="tdesc-${i}" placeholder="Descripción (opcional)..." style="width:100%;background:var(--d3);border:1px solid var(--br);border-radius:6px;padding:6px 10px;color:var(--t2);font-size:10px;font-family:var(--font);outline:none;margin-bottom:4px">
 </div>`;}
-function renderTasksEd(tasks){edTasks=[...tasks];const el=document.getElementById('tasks-ed');el.innerHTML=edTasks.map((t,i)=>taskEdRow(t,i)).join('');}
+function updateAdminCal(){
+  const el=document.getElementById('admin-cal-preview');
+  if(!el)return;
+  // Read current DOM state of tasks
+  const tasks=edTasks.map((t,i)=>({
+    text:document.getElementById('te-'+i)?.value||t.text||'',
+    date:document.getElementById('td-'+i)?.value||t.date||'',
+    category:document.getElementById('tc-'+i)?.value||t.category||'Tarea',
+    description:document.getElementById('tdesc-'+i)?.value||t.description||'',
+    done:t.done||false
+  })).filter(t=>t.text.trim());
+  el.innerHTML=buildCalendar(tasks);
+}
+function renderTasksEd(tasks){edTasks=[...tasks];const el=document.getElementById('tasks-ed');el.innerHTML=edTasks.map((t,i)=>taskEdRow(t,i)).join('');updateAdminCal();}
 function addTaskEd(){
-  // Save current values before adding
   edTasks=edTasks.map((t,i)=>({...t,text:document.getElementById('te-'+i)?.value??t.text,date:document.getElementById('td-'+i)?.value??t.date,category:document.getElementById('tc-'+i)?.value??t.category,description:document.getElementById('tdesc-'+i)?.value??t.description}));
   const newTask={text:'',done:false,position:edTasks.length,date:'',category:'Tarea',description:''};
   edTasks.push(newTask);
@@ -1329,6 +1342,7 @@ function addTaskEd(){
   el.innerHTML+=taskEdRow(newTask,edTasks.length-1);
   const newInput=document.getElementById('te-'+(edTasks.length-1));
   if(newInput)newInput.focus();
+  updateAdminCal();
 }
 function dupTaskEd(i){
   edTasks=edTasks.map((t,j)=>({...t,text:document.getElementById('te-'+j)?.value??t.text,date:document.getElementById('td-'+j)?.value??t.date,category:document.getElementById('tc-'+j)?.value??t.category,description:document.getElementById('tdesc-'+j)?.value??t.description}));
@@ -1336,11 +1350,11 @@ function dupTaskEd(i){
   edTasks.push(dup);
   const el=document.getElementById('tasks-ed');
   el.innerHTML+=taskEdRow(dup,edTasks.length-1);
+  updateAdminCal();
 }
-function removeTaskEd(i){edTasks.splice(i,1);renderTasksEd(edTasks);}
+function removeTaskEd(i){edTasks.splice(i,1);renderTasksEd(edTasks);updateAdminCal();}
 async function saveTareas(){
   const cid=getCurCid();if(!cid)return;
-  // Read current DOM values into edTasks first
   const updated=edTasks.map((t,i)=>({...t,
     text:document.getElementById('te-'+i)?.value||t.text,
     date:document.getElementById('td-'+i)?.value||null,
@@ -1349,11 +1363,10 @@ async function saveTareas(){
   })).filter(t=>t.text.trim());
   await sb.from('tasks').delete().eq('user_id',cid);
   if(updated.length)await sb.from('tasks').insert(updated.map((t,i)=>({user_id:cid,text:t.text,done:t.done||false,position:i,date:t.date,category:t.category,description:t.description})));
-  // Re-render to sync DOM with saved state
   renderTasksEd(updated);
+  updateAdminCal();
   showToast('Tareas guardadas');
 }
-
 function renderDocsEd(docs){
   edDocs=[...docs];
   ['etapa1','etapa2','etapa3'].forEach(eid=>{
@@ -1391,7 +1404,11 @@ function openIngModal(){populateIngDD();document.getElementById('ing-idx').value
 function populateIngDD(){const ps=document.getElementById('in-prog');ps.innerHTML='<option value="">—</option>';KPI.programas.forEach(p=>ps.innerHTML+=`<option value="${p.nombre}">${p.nombre} (${fM(p.precio)})</option>`);const pa=document.getElementById('in-pas');pa.innerHTML='<option value="">—</option>';KPI.pasarelas.forEach(p=>pa.innerHTML+=`<option value="${p.nombre}">${p.nombre} (${p.comision||0}%)</option>`);}
 function setTipo(t){tipoIng=t;document.getElementById('t-n-btn').classList.toggle('active',t==='nuevo');document.getElementById('t-c-btn').classList.toggle('active',t==='cuota');document.getElementById('in-cr').style.display=t==='nuevo'?'block':'none';document.getElementById('in-cnr').style.display=t==='cuota'?'block':'none';document.getElementById('ing-info').innerHTML=t==='nuevo'?'<b>Cliente Nuevo:</b> Suma a Facturación y Cash Collected.':'<b>Cuota / Abono:</b> Solo Cash Collected.';}
 function calcCom(){const pas=document.getElementById('in-pas').value;const m=Number(document.getElementById('in-m').value||0);const f=KPI.pasarelas.find(p=>p.nombre===pas);const el=document.getElementById('in-com');if(f&&m>0){const c=Math.round(m*Number(f.comision||0)/100);document.getElementById('in-com-t').textContent=`${f.comision||0}% = ${fM(c)} · Neto: ${fM(m-c)}`;el.style.display='block';}else el.style.display='none';}
-document.addEventListener('change',e=>{if(e.target.id==='in-pas'||e.target.id==='in-m')calcCom();});
+document.addEventListener('input',e=>{if(e.target.closest('#tasks-ed'))updateAdminCal();});
+document.addEventListener('change',e=>{
+  if(e.target.closest('#tasks-ed'))updateAdminCal();
+  if(e.target.id==='in-pas'||e.target.id==='in-m')calcCom();
+});
 
 function openAgModal(){document.getElementById('ag-idx').value='';['ag-n','ag-ig','ag-tel','ag-search'].forEach(id=>document.getElementById(id).value='');document.getElementById('ag-not').value='';document.getElementById('ag-dd').classList.remove('show');document.getElementById('m-ag-t').textContent='Nueva Agenda';openMod('m-agenda');}
 function filterLS(){const q=document.getElementById('ag-search').value.trim().toLowerCase();const dd=document.getElementById('ag-dd');if(!q){dd.classList.remove('show');return}const m=KPI.leads.filter(l=>(l.nombre||'').toLowerCase().includes(q)||(l.ig||'').toLowerCase().includes(q)).slice(0,8);dd.innerHTML=m.length?m.map((l,i)=>`<div class="lo" onclick="selLead(${KPI.leads.indexOf(l)})"><div>${l.nombre||'—'}</div><div class="lm">${l.ig||''} · ${l.fuente||''} · ${l.estado||''}</div></div>`).join(''):'<div class="lo" style="color:var(--t3)">Sin resultados</div>';dd.classList.add('show');}
@@ -1487,7 +1504,8 @@ const CAL_COLORS={
   'Lead Magnet':{'bg':'#fce7f3','txt':'#9d174d','icon':'🎁'},
   'Grabación':{'bg':'#d1fae5','txt':'#065f46','icon':'🎬'},
   'ADS':{'bg':'#bfdbfe','txt':'#1e3a8a','icon':'💰'},
-  'Email / Newsletter':{'bg':'#e0e7ff','txt':'#3730a3','icon':'📧'},
+  'Escribir Guiones':{'bg':'#ede9fe','txt':'#5b21b6','icon':'✍️'},
+  'Malla de Contenido':{'bg':'#f0fdf4','txt':'#166534','icon':'🗂️'},
   'Revisión / Feedback':{'bg':'#bbf7d0','txt':'#14532d','icon':'✅'},
   'Estrategia':{'bg':'#fce7f3','txt':'#831843','icon':'🧠'},
   'Shoutout':{'bg':'#fef08a','txt':'#713f12','icon':'📢'},
