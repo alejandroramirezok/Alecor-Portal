@@ -479,7 +479,7 @@ table.t tr:hover td{background:var(--d2)}
       <div class="kpi-section" id="ksec-hist-m"><div class="tw"><div class="th2"><h3>Historias</h3><button class="ba" onclick="openMod('m-hist');resetMod('hist')">+ Nueva Secuencia</button></div><div class="tbl-scroll"><div id="tbl-hist"></div></div></div></div>
       <div class="kpi-section" id="ksec-yt-m"><div class="tw"><div class="th2"><h3>YouTube</h3><button class="ba" onclick="openMod('m-yt');resetMod('yt')">+ Nuevo Video</button></div><div class="tbl-scroll"><div id="tbl-yt"></div></div></div></div>
       <div class="kpi-section" id="ksec-ideas-m">
-        <div class="tw"><div class="th2"><h3>Banco de Ideas</h3><button class="ba" onclick="openM('m-idea')">+ Nueva Idea</button></div><div class="tbl-scroll"><div id="ideas-list"></div></div></div>
+        <div class="tw"><div class="th2"><h3>Banco de Ideas</h3><button class="ba" onclick="document.getElementById('idea-idx').value='';document.getElementById('m-idea-t').textContent='Nueva Idea';['idea-titulo','idea-gancho','idea-link','idea-transcripcion'].forEach(id=>document.getElementById(id).value='');document.getElementById('idea-tipo').value='reel';document.getElementById('idea-estado').value='idea';toggleIdeaTipo();openM('m-idea')">+ Nueva Idea</button></div><div class="tbl-scroll"><div id="ideas-list"></div></div></div>
       </div>
       <div class="kpi-section" id="ksec-viral-m">
         <div class="tw" style="padding:16px;margin-bottom:14px">
@@ -604,10 +604,6 @@ table.t tr:hover td{background:var(--d2)}
               <div id="tasks-ed"></div>
               <button class="btn-save" style="margin-top:12px" onclick="saveTareas()">Guardar tareas</button>
             </div>
-            <div class="ec" style="margin-top:16px">
-              <div class="ect" style="margin-bottom:10px">📅 Vista previa del calendario</div>
-              <div id="admin-cal-preview" style="padding:4px"></div>
-            </div>
           </div>
           <div class="ep" id="ep-documentos">
             <div class="ec">
@@ -616,7 +612,6 @@ table.t tr:hover td{background:var(--d2)}
               <div style="margin-bottom:14px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px"><div style="font-size:11px;font-weight:600;color:var(--gold)">🧬 ADN del Negocio — Etapa 1</div><button class="btn-add-sm" onclick="addDocEd('etapa1')">+ Doc</button></div><div id="docs-ed-etapa1"></div></div>
               <div style="margin-bottom:14px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px"><div style="font-size:11px;font-weight:600;color:var(--gold)">🎯 Contenido Láser — Etapa 2</div><button class="btn-add-sm" onclick="addDocEd('etapa2')">+ Doc</button></div><div id="docs-ed-etapa2"></div></div>
               <div style="margin-bottom:14px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px"><div style="font-size:11px;font-weight:600;color:var(--gold)">⚙️ Estructuras y Operaciones — Etapa 3</div><button class="btn-add-sm" onclick="addDocEd('etapa3')">+ Doc</button></div><div id="docs-ed-etapa3"></div></div>
-              <div style="margin-bottom:14px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px"><div style="font-size:11px;font-weight:600;color:var(--gold)">🎁 Lead Magnets</div><button class="btn-add-sm" onclick="addDocEd('leadmagnets')">+ Doc</button></div><div id="docs-ed-leadmagnets"></div></div>
               <button class="btn-save" style="margin-top:8px" onclick="saveDocs()">Guardar documentos</button>
             </div>
           </div>
@@ -670,7 +665,8 @@ table.t tr:hover td{background:var(--d2)}
 <div class="ov" id="m-yt"><div class="modal"><div class="mh"><h3 id="m-yt-t">Nuevo Video YouTube</h3><button class="mc" onclick="closeM('m-yt')">✕</button></div><div class="mb"><input type="hidden" id="yt-idx"><div class="fg"><div class="fr"><label>Título</label><input id="y-t"></div><div class="fr"><label>Fecha</label><input type="date" id="y-f"></div></div><div class="fg"><div class="fr"><label>Duración (min)</label><input type="number" id="y-d" step="0.5"></div><div class="fr"><label>Views</label><input type="number" id="y-v" value="0"></div></div><div class="fg"><div class="fr"><label>% CTR</label><input type="number" id="y-ctr" step="0.1"></div><div class="fr"><label>% Retención</label><input type="number" id="y-ret" step="0.1"></div></div><button class="bp" onclick="saveYT()">Guardar</button></div></div></div>
 
 <!-- PROGRAMA -->
-<div class="ov" id="m-idea"><div class="modal"><div class="mh"><h3>Nueva Idea</h3><button class="mc" onclick="closeM('m-idea')">✕</button></div><div class="mb">
+<div class="ov" id="m-idea"><div class="modal"><div class="mh"><h3 id="m-idea-t">Nueva Idea</h3><button class="mc" onclick="closeM('m-idea')">✕</button></div><div class="mb">
+  <input type="hidden" id="idea-idx">
   <div class="fg"><div class="fr"><label>Idea / Título</label><input id="idea-titulo" placeholder="Ej: Video sobre los errores más comunes..."></div><div class="fr"><label>Gancho que se te ocurrió</label><input id="idea-gancho" placeholder="Frase de apertura"></div></div>
   <div class="fg"><div class="fr"><label>Link de referencia</label><input id="idea-link" placeholder="https://..."></div><div class="fr"><label>Tipo de contenido</label><select id="idea-tipo" onchange="toggleIdeaTipo()"><option value="reel">Reel</option><option value="historia">Historia</option><option value="youtube">YouTube</option></select></div></div>
   <div class="fr"><label>Transcripción del video referencia</label><textarea id="idea-transcripcion" rows="3" style="resize:vertical" placeholder="Pega la transcripción si tienes..."></textarea></div>
@@ -1321,20 +1317,9 @@ function taskEdRow(t,i){const cats=Object.keys(CAL_COLORS);return`
   </div>
   <input type="text" value="${(t.description||'').replace(/"/g,'&quot;')}" id="tdesc-${i}" placeholder="Descripción (opcional)..." style="width:100%;background:var(--d3);border:1px solid var(--br);border-radius:6px;padding:6px 10px;color:var(--t2);font-size:10px;font-family:var(--font);outline:none;margin-bottom:4px">
 </div>`;}
-function updateAdminCal(){
-  const el=document.getElementById('admin-cal-preview');
-  if(!el)return;
-  const tasks=edTasks.map((t,i)=>({
-    text:document.getElementById('te-'+i)?.value||t.text||'',
-    date:document.getElementById('td-'+i)?.value||t.date||'',
-    category:document.getElementById('tc-'+i)?.value||t.category||'Tarea',
-    description:document.getElementById('tdesc-'+i)?.value||t.description||'',
-    done:t.done||false
-  })).filter(t=>t.text.trim());
-  el.innerHTML=buildCalendar(tasks);
-}
-function renderTasksEd(tasks){edTasks=[...tasks];const el=document.getElementById('tasks-ed');el.innerHTML=edTasks.map((t,i)=>taskEdRow(t,i)).join('');updateAdminCal();}
+function renderTasksEd(tasks){edTasks=[...tasks];const el=document.getElementById('tasks-ed');el.innerHTML=edTasks.map((t,i)=>taskEdRow(t,i)).join('');}
 function addTaskEd(){
+  // Save current values before adding
   edTasks=edTasks.map((t,i)=>({...t,text:document.getElementById('te-'+i)?.value??t.text,date:document.getElementById('td-'+i)?.value??t.date,category:document.getElementById('tc-'+i)?.value??t.category,description:document.getElementById('tdesc-'+i)?.value??t.description}));
   const newTask={text:'',done:false,position:edTasks.length,date:'',category:'Tarea',description:''};
   edTasks.push(newTask);
@@ -1342,7 +1327,6 @@ function addTaskEd(){
   el.innerHTML+=taskEdRow(newTask,edTasks.length-1);
   const newInput=document.getElementById('te-'+(edTasks.length-1));
   if(newInput)newInput.focus();
-  updateAdminCal();
 }
 function dupTaskEd(i){
   edTasks=edTasks.map((t,j)=>({...t,text:document.getElementById('te-'+j)?.value??t.text,date:document.getElementById('td-'+j)?.value??t.date,category:document.getElementById('tc-'+j)?.value??t.category,description:document.getElementById('tdesc-'+j)?.value??t.description}));
@@ -1350,11 +1334,11 @@ function dupTaskEd(i){
   edTasks.push(dup);
   const el=document.getElementById('tasks-ed');
   el.innerHTML+=taskEdRow(dup,edTasks.length-1);
-  updateAdminCal();
 }
 function removeTaskEd(i){edTasks.splice(i,1);renderTasksEd(edTasks);}
 async function saveTareas(){
   const cid=getCurCid();if(!cid)return;
+  // Read current DOM values into edTasks first
   const updated=edTasks.map((t,i)=>({...t,
     text:document.getElementById('te-'+i)?.value||t.text,
     date:document.getElementById('td-'+i)?.value||null,
@@ -1363,14 +1347,14 @@ async function saveTareas(){
   })).filter(t=>t.text.trim());
   await sb.from('tasks').delete().eq('user_id',cid);
   if(updated.length)await sb.from('tasks').insert(updated.map((t,i)=>({user_id:cid,text:t.text,done:t.done||false,position:i,date:t.date,category:t.category,description:t.description})));
+  // Re-render to sync DOM with saved state
   renderTasksEd(updated);
-  updateAdminCal();
   showToast('Tareas guardadas');
 }
 
 function renderDocsEd(docs){
   edDocs=[...docs];
-  ['etapa1','etapa2','etapa3','leadmagnets'].forEach(eid=>{
+  ['etapa1','etapa2','etapa3'].forEach(eid=>{
     const el=document.getElementById('docs-ed-'+eid);
     if(!el)return;
     const eDocs=edDocs.filter(d=>d.etapa===eid);
@@ -1405,11 +1389,7 @@ function openIngModal(){populateIngDD();document.getElementById('ing-idx').value
 function populateIngDD(){const ps=document.getElementById('in-prog');ps.innerHTML='<option value="">—</option>';KPI.programas.forEach(p=>ps.innerHTML+=`<option value="${p.nombre}">${p.nombre} (${fM(p.precio)})</option>`);const pa=document.getElementById('in-pas');pa.innerHTML='<option value="">—</option>';KPI.pasarelas.forEach(p=>pa.innerHTML+=`<option value="${p.nombre}">${p.nombre} (${p.comision||0}%)</option>`);}
 function setTipo(t){tipoIng=t;document.getElementById('t-n-btn').classList.toggle('active',t==='nuevo');document.getElementById('t-c-btn').classList.toggle('active',t==='cuota');document.getElementById('in-cr').style.display=t==='nuevo'?'block':'none';document.getElementById('in-cnr').style.display=t==='cuota'?'block':'none';document.getElementById('ing-info').innerHTML=t==='nuevo'?'<b>Cliente Nuevo:</b> Suma a Facturación y Cash Collected.':'<b>Cuota / Abono:</b> Solo Cash Collected.';}
 function calcCom(){const pas=document.getElementById('in-pas').value;const m=Number(document.getElementById('in-m').value||0);const f=KPI.pasarelas.find(p=>p.nombre===pas);const el=document.getElementById('in-com');if(f&&m>0){const c=Math.round(m*Number(f.comision||0)/100);document.getElementById('in-com-t').textContent=`${f.comision||0}% = ${fM(c)} · Neto: ${fM(m-c)}`;el.style.display='block';}else el.style.display='none';}
-document.addEventListener('input',e=>{if(e.target.closest('#tasks-ed'))updateAdminCal();});
-document.addEventListener('change',e=>{
-  if(e.target.closest('#tasks-ed'))updateAdminCal();
-  if(e.target.id==='in-pas'||e.target.id==='in-m')calcCom();
-});
+document.addEventListener('change',e=>{if(e.target.id==='in-pas'||e.target.id==='in-m')calcCom();});
 
 function openAgModal(){document.getElementById('ag-idx').value='';['ag-n','ag-ig','ag-tel','ag-search'].forEach(id=>document.getElementById(id).value='');document.getElementById('ag-not').value='';document.getElementById('ag-dd').classList.remove('show');document.getElementById('m-ag-t').textContent='Nueva Agenda';openMod('m-agenda');}
 function filterLS(){const q=document.getElementById('ag-search').value.trim().toLowerCase();const dd=document.getElementById('ag-dd');if(!q){dd.classList.remove('show');return}const m=KPI.leads.filter(l=>(l.nombre||'').toLowerCase().includes(q)||(l.ig||'').toLowerCase().includes(q)).slice(0,8);dd.innerHTML=m.length?m.map((l,i)=>`<div class="lo" onclick="selLead(${KPI.leads.indexOf(l)})"><div>${l.nombre||'—'}</div><div class="lm">${l.ig||''} · ${l.fuente||''} · ${l.estado||''}</div></div>`).join(''):'<div class="lo" style="color:var(--t3)">Sin resultados</div>';dd.classList.add('show');}
@@ -1505,8 +1485,7 @@ const CAL_COLORS={
   'Lead Magnet':{'bg':'#fce7f3','txt':'#9d174d','icon':'🎁'},
   'Grabación':{'bg':'#d1fae5','txt':'#065f46','icon':'🎬'},
   'ADS':{'bg':'#bfdbfe','txt':'#1e3a8a','icon':'💰'},
-  'Escribir Guiones':{'bg':'#ede9fe','txt':'#5b21b6','icon':'✍️'},
-  'Malla de Contenido':{'bg':'#f0fdf4','txt':'#166534','icon':'🗂️'},
+  'Email / Newsletter':{'bg':'#e0e7ff','txt':'#3730a3','icon':'📧'},
   'Revisión / Feedback':{'bg':'#bbf7d0','txt':'#14532d','icon':'✅'},
   'Estrategia':{'bg':'#fce7f3','txt':'#831843','icon':'🧠'},
   'Shoutout':{'bg':'#fef08a','txt':'#713f12','icon':'📢'},
@@ -1565,10 +1544,13 @@ function renderIdeas(){
   if(!KPI.ideas||!KPI.ideas.length){el.innerHTML='<div style="padding:16px;font-size:11px;color:var(--t3);text-align:center">Sin ideas aún. ¡Agrega tu primera idea!</div>';return;}
   el.innerHTML=KPI.ideas.map(idea=>{
     const estadoClass={'idea':'estado-idea','guionizado':'estado-guionizado','grabado':'estado-grabado','subido':'estado-subido'}[idea.estado]||'estado-idea';
-    return`<div class="idea-card">
+    return`<div class="idea-card" ondblclick="editIdea('${idea.id}')" style="cursor:pointer;position:relative">
       <div class="idea-card-header">
         <div><div class="idea-title">${idea.titulo||'Sin título'}</div><div class="idea-meta">${idea.tipo||'reel'} · ${fD(idea.created_at?.slice(0,10))}</div></div>
-        <span class="estado-badge ${estadoClass}">${idea.estado||'idea'}</span>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="estado-badge ${estadoClass}">${idea.estado||'idea'}</span>
+          <button onclick="event.stopPropagation();editIdea('${idea.id}')" style="background:none;border:none;color:var(--t3);cursor:pointer;padding:3px 6px;font-size:14px;transition:color .2s" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--t3)'" title="Editar">✏️</button>
+        </div>
       </div>
       ${idea.gancho?`<div style="font-size:11px;color:var(--t2);margin-bottom:6px">💡 ${idea.gancho}</div>`:''}
       ${idea.estructura?`<div style="font-size:10px;color:var(--t3)">Estructura: ${idea.estructura}</div>`:''}
@@ -1577,23 +1559,37 @@ function renderIdeas(){
   }).join('');
 }
 
-function toggleIdeaTipo(){
-  const tipo=document.getElementById('idea-tipo').value;
-  document.getElementById('idea-est-reel-row').style.display=tipo==='reel'?'block':'none';
-  document.getElementById('idea-est-hist-row').style.display=tipo==='historia'?'block':'none';
-  document.getElementById('idea-fmt-row').style.display=tipo==='reel'?'grid':'none';
+function editIdea(id){
+  const idea=KPI.ideas.find(x=>x.id===id);if(!idea)return;
+  document.getElementById('idea-idx').value=idea.id;
+  document.getElementById('idea-titulo').value=idea.titulo||'';
+  document.getElementById('idea-gancho').value=idea.gancho||'';
+  document.getElementById('idea-link').value=idea.link||'';
+  document.getElementById('idea-transcripcion').value=idea.transcripcion||'';
+  document.getElementById('idea-tipo').value=idea.tipo||'reel';
+  toggleIdeaTipo();
+  if(idea.tipo==='historia') document.getElementById('idea-est-hist').value=idea.estructura||'';
+  else document.getElementById('idea-est-reel').value=idea.estructura||'';
+  if(idea.formato) document.getElementById('idea-fmt').value=idea.formato;
+  document.getElementById('idea-estado').value=idea.estado||'idea';
+  document.getElementById('m-idea-t').textContent='Editar Idea';
+  openM('m-idea');
 }
 
 async function saveIdea(){
+  const id=document.getElementById('idea-idx').value;
   const tipo=document.getElementById('idea-tipo').value;
   const est=tipo==='reel'?document.getElementById('idea-est-reel').value:tipo==='historia'?document.getElementById('idea-est-hist').value:'';
   const o={user_id:portalClientId,titulo:document.getElementById('idea-titulo').value,gancho:document.getElementById('idea-gancho').value,link:document.getElementById('idea-link').value,transcripcion:document.getElementById('idea-transcripcion').value,tipo,estructura:est,formato:tipo==='reel'?document.getElementById('idea-fmt').value:'',estado:document.getElementById('idea-estado').value};
-  await sb.from('ideas').insert(o);
+  if(id) await sb.from('ideas').update(o).eq('id',id);
+  else await sb.from('ideas').insert(o);
+  // Reset idx and title for next open
+  document.getElementById('idea-idx').value='';
+  document.getElementById('m-idea-t').textContent='Nueva Idea';
   closeM('m-idea');
-  KPI.ideas=KPI.ideas||[];
   const{data}=await sb.from('ideas').select('*').eq('user_id',portalClientId).order('created_at',{ascending:false});
   KPI.ideas=data||[];
-  renderIdeas();showToast('Idea guardada');
+  renderIdeas();showToast(id?'Idea actualizada':'Idea guardada');
 }
 
 function openM(id){document.getElementById(id)?.classList.add('open');}
@@ -1602,7 +1598,6 @@ const ETAPAS=[
   {id:'etapa1',nombre:'ADN del Negocio',etapa:'Etapa 1',icon:'🧬'},
   {id:'etapa2',nombre:'Contenido Láser',etapa:'Etapa 2',icon:'🎯'},
   {id:'etapa3',nombre:'Estructuras y Operaciones',etapa:'Etapa 3',icon:'⚙️'},
-  {id:'leadmagnets',nombre:'Lead Magnets',etapa:'',icon:'🎁'},
 ];
 
 function renderFolders(docs){
