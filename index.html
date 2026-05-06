@@ -479,7 +479,7 @@ table.t tr:hover td{background:var(--d2)}
       <div class="kpi-section" id="ksec-hist-m"><div class="tw"><div class="th2"><h3>Historias</h3><button class="ba" onclick="openMod('m-hist');resetMod('hist')">+ Nueva Secuencia</button></div><div class="tbl-scroll"><div id="tbl-hist"></div></div></div></div>
       <div class="kpi-section" id="ksec-yt-m"><div class="tw"><div class="th2"><h3>YouTube</h3><button class="ba" onclick="openMod('m-yt');resetMod('yt')">+ Nuevo Video</button></div><div class="tbl-scroll"><div id="tbl-yt"></div></div></div></div>
       <div class="kpi-section" id="ksec-ideas-m">
-        <div class="tw"><div class="th2"><h3>Banco de Ideas</h3><button class="ba" onclick="document.getElementById('idea-idx').value='';document.getElementById('m-idea-t').textContent='Nueva Idea';['idea-titulo','idea-gancho','idea-link','idea-transcripcion'].forEach(id=>document.getElementById(id).value='');document.getElementById('idea-tipo').value='reel';document.getElementById('idea-estado').value='idea';toggleIdeaTipo();openM('m-idea')">+ Nueva Idea</button></div><div class="tbl-scroll"><div id="ideas-list"></div></div></div>
+        <div class="tw"><div class="th2"><h3>Banco de Ideas</h3><button class="ba" onclick="openIdeaModal()">+ Nueva Idea</button></div><div class="tbl-scroll"><div id="ideas-list"></div></div></div>
       </div>
       <div class="kpi-section" id="ksec-viral-m">
         <div class="tw" style="padding:16px;margin-bottom:14px">
@@ -1544,36 +1544,62 @@ function renderIdeas(){
   if(!KPI.ideas||!KPI.ideas.length){el.innerHTML='<div style="padding:16px;font-size:11px;color:var(--t3);text-align:center">Sin ideas aún. ¡Agrega tu primera idea!</div>';return;}
   el.innerHTML=KPI.ideas.map(idea=>{
     const estadoClass={'idea':'estado-idea','guionizado':'estado-guionizado','grabado':'estado-grabado','subido':'estado-subido'}[idea.estado]||'estado-idea';
-    return`<div class="idea-card" ondblclick="editIdea('${idea.id}')" style="cursor:pointer;position:relative">
+    return`<div class="idea-card" ondblclick="editIdea('${idea.id}')" style="cursor:pointer">
       <div class="idea-card-header">
-        <div><div class="idea-title">${idea.titulo||'Sin título'}</div><div class="idea-meta">${idea.tipo||'reel'} · ${fD(idea.created_at?.slice(0,10))}</div></div>
-        <div style="display:flex;align-items:center;gap:8px">
+        <div style="flex:1"><div class="idea-title">${idea.titulo||'Sin título'}</div><div class="idea-meta">${idea.tipo||'reel'} · ${fD(idea.created_at?.slice(0,10))}</div></div>
+        <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
           <span class="estado-badge ${estadoClass}">${idea.estado||'idea'}</span>
-          <button onclick="event.stopPropagation();editIdea('${idea.id}')" style="background:none;border:none;color:var(--t3);cursor:pointer;padding:3px 6px;font-size:14px;transition:color .2s" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--t3)'" title="Editar">✏️</button>
+          <button onclick="event.stopPropagation();editIdea('${idea.id}')" style="background:none;border:none;color:var(--t3);cursor:pointer;font-size:14px;padding:2px 5px;transition:color .2s" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--t3)'" title="Editar">✏️</button>
+          <button onclick="event.stopPropagation();deleteIdea('${idea.id}')" style="background:none;border:none;color:rgba(226,75,74,.6);cursor:pointer;font-size:13px;padding:2px 5px;transition:color .2s" onmouseover="this.style.color='var(--er)'" onmouseout="this.style.color='rgba(226,75,74,.6)'" title="Eliminar">✕</button>
         </div>
       </div>
       ${idea.gancho?`<div style="font-size:11px;color:var(--t2);margin-bottom:6px">💡 ${idea.gancho}</div>`:''}
       ${idea.estructura?`<div style="font-size:10px;color:var(--t3)">Estructura: ${idea.estructura}</div>`:''}
-      ${idea.link?`<div style="margin-top:6px"><a href="${idea.link}" target="_blank" style="font-size:10px;color:var(--inf)">Ver referencia →</a></div>`:''}
+      ${idea.link?`<div style="margin-top:6px"><a href="${idea.link}" target="_blank" onclick="event.stopPropagation()" style="font-size:10px;color:var(--inf)">Ver referencia →</a></div>`:''}
     </div>`;
   }).join('');
+}
+
+function openIdeaModal(){
+  document.getElementById('idea-idx').value='';
+  document.getElementById('m-idea-t').textContent='Nueva Idea';
+  ['idea-titulo','idea-gancho','idea-link','idea-transcripcion'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('idea-tipo').value='reel';
+  document.getElementById('idea-estado').value='idea';
+  toggleIdeaTipo();
+  openM('m-idea');
 }
 
 function editIdea(id){
   const idea=KPI.ideas.find(x=>x.id===id);if(!idea)return;
   document.getElementById('idea-idx').value=idea.id;
+  document.getElementById('m-idea-t').textContent='Editar Idea';
   document.getElementById('idea-titulo').value=idea.titulo||'';
   document.getElementById('idea-gancho').value=idea.gancho||'';
   document.getElementById('idea-link').value=idea.link||'';
   document.getElementById('idea-transcripcion').value=idea.transcripcion||'';
   document.getElementById('idea-tipo').value=idea.tipo||'reel';
   toggleIdeaTipo();
-  if(idea.tipo==='historia') document.getElementById('idea-est-hist').value=idea.estructura||'';
+  if(idea.tipo==='historia')document.getElementById('idea-est-hist').value=idea.estructura||'';
   else document.getElementById('idea-est-reel').value=idea.estructura||'';
-  if(idea.formato) document.getElementById('idea-fmt').value=idea.formato;
+  if(idea.formato)document.getElementById('idea-fmt').value=idea.formato;
   document.getElementById('idea-estado').value=idea.estado||'idea';
-  document.getElementById('m-idea-t').textContent='Editar Idea';
   openM('m-idea');
+}
+
+async function deleteIdea(id){
+  if(!confirm('¿Eliminar esta idea?'))return;
+  await sb.from('ideas').delete().eq('id',id);
+  const{data}=await sb.from('ideas').select('*').eq('user_id',portalClientId).order('created_at',{ascending:false});
+  KPI.ideas=data||[];
+  renderIdeas();showToast('Idea eliminada');
+}
+
+function toggleIdeaTipo(){
+  const tipo=document.getElementById('idea-tipo').value;
+  document.getElementById('idea-est-reel-row').style.display=tipo==='reel'?'block':'none';
+  document.getElementById('idea-est-hist-row').style.display=tipo==='historia'?'block':'none';
+  document.getElementById('idea-fmt-row').style.display=tipo==='reel'?'grid':'none';
 }
 
 async function saveIdea(){
@@ -1581,16 +1607,14 @@ async function saveIdea(){
   const tipo=document.getElementById('idea-tipo').value;
   const est=tipo==='reel'?document.getElementById('idea-est-reel').value:tipo==='historia'?document.getElementById('idea-est-hist').value:'';
   const o={user_id:portalClientId,titulo:document.getElementById('idea-titulo').value,gancho:document.getElementById('idea-gancho').value,link:document.getElementById('idea-link').value,transcripcion:document.getElementById('idea-transcripcion').value,tipo,estructura:est,formato:tipo==='reel'?document.getElementById('idea-fmt').value:'',estado:document.getElementById('idea-estado').value};
-  if(id) await sb.from('ideas').update(o).eq('id',id);
+  if(id)await sb.from('ideas').update(o).eq('id',id);
   else await sb.from('ideas').insert(o);
-  // Reset idx and title for next open
-  document.getElementById('idea-idx').value='';
-  document.getElementById('m-idea-t').textContent='Nueva Idea';
   closeM('m-idea');
   const{data}=await sb.from('ideas').select('*').eq('user_id',portalClientId).order('created_at',{ascending:false});
   KPI.ideas=data||[];
   renderIdeas();showToast(id?'Idea actualizada':'Idea guardada');
 }
+
 
 function openM(id){document.getElementById(id)?.classList.add('open');}
 
