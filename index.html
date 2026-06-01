@@ -1363,7 +1363,7 @@ function cargarCalendario(tipo){
   document.getElementById('tasks-ed')?.scrollIntoView({behavior:'smooth',block:'start'});
   showToast(`Calendario ${tipo==='facil'?'Fácil':'Difícil'} cargado — asigná las fechas y guardá`);
 }
-edTasks=[...tasks];const el=document.getElementById('tasks-ed');el.innerHTML=edTasks.map((t,i)=>taskEdRow(t,i)).join('');}
+function renderTasksEd(tasks){edTasks=[...tasks];const el=document.getElementById('tasks-ed');el.innerHTML=edTasks.map((t,i)=>taskEdRow(t,i)).join('');}
 function addTaskEd(){
   // Save current values before adding
   edTasks=edTasks.map((t,i)=>({...t,text:document.getElementById('te-'+i)?.value??t.text,date:document.getElementById('td-'+i)?.value??t.date,category:document.getElementById('tc-'+i)?.value??t.category,description:document.getElementById('tdesc-'+i)?.value??t.description}));
