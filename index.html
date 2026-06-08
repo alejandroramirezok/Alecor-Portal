@@ -601,6 +601,10 @@ table.t tr:hover td{background:var(--d2)}
           </div>
           <div class="ep" id="ep-tareas">
             <div class="ec"><div class="ect" style="display:flex;align-items:center;justify-content:space-between"><span>Tareas semanales</span><button class="btn-add-sm" onclick="addTaskEd()">+ Agregar</button></div>
+              <div style="display:flex;gap:8px;margin-bottom:14px;margin-top:4px">
+                <button onclick="cargarCalendario('facil')" style="flex:1;background:rgba(29,158,117,0.12);border:1px solid rgba(29,158,117,0.35);color:#1d9e75;padding:7px 10px;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;font-family:var(--font)" onmouseover="this.style.background='rgba(29,158,117,0.22)'" onmouseout="this.style.background='rgba(29,158,117,0.12)'">⚡ Calendario Fácil</button>
+                <button onclick="cargarCalendario('dificil')" style="flex:1;background:rgba(226,75,74,0.12);border:1px solid rgba(226,75,74,0.35);color:#e24b4a;padding:7px 10px;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;font-family:var(--font)" onmouseover="this.style.background='rgba(226,75,74,0.22)'" onmouseout="this.style.background='rgba(226,75,74,0.12)'">🔥 Calendario Difícil</button>
+              </div>
               <div id="tasks-ed"></div>
               <button class="btn-save" style="margin-top:12px" onclick="saveTareas()">Guardar tareas</button>
             </div>
@@ -1321,6 +1325,41 @@ function taskEdRow(t,i){const cats=Object.keys(CAL_COLORS);return`
   </div>
   <input type="text" value="${(t.description||'').replace(/"/g,'&quot;')}" id="tdesc-${i}" placeholder="Descripción (opcional)..." style="width:100%;background:var(--d3);border:1px solid var(--br);border-radius:6px;padding:6px 10px;color:var(--t2);font-size:10px;font-family:var(--font);outline:none;margin-bottom:4px">
 </div>`;}
+function cargarCalendario(tipo){
+  edTasks=edTasks.map((t,i)=>({...t,text:document.getElementById('te-'+i)?.value??t.text,date:document.getElementById('td-'+i)?.value??t.date,category:document.getElementById('tc-'+i)?.value??t.category,description:document.getElementById('tdesc-'+i)?.value??t.description}));
+  const FACIL=[
+    {text:'CTA Indirecto SubDolor X',category:'Historia',description:'formato: ',done:false,date:''},
+    {text:'CTA Indirecto SubDolor X',category:'Historia',description:'formato: ',done:false,date:''},
+    {text:'Historias Autoridad SubDolor X',category:'Historia',description:'formato: ',done:false,date:''},
+    {text:'Historias Forma de Pensar (caso de éxito)',category:'Historia',description:'formato: ',done:false,date:''},
+    {text:'Reel Referencia Viral',category:'Subir Reel',description:'SubDolor X: ',done:false,date:''},
+    {text:'Reel Referencia Viral',category:'Subir Reel',description:'SubDolor X: ',done:false,date:''},
+    {text:'Reel Ref Viral pasado por Claude',category:'Subir Reel',description:'SubDolor X: ',done:false,date:''},
+    {text:'Reel Ref Viral pasado por Claude',category:'Subir Reel',description:'SubDolor X: ',done:false,date:''},
+  ];
+  const DIFICIL=[
+    {text:'CTA Indirecto SubDolor X (Tema 1)',category:'Historia',description:'formato: ',done:false,date:''},
+    {text:'CTA Indirecto SubDolor X (Tema 1)',category:'Historia',description:'formato: ',done:false,date:''},
+    {text:'CTA Indirecto SubDolor X (Tema 2)',category:'Historia',description:'formato: ',done:false,date:''},
+    {text:'CTA Indirecto SubDolor X (Tema 2)',category:'Historia',description:'formato: ',done:false,date:''},
+    {text:'CTA Directo',category:'Historia',description:'formato: ',done:false,date:''},
+    {text:'Historias Autoridad SubDolor X (Tema 1)',category:'Historia',description:'formato: ',done:false,date:''},
+    {text:'Historias Autoridad SubDolor X (Tema 2)',category:'Historia',description:'formato: ',done:false,date:''},
+    {text:'Historias Forma de Pensar + Caso de Éxito',category:'Historia',description:'formato: ',done:false,date:''},
+    {text:'Reel Referencia Viral',category:'Subir Reel',description:'SubDolor X: ',done:false,date:''},
+    {text:'Reel Referencia Viral',category:'Subir Reel',description:'SubDolor X: ',done:false,date:''},
+    {text:'Reel Referencia Viral',category:'Subir Reel',description:'SubDolor X: ',done:false,date:''},
+    {text:'Reel Ref Viral pasado por Claude',category:'Subir Reel',description:'SubDolor X: ',done:false,date:''},
+    {text:'Reel Ref Viral pasado por Claude',category:'Subir Reel',description:'SubDolor X: ',done:false,date:''},
+    {text:'Reel Ref Viral pasado por Claude',category:'Subir Reel',description:'SubDolor X: ',done:false,date:''},
+  ];
+  const preset=tipo==='facil'?FACIL:DIFICIL;
+  const startPos=edTasks.length;
+  preset.forEach((t,i)=>edTasks.push({...t,position:startPos+i}));
+  renderTasksEd(edTasks);
+  document.getElementById('tasks-ed')?.scrollIntoView({behavior:'smooth',block:'start'});
+  showToast(`Calendario ${tipo==='facil'?'Fácil':'Difícil'} cargado — asigná las fechas y guardá`);
+}
 function renderTasksEd(tasks){edTasks=[...tasks];const el=document.getElementById('tasks-ed');el.innerHTML=edTasks.map((t,i)=>taskEdRow(t,i)).join('');updateAdminCal();}
 function updateAdminCal(){
   const el=document.getElementById('admin-cal-preview');if(!el)return;
