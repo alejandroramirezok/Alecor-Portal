@@ -459,38 +459,8 @@ table.t tr:hover td{background:var(--d2)}
       </div>
 
       <!-- MODULE SECTIONS (leads, agendas, etc.) -->
-      <div class="kpi-section" id="ksec-leads-m"><div class="tw"><div class="th2"><h3>Leads</h3><button class="ba" onclick="openMod('m-lead');resetMod('lead')">+ Nuevo Lead</button></div>
-        <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center">
-          <div style="display:flex;align-items:center;gap:6px;background:var(--d3);border:1px solid var(--br);border-radius:8px;padding:6px 10px;flex:1;min-width:160px">
-            <span style="color:var(--t3);font-size:13px">🔍</span>
-            <input id="leads-search" oninput="filterLeadsTable()" placeholder="Buscar por nombre..." style="background:none;border:none;outline:none;color:var(--tx);font-size:12px;font-family:var(--font);width:100%">
-          </div>
-          <select id="leads-filter-estado" onchange="filterLeadsTable()" style="background:var(--d3);border:1px solid var(--br);border-radius:8px;padding:6px 10px;color:var(--t2);font-size:11px;font-family:var(--font);outline:none">
-            <option value="">Todos los estados</option>
-            <option>Nuevo</option><option>Primer mensaje enviado</option><option>Aporte de valor hecho</option><option>En seguimiento</option><option>Agendado</option><option>Lead Magnet</option><option>VSL enviado</option><option>Seguimiento post-VSL</option><option>Agenda enviada</option><option>Varios lead magnets vistos</option><option>Perdido</option>
-          </select>
-          <select id="leads-filter-fuente" onchange="filterLeadsTable()" style="background:var(--d3);border:1px solid var(--br);border-radius:8px;padding:6px 10px;color:var(--t2);font-size:11px;font-family:var(--font);outline:none">
-            <option value="">Todas las fuentes</option>
-            <option>Instagram Orgánico</option><option>Instagram ADS</option><option>Referido</option><option>TikTok</option><option>YouTube</option><option>Prospección en frío</option><option>Otro</option>
-          </select>
-          <select id="leads-filter-seg" onchange="filterLeadsTable()" style="background:var(--d3);border:1px solid var(--br);border-radius:8px;padding:6px 10px;color:var(--t2);font-size:11px;font-family:var(--font);outline:none">
-            <option value="">Todos los seguimientos</option>
-            <option>Sin seguimiento</option><option>1 seguimiento</option><option>2 seguimientos</option><option>3 seguimientos</option><option>4+ seguimientos</option>
-          </select>
-        </div>
-        <div class="tbl-scroll"><div id="tbl-leads"></div></div></div></div>
-      <div class="kpi-section" id="ksec-agendas-m"><div class="tw"><div class="th2"><h3>Agendas</h3><button class="ba" onclick="openAgModal()">+ Nueva Agenda</button></div>
-        <div style="display:flex;gap:8px;margin-bottom:12px;align-items:center">
-          <div style="display:flex;align-items:center;gap:6px;background:var(--d3);border:1px solid var(--br);border-radius:8px;padding:6px 10px;flex:1">
-            <span style="color:var(--t3);font-size:13px">🔍</span>
-            <input id="agendas-search" oninput="filterAgendasTable()" placeholder="Buscar por nombre..." style="background:none;border:none;outline:none;color:var(--tx);font-size:12px;font-family:var(--font);width:100%">
-          </div>
-          <select id="agendas-filter-resultado" onchange="filterAgendasTable()" style="background:var(--d3);border:1px solid var(--br);border-radius:8px;padding:6px 10px;color:var(--t2);font-size:11px;font-family:var(--font);outline:none">
-            <option value="">Todos los resultados</option>
-            <option>Pendiente</option><option>Cerrado</option><option>No Show</option><option>Reagendado</option>
-          </select>
-        </div>
-        <div class="tbl-scroll"><div id="tbl-agendas"></div></div></div></div>
+      <div class="kpi-section" id="ksec-leads-m"><div class="tw"><div class="th2"><h3>Leads</h3><button class="ba" onclick="openMod('m-lead');resetMod('lead')">+ Nuevo Lead</button></div><div class="tbl-scroll"><div id="tbl-leads"></div></div></div></div>
+      <div class="kpi-section" id="ksec-agendas-m"><div class="tw"><div class="th2"><h3>Agendas</h3><button class="ba" onclick="openAgModal()">+ Nueva Agenda</button></div><div class="tbl-scroll"><div id="tbl-agendas"></div></div></div></div>
       <div class="kpi-section" id="ksec-ingresos-m"><div class="tw"><div class="th2"><h3>Ingresos</h3><button class="ba" onclick="openIngModal()">+ Nuevo Ingreso</button></div><div class="tbl-scroll"><div id="tbl-ingresos"></div></div></div></div>
       <div class="kpi-section" id="ksec-gastos-m"><div class="tw"><div class="th2"><h3>Gastos</h3><button class="ba" onclick="openMod('m-gasto');resetMod('gasto')">+ Nuevo Gasto</button></div><div class="tbl-scroll"><div id="tbl-gastos"></div></div></div></div>
       <div class="kpi-section" id="ksec-clientes-m">
@@ -498,45 +468,18 @@ table.t tr:hover td{background:var(--d2)}
           <div class="kcard g"><div class="kl">Clientes Activos</div><div class="kv" id="cli-activos-cnt">0</div><div class="ks">En programa</div></div>
           <div class="kcard r"><div class="kl">Clientes Inactivos</div><div class="kv" id="cli-inactivos-cnt">0</div><div class="ks">Finalizados</div></div>
         </div>
-        <div class="tw"><div class="th2"><h3>Clientes</h3><button class="ba" onclick="openClienteModal()">+ Nuevo Cliente</button></div>
-          <div style="display:flex;gap:8px;margin-bottom:12px;align-items:center">
-            <div style="display:flex;align-items:center;gap:6px;background:var(--d3);border:1px solid var(--br);border-radius:8px;padding:6px 10px;flex:1">
-              <span style="color:var(--t3);font-size:13px">🔍</span>
-              <input id="clientes-search" oninput="filterClientesTable()" placeholder="Buscar por nombre..." style="background:none;border:none;outline:none;color:var(--tx);font-size:12px;font-family:var(--font);width:100%">
-            </div>
-            <select id="clientes-filter-activo" onchange="filterClientesTable()" style="background:var(--d3);border:1px solid var(--br);border-radius:8px;padding:6px 10px;color:var(--t2);font-size:11px;font-family:var(--font);outline:none">
-              <option value="">Todos</option><option value="Si">Activos</option><option value="No">Inactivos</option>
-            </select>
-          </div>
-          <div class="tbl-scroll"><div id="tbl-clientes"></div></div></div>
+        <div class="tw"><div class="th2"><h3>Clientes</h3><button class="ba" onclick="openClienteModal()">+ Nuevo Cliente</button></div><div class="tbl-scroll"><div id="tbl-clientes"></div></div></div>
       </div>
       <div class="kpi-section" id="ksec-wins-m">
         <div class="kcard" style="margin-bottom:14px;background:rgba(201,168,76,.06);border-color:rgba(201,168,76,.3)"><div class="kl">Total Wins de Clientes</div><div class="kv" id="wins-total-cnt" style="color:var(--gold)">0</div><div class="ks">Registradas</div></div>
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:13px"><div style="font-size:15px;font-weight:600;color:var(--tx)">Wins Clientes</div><button class="ba" onclick="openMod('m-win')">+ Nueva Win</button></div>
-        <div style="display:flex;gap:8px;margin-bottom:12px;align-items:center">
-          <div style="display:flex;align-items:center;gap:6px;background:var(--d3);border:1px solid var(--br);border-radius:8px;padding:6px 10px;flex:1">
-            <span style="color:var(--t3);font-size:13px">🔍</span>
-            <input id="wins-search" oninput="filterWinsTable()" placeholder="Buscar por cliente o win..." style="background:none;border:none;outline:none;color:var(--tx);font-size:12px;font-family:var(--font);width:100%">
-          </div>
-          <select id="wins-filter-usada" onchange="filterWinsTable()" style="background:var(--d3);border:1px solid var(--br);border-radius:8px;padding:6px 10px;color:var(--t2);font-size:11px;font-family:var(--font);outline:none">
-            <option value="">Todas</option><option value="No">No usadas</option><option value="Si">Usadas en contenido</option>
-          </select>
-        </div>
         <div id="wins-list"></div>
       </div>
       <div class="kpi-section" id="ksec-reels-m"><div class="tw"><div class="th2"><h3>Reels</h3><button class="ba" onclick="openMod('m-reel');resetMod('reel')">+ Nuevo Reel</button></div><div class="tbl-scroll"><div id="tbl-reels"></div></div></div></div>
       <div class="kpi-section" id="ksec-hist-m"><div class="tw"><div class="th2"><h3>Historias</h3><button class="ba" onclick="openMod('m-hist');resetMod('hist')">+ Nueva Secuencia</button></div><div class="tbl-scroll"><div id="tbl-hist"></div></div></div></div>
       <div class="kpi-section" id="ksec-yt-m"><div class="tw"><div class="th2"><h3>YouTube</h3><button class="ba" onclick="openMod('m-yt');resetMod('yt')">+ Nuevo Video</button></div><div class="tbl-scroll"><div id="tbl-yt"></div></div></div></div>
       <div class="kpi-section" id="ksec-ideas-m">
-        <div class="tw">
-          <div class="th2"><h3>Banco de Ideas</h3><button class="ba" onclick="openIdeaModal()">+ Nueva Idea</button></div>
-          <div style="display:flex;gap:6px;margin-bottom:14px;border-bottom:1px solid var(--br);padding-bottom:10px">
-            <button id="ideas-tab-reel" onclick="setIdeasTab('reel')" style="padding:5px 14px;border-radius:7px;border:1px solid var(--gold);background:rgba(201,168,76,0.15);color:var(--gold);font-size:11px;font-weight:600;cursor:pointer;font-family:var(--font)">🎬 Reels</button>
-            <button id="ideas-tab-historia" onclick="setIdeasTab('historia')" style="padding:5px 14px;border-radius:7px;border:1px solid var(--br);background:transparent;color:var(--t2);font-size:11px;font-weight:600;cursor:pointer;font-family:var(--font)">📱 Historias</button>
-            <button id="ideas-tab-youtube" onclick="setIdeasTab('youtube')" style="padding:5px 14px;border-radius:7px;border:1px solid var(--br);background:transparent;color:var(--t2);font-size:11px;font-weight:600;cursor:pointer;font-family:var(--font)">▶️ YouTube</button>
-          </div>
-          <div class="tbl-scroll"><div id="ideas-list"></div></div>
-        </div>
+        <div class="tw"><div class="th2"><h3>Banco de Ideas</h3><button class="ba" onclick="openIdeaModal()">+ Nueva Idea</button></div><div class="tbl-scroll"><div id="ideas-list"></div></div></div>
       </div>
       <div class="kpi-section" id="ksec-viral-m">
         <div class="tw" style="padding:16px;margin-bottom:14px">
@@ -726,16 +669,48 @@ table.t tr:hover td{background:var(--d2)}
 <div class="ov" id="m-yt"><div class="modal"><div class="mh"><h3 id="m-yt-t">Nuevo Video YouTube</h3><button class="mc" onclick="closeM('m-yt')">✕</button></div><div class="mb"><input type="hidden" id="yt-idx"><div class="fg"><div class="fr"><label>Título</label><input id="y-t"></div><div class="fr"><label>Fecha</label><input type="date" id="y-f"></div></div><div class="fg"><div class="fr"><label>Duración (min)</label><input type="number" id="y-d" step="0.5"></div><div class="fr"><label>Views</label><input type="number" id="y-v" value="0"></div></div><div class="fg"><div class="fr"><label>% CTR</label><input type="number" id="y-ctr" step="0.1"></div><div class="fr"><label>% Retención</label><input type="number" id="y-ret" step="0.1"></div></div><button class="bp" onclick="saveYT()">Guardar</button></div></div></div>
 
 <!-- PROGRAMA -->
-<div class="ov" id="m-idea"><div class="modal"><div class="mh"><h3 id="m-idea-t">Nueva Idea</h3><button class="mc" onclick="closeM('m-idea')">✕</button></div><div class="mb">
+<div class="ov" id="m-idea"><div class="modal" style="max-width:620px"><div class="mh"><h3 id="m-idea-t">Nueva Idea</h3><button class="mc" onclick="closeM('m-idea')">✕</button></div><div class="mb">
   <input type="hidden" id="idea-idx">
-  <div class="fg"><div class="fr"><label>Idea / Título</label><input id="idea-titulo" placeholder="Ej: Video sobre los errores más comunes..."></div><div class="fr"><label>Gancho que se te ocurrió</label><input id="idea-gancho" placeholder="Frase de apertura"></div></div>
-  <div class="fg"><div class="fr"><label>Link de referencia</label><input id="idea-link" placeholder="https://..."></div><div class="fr"><label>Tipo de contenido</label><select id="idea-tipo" onchange="toggleIdeaTipo()"><option value="reel">Reel</option><option value="historia">Historia</option><option value="youtube">YouTube</option></select></div></div>
-  <div class="fr"><label>Transcripción del video referencia</label><textarea id="idea-transcripcion" rows="3" style="resize:vertical" placeholder="Pega la transcripción si tienes..."></textarea></div>
-  <div class="fr" id="idea-est-reel-row"><label>Estructura de guión</label><select id="idea-est-reel"><option>Respondiendo a comentario polémico</option><option>La regla de 3</option><option>Gancho controversial</option><option>La paradoja personal</option><option>El espejo</option><option>Video 100% viral</option><option>El roba audiencia</option><option>Vacío de información</option><option>How to template</option><option>El momento WTF</option><option>El desafío contracorriente</option><option>El efecto boomerang</option><option>Viaje del héroe</option><option>Caída doble</option><option>El efecto mariposa</option><option>La teoría del loco</option><option>Pitch de venta perfecto</option><option>Construcción de autoridad para venta</option><option>Testimonio corto + venta directa</option></select></div>
-  <div class="fr" id="idea-est-hist-row" style="display:none"><label>Estructura de historia</label><select id="idea-est-hist"><option>POV / Reflexión</option><option>Caja de Preguntas</option><option>Todos hacen esto</option><option>Lo que decían</option><option>Lo que dejo fuera es tan importante</option><option>Cómo piensa tu mente</option><option>Mini-Reel</option><option>Directo + Final</option><option>Mi punto de quiebre</option><option>Fórmula AIDA</option><option>Problema-Solución</option><option>Caso de éxito</option><option>3 pasos</option><option>P.A.S</option><option>P.S.A</option><option>Pastor</option><option>Doble CTA</option><option>Casos de éxito + entregable</option><option>Pregunta trampa</option><option>Explicar qué haces</option><option>Casos de éxitos masivos</option></select></div>
-  <div class="fg" id="idea-fmt-row"><div class="fr"><label>Formato visual (reel)</label><select id="idea-fmt"><option>Hablando a cámara</option><option>POV (Point of View)</option><option>Entrevista</option><option>Vlog</option><option>Selfie (modo celular)</option><option>B-roll</option><option>Comparación A/B</option><option>Reaccionando</option><option>Respuesta a comentario</option><option>Pantalla dividida</option><option>Ranking (Top 3, Top 5...)</option></select></div><div class="fr"><label>Estado</label><select id="idea-estado"><option value="idea">Idea</option><option value="guionizado">Guionizado</option><option value="grabado">Grabado</option><option value="subido">Subido</option></select></div></div>
-  <button class="bp" onclick="saveIdea()">Guardar Idea</button>
+  <div class="fg">
+    <div class="fr"><label>Tipo de contenido</label><select id="idea-tipo" onchange="toggleIdeaTipo()" style="font-weight:600"><option value="reel">🎬 Reel</option><option value="historia">📱 Historia</option><option value="youtube">▶️ YouTube</option></select></div>
+    <div class="fr"><label>Estado</label><select id="idea-estado"><option value="idea">Idea</option><option value="guionizado">Guionizado</option><option value="grabado">Grabado</option><option value="subido">Subido</option></select></div>
+  </div>
+
+  <!-- REEL -->
+  <div id="idea-reel-fields">
+    <div class="fr"><label>Título / Idea</label><input id="idea-titulo" placeholder="¿De qué va el reel?"></div>
+    <div class="fr"><label>Gancho</label><input id="idea-gancho" placeholder="Primera frase que abre el reel..."></div>
+    <div class="fr" id="idea-est-reel-row"><label>Estructura de guión</label><select id="idea-est-reel"><option>Respondiendo a comentario polémico</option><option>La regla de 3</option><option>Gancho controversial</option><option>La paradoja personal</option><option>El espejo</option><option>Video 100% viral</option><option>El roba audiencia</option><option>Vacío de información</option><option>How to template</option><option>El momento WTF</option><option>El desafío contracorriente</option><option>El efecto boomerang</option><option>Viaje del héroe</option><option>Caída doble</option><option>El efecto mariposa</option><option>La teoría del loco</option><option>Pitch de venta perfecto</option><option>Construcción de autoridad para venta</option><option>Testimonio corto + venta directa</option></select></div>
+    <div class="fr"><label>Formato visual</label><select id="idea-fmt"><option>Hablando a cámara</option><option>POV (Point of View)</option><option>Entrevista</option><option>Vlog</option><option>Selfie (modo celular)</option><option>B-roll</option><option>Comparación A/B</option><option>Reaccionando</option><option>Respuesta a comentario</option><option>Pantalla dividida</option><option>Ranking (Top 3, Top 5...)</option></select></div>
+    <div class="fr"><label>Link de referencia</label><input id="idea-link" placeholder="https://..."></div>
+    <div class="fr"><label>Guión</label><textarea id="idea-guion" rows="4" style="resize:vertical" placeholder="Escribe el guión completo aquí..."></textarea></div>
+    <div class="fr"><label>Transcripción del video referencia</label><textarea id="idea-transcripcion" rows="3" style="resize:vertical" placeholder="Pega la transcripción si tienes..."></textarea></div>
+  </div>
+
+  <!-- HISTORIA -->
+  <div id="idea-hist-fields" style="display:none">
+    <div class="fg">
+      <div class="fr"><label>Formato</label><select id="idea-est-hist"><option>POV / Reflexión</option><option>Caja de Preguntas</option><option>Todos hacen esto</option><option>Lo que decían</option><option>Lo que dejo fuera es tan importante</option><option>Cómo piensa tu mente</option><option>Mini-Reel</option><option>Directo + Final</option><option>Mi punto de quiebre</option><option>Fórmula AIDA</option><option>Problema-Solución</option><option>Caso de éxito</option><option>3 pasos</option><option>P.A.S</option><option>P.S.A</option><option>Pastor</option><option>Doble CTA</option><option>Casos de éxito + entregable</option><option>Pregunta trampa</option><option>Explicar qué haces</option><option>Casos de éxitos masivos</option></select></div>
+      <div class="fr"><label>Número de historias</label><select id="idea-num-hist" onchange="renderCopyHistorias()"><option value="1">1 historia</option><option value="2">2 historias</option><option value="3">3 historias</option><option value="4">4 historias</option><option value="5">5 historias</option><option value="6">6 historias</option></select></div>
+    </div>
+    <div class="fr"><label>Gancho de la historia</label><input id="idea-hist-gancho" placeholder="Primera historia — ¿qué abre la secuencia?"></div>
+    <div class="fr"><label>SubDolor / SubDeseo</label><input id="idea-hist-subdolor" placeholder="¿Qué dolor o deseo trabaja esta secuencia?"></div>
+    <div class="fr"><label>Lead Magnet</label><input id="idea-hist-lm" placeholder="¿Qué lead magnet se da en el CTA?"></div>
+    <div id="idea-copy-historias" style="margin-top:4px"></div>
+  </div>
+
+  <!-- YOUTUBE -->
+  <div id="idea-yt-fields" style="display:none">
+    <div class="fr"><label>Título del video</label><input id="idea-yt-titulo" placeholder="El título que irá en YouTube..."></div>
+    <div class="fr"><label>Idea de miniatura</label><input id="idea-yt-miniatura" placeholder="¿Qué imagen o texto va en la miniatura?"></div>
+    <div class="fr"><label>Idea / Descripción</label><textarea id="idea-yt-idea" rows="2" style="resize:vertical" placeholder="¿De qué va el video? Resumen breve..."></textarea></div>
+    <div class="fr"><label>Contexto</label><textarea id="idea-yt-contexto" rows="2" style="resize:vertical" placeholder="¿Por qué este video ahora? ¿Qué lo hace relevante?"></textarea></div>
+    <div class="fr"><label>Video de referencia</label><input id="idea-yt-ref" placeholder="https://..."></div>
+  </div>
+
+  <button class="bp" onclick="saveIdea()" style="margin-top:8px">Guardar Idea</button>
 </div></div></div>
+
 
 <div class="ov" id="m-prog"><div class="modal"><div class="mh"><h3 id="m-prog-t">Nuevo Programa</h3><button class="mc" onclick="closeM('m-prog')">✕</button></div><div class="mb"><input type="hidden" id="prog-idx"><div class="fg"><div class="fr"><label>Nombre</label><input id="p-nom"></div><div class="fr"><label>Precio ($)</label><input type="number" id="p-precio"></div></div><div class="fg"><div class="fr"><label>Duración (días)</label><input type="number" id="p-dias"></div><div class="fr"><label>Cuotas</label><input type="number" id="p-cuotas" value="1"></div></div><div class="fr"><label>Descripción</label><textarea id="p-desc" rows="2" style="resize:none"></textarea></div><button class="bp" onclick="saveProg()">Guardar</button></div></div></div>
 
@@ -1615,32 +1590,18 @@ function showCalPopup(title,desc,cat){
   document.body.appendChild(ov);document.body.appendChild(pop);
 }
 
-// Ideas tabs
-let ideasTabActual='reel';
-function setIdeasTab(tipo){
-  ideasTabActual=tipo;
-  ['reel','historia','youtube'].forEach(t=>{
-    const btn=document.getElementById('ideas-tab-'+t);
-    if(!btn)return;
-    if(t===tipo){btn.style.background='rgba(201,168,76,0.15)';btn.style.borderColor='var(--gold)';btn.style.color='var(--gold)';}
-    else{btn.style.background='transparent';btn.style.borderColor='var(--br)';btn.style.color='var(--t2)';}
-  });
-  renderIdeas();
-}
 function renderIdeas(){
   const el=document.getElementById('ideas-list');
   if(!KPI.ideas||!KPI.ideas.length){el.innerHTML='<div style="padding:16px;font-size:11px;color:var(--t3);text-align:center">Sin ideas aún. ¡Agrega tu primera idea!</div>';return;}
-  const filtered=KPI.ideas.filter(i=>(i.tipo||'reel')===ideasTabActual);
-  if(!filtered.length){el.innerHTML=`<div style="padding:16px;font-size:11px;color:var(--t3);text-align:center">Sin ideas de ${ideasTabActual} aún</div>`;return;}
-  el.innerHTML=filtered.map(idea=>{
+  el.innerHTML=KPI.ideas.map(idea=>{
     const estadoClass={'idea':'estado-idea','guionizado':'estado-guionizado','grabado':'estado-grabado','subido':'estado-subido'}[idea.estado]||'estado-idea';
     return`<div class="idea-card" ondblclick="editIdea('${idea.id}')" style="cursor:pointer">
       <div class="idea-card-header">
-        <div style="flex:1"><div class="idea-title">${idea.titulo||'—'}</div><div class="idea-meta">${idea.tipo||'reel'} · ${fD(idea.created_at?.slice(0,10))}</div></div>
+        <div style="flex:1"><div class="idea-title">${idea.titulo||'Sin título'}</div><div class="idea-meta">${idea.tipo||'reel'} · ${fD(idea.created_at?.slice(0,10))}</div></div>
         <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
           <span class="estado-badge ${estadoClass}">${idea.estado||'idea'}</span>
-          <button onclick="event.stopPropagation();editIdea('${idea.id}')" style="background:none;border:none;color:var(--t3);cursor:pointer;font-size:14px;padding:2px 5px" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--t3)'">✏️</button>
-          <button onclick="event.stopPropagation();deleteIdea('${idea.id}')" style="background:none;border:none;color:rgba(226,75,74,.6);cursor:pointer;font-size:13px;padding:2px 5px" onmouseover="this.style.color='var(--er)'" onmouseout="this.style.color='rgba(226,75,74,.6)'">✕</button>
+          <button onclick="event.stopPropagation();editIdea('${idea.id}')" style="background:none;border:none;color:var(--t3);cursor:pointer;font-size:14px;padding:2px 5px;transition:color .2s" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--t3)'" title="Editar">✏️</button>
+          <button onclick="event.stopPropagation();deleteIdea('${idea.id}')" style="background:none;border:none;color:rgba(226,75,74,.6);cursor:pointer;font-size:13px;padding:2px 5px;transition:color .2s" onmouseover="this.style.color='var(--er)'" onmouseout="this.style.color='rgba(226,75,74,.6)'" title="Eliminar">✕</button>
         </div>
       </div>
       ${idea.gancho?`<div style="font-size:11px;color:var(--t2);margin-bottom:6px">💡 ${idea.gancho}</div>`:''}
@@ -1648,86 +1609,6 @@ function renderIdeas(){
       ${idea.link?`<div style="margin-top:6px"><a href="${idea.link}" target="_blank" onclick="event.stopPropagation()" style="font-size:10px;color:var(--inf)">Ver referencia →</a></div>`:''}
     </div>`;
   }).join('');
-}
-// Filtros leads
-function filterLeadsTable(){
-  const q=(document.getElementById('leads-search')?.value||'').toLowerCase();
-  const est=document.getElementById('leads-filter-estado')?.value||'';
-  const fue=document.getElementById('leads-filter-fuente')?.value||'';
-  const seg=document.getElementById('leads-filter-seg')?.value||'';
-  const filtered=KPI.leads.filter(l=>{
-    if(q&&!(l.nombre||'').toLowerCase().includes(q))return false;
-    if(est&&l.estado!==est)return false;
-    if(fue&&l.fuente!==fue)return false;
-    if(seg&&(l.seguimientos||'Sin seguimiento')!==seg)return false;
-    return true;
-  });
-  renderLeadsTbl(document.getElementById('tbl-leads'),filtered);
-}
-// Filtros agendas
-function filterAgendasTable(){
-  const q=(document.getElementById('agendas-search')?.value||'').toLowerCase();
-  const res=document.getElementById('agendas-filter-resultado')?.value||'';
-  const filtered=KPI.agendas.filter(a=>{
-    if(q&&!(a.nombre||'').toLowerCase().includes(q))return false;
-    if(res&&a.resultado!==res)return false;
-    return true;
-  });
-  const el=document.getElementById('tbl-agendas');
-  if(!filtered.length){el.innerHTML=emptyEl('Sin resultados');return;}
-  const fmt={fecha:fD,calificacion:v=>`<span class="st ${v==='Alta'?'sg':v==='Media'?'sy':'sm'}">${v||'-'}</span>`,resultado:v=>`<span class="st ${v==='Cerrado'?'sg':v==='No Show'?'sr':v==='Pendiente'?'sy':'sm'}">${v||'-'}</span>`};
-  el.innerHTML=`<table class="t"><thead><tr><th>Nombre</th><th>Fecha</th><th>Cal.</th><th>Resultado</th><th>Notas</th><th></th></tr></thead><tbody>${filtered.map(row=>`<tr ondblclick="openEdit('agendas','${row.id}')" style="cursor:pointer"><td>${row.nombre||'—'}</td><td>${fD(row.fecha)}</td><td>${fmt.calificacion(row.calificacion)}</td><td>${fmt.resultado(row.resultado)}</td><td>${row.notas||'—'}</td><td>${editPencilBtn('agendas',row.id)}</td></tr>`).join('')}</tbody></table>`;
-}
-// Filtros clientes
-function filterClientesTable(){
-  const q=(document.getElementById('clientes-search')?.value||'').toLowerCase();
-  const act=document.getElementById('clientes-filter-activo')?.value||'';
-  const filtered=KPI.clientes.filter(c=>{
-    if(q&&!(c.nombre||'').toLowerCase().includes(q))return false;
-    if(act&&c.activo!==act)return false;
-    return true;
-  });
-  renderClientesTbl(document.getElementById('tbl-clientes'),filtered);
-}
-// Filtros wins
-function filterWinsTable(){
-  const q=(document.getElementById('wins-search')?.value||'').toLowerCase();
-  const usada=document.getElementById('wins-filter-usada')?.value||'';
-  const el=document.getElementById('wins-list');
-  const filtered=KPI.wins.filter(w=>{
-    if(q&&!(w.win||'').toLowerCase().includes(q)&&!(w.cliente||'').toLowerCase().includes(q))return false;
-    if(usada&&w.usada_historias!==usada)return false;
-    return true;
-  });
-  if(!filtered.length){el.innerHTML=emptyEl('Sin wins');return;}
-  el.innerHTML=filtered.map(w=>`<div class="wc"><div style="display:flex;gap:5px;margin-bottom:5px"><span class="st sy">${w.grandeza}</span>${w.usada_historias==='Si'?'<span class="st sg">En historias</span>':''}</div><div style="font-size:12px;color:var(--tx);margin:4px 0">${w.win}</div><div style="font-size:9px;color:var(--t3)">${w.cliente} · ${fD(w.fecha)}</div></div>`).join('');
-}
-
-function openIdeaModal(){
-  document.getElementById('idea-idx').value='';
-  document.getElementById('m-idea-t').textContent='Nueva Idea';
-  ['idea-titulo','idea-gancho','idea-link','idea-transcripcion'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('idea-tipo').value='reel';
-  document.getElementById('idea-estado').value='idea';
-  toggleIdeaTipo();
-  openM('m-idea');
-}
-
-function editIdea(id){
-  const idea=KPI.ideas.find(x=>x.id===id);if(!idea)return;
-  document.getElementById('idea-idx').value=idea.id;
-  document.getElementById('m-idea-t').textContent='Editar Idea';
-  document.getElementById('idea-titulo').value=idea.titulo||'';
-  document.getElementById('idea-gancho').value=idea.gancho||'';
-  document.getElementById('idea-link').value=idea.link||'';
-  document.getElementById('idea-transcripcion').value=idea.transcripcion||'';
-  document.getElementById('idea-tipo').value=idea.tipo||'reel';
-  toggleIdeaTipo();
-  if(idea.tipo==='historia')document.getElementById('idea-est-hist').value=idea.estructura||'';
-  else document.getElementById('idea-est-reel').value=idea.estructura||'';
-  if(idea.formato)document.getElementById('idea-fmt').value=idea.formato;
-  document.getElementById('idea-estado').value=idea.estado||'idea';
-  openM('m-idea');
 }
 
 async function deleteIdea(id){
@@ -1740,16 +1621,105 @@ async function deleteIdea(id){
 
 function toggleIdeaTipo(){
   const tipo=document.getElementById('idea-tipo').value;
-  document.getElementById('idea-est-reel-row').style.display=tipo==='reel'?'block':'none';
-  document.getElementById('idea-est-hist-row').style.display=tipo==='historia'?'block':'none';
-  document.getElementById('idea-fmt-row').style.display=tipo==='reel'?'grid':'none';
+  document.getElementById('idea-reel-fields').style.display=tipo==='reel'?'block':'none';
+  document.getElementById('idea-hist-fields').style.display=tipo==='historia'?'block':'none';
+  document.getElementById('idea-yt-fields').style.display=tipo==='youtube'?'block':'none';
+  if(tipo==='historia')renderCopyHistorias();
+}
+
+function renderCopyHistorias(){
+  const n=parseInt(document.getElementById('idea-num-hist')?.value||1);
+  const el=document.getElementById('idea-copy-historias');if(!el)return;
+  el.innerHTML='';
+  for(let i=1;i<=n;i++){
+    const existing=document.getElementById(`idea-copy-h${i}`)?.value||'';
+    const div=document.createElement('div');div.className='fr';
+    div.innerHTML=`<label>Copy Historia #${i}</label><textarea id="idea-copy-h${i}" rows="2" style="resize:vertical" placeholder="Escribe el copy de la historia #${i}...">${existing}</textarea>`;
+    el.appendChild(div);
+  }
+}
+
+function openIdeaModal(){
+  document.getElementById('idea-idx').value='';
+  document.getElementById('m-idea-t').textContent='Nueva Idea';
+  document.getElementById('idea-tipo').value='reel';
+  document.getElementById('idea-estado').value='idea';
+  // Reset reel
+  ['idea-titulo','idea-gancho','idea-link','idea-transcripcion','idea-guion'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  // Reset historia
+  ['idea-hist-gancho','idea-hist-subdolor','idea-hist-lm'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  if(document.getElementById('idea-num-hist'))document.getElementById('idea-num-hist').value='1';
+  if(document.getElementById('idea-copy-historias'))document.getElementById('idea-copy-historias').innerHTML='';
+  // Reset youtube
+  ['idea-yt-titulo','idea-yt-miniatura','idea-yt-idea','idea-yt-contexto','idea-yt-ref'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  toggleIdeaTipo();
+  openM('m-idea');
+}
+
+function editIdea(id){
+  const idea=KPI.ideas.find(x=>x.id===id);if(!idea)return;
+  document.getElementById('idea-idx').value=idea.id;
+  document.getElementById('m-idea-t').textContent='Editar Idea';
+  document.getElementById('idea-tipo').value=idea.tipo||'reel';
+  document.getElementById('idea-estado').value=idea.estado||'idea';
+  toggleIdeaTipo();
+  if(idea.tipo==='reel'||!idea.tipo){
+    document.getElementById('idea-titulo').value=idea.titulo||'';
+    document.getElementById('idea-gancho').value=idea.gancho||'';
+    document.getElementById('idea-link').value=idea.link||'';
+    document.getElementById('idea-transcripcion').value=idea.transcripcion||'';
+    document.getElementById('idea-guion').value=idea.guion||'';
+    if(idea.estructura)document.getElementById('idea-est-reel').value=idea.estructura;
+    if(idea.formato)document.getElementById('idea-fmt').value=idea.formato;
+  }else if(idea.tipo==='historia'){
+    if(idea.estructura)document.getElementById('idea-est-hist').value=idea.estructura;
+    document.getElementById('idea-hist-gancho').value=idea.gancho||'';
+    document.getElementById('idea-hist-subdolor').value=idea.subdolor||'';
+    document.getElementById('idea-hist-lm').value=idea.lead_magnet||'';
+    const copies=idea.copies||{};
+    const n=Object.keys(copies).length||1;
+    document.getElementById('idea-num-hist').value=String(n);
+    renderCopyHistorias();
+    Object.entries(copies).forEach(([k,v])=>{const el=document.getElementById(`idea-copy-h${k}`);if(el)el.value=v;});
+  }else if(idea.tipo==='youtube'){
+    document.getElementById('idea-yt-titulo').value=idea.titulo||'';
+    document.getElementById('idea-yt-miniatura').value=idea.miniatura||'';
+    document.getElementById('idea-yt-idea').value=idea.descripcion||'';
+    document.getElementById('idea-yt-contexto').value=idea.contexto||'';
+    document.getElementById('idea-yt-ref').value=idea.link||'';
+  }
+  openM('m-idea');
 }
 
 async function saveIdea(){
   const id=document.getElementById('idea-idx').value;
   const tipo=document.getElementById('idea-tipo').value;
-  const est=tipo==='reel'?document.getElementById('idea-est-reel').value:tipo==='historia'?document.getElementById('idea-est-hist').value:'';
-  const o={user_id:portalClientId,titulo:document.getElementById('idea-titulo').value,gancho:document.getElementById('idea-gancho').value,link:document.getElementById('idea-link').value,transcripcion:document.getElementById('idea-transcripcion').value,tipo,estructura:est,formato:tipo==='reel'?document.getElementById('idea-fmt').value:'',estado:document.getElementById('idea-estado').value};
+  let o={user_id:portalClientId,tipo,estado:document.getElementById('idea-estado').value};
+  if(tipo==='reel'||!tipo){
+    o.titulo=document.getElementById('idea-titulo').value;
+    o.gancho=document.getElementById('idea-gancho').value;
+    o.link=document.getElementById('idea-link').value;
+    o.transcripcion=document.getElementById('idea-transcripcion').value;
+    o.guion=document.getElementById('idea-guion').value;
+    o.estructura=document.getElementById('idea-est-reel').value;
+    o.formato=document.getElementById('idea-fmt').value;
+  }else if(tipo==='historia'){
+    o.estructura=document.getElementById('idea-est-hist').value;
+    o.gancho=document.getElementById('idea-hist-gancho').value;
+    o.subdolor=document.getElementById('idea-hist-subdolor').value;
+    o.lead_magnet=document.getElementById('idea-hist-lm').value;
+    const n=parseInt(document.getElementById('idea-num-hist').value||1);
+    const copies={};
+    for(let i=1;i<=n;i++){copies[i]=document.getElementById(`idea-copy-h${i}`)?.value||'';}
+    o.copies=copies;
+    o.titulo=o.gancho||o.estructura||'Historia';
+  }else if(tipo==='youtube'){
+    o.titulo=document.getElementById('idea-yt-titulo').value;
+    o.miniatura=document.getElementById('idea-yt-miniatura').value;
+    o.descripcion=document.getElementById('idea-yt-idea').value;
+    o.contexto=document.getElementById('idea-yt-contexto').value;
+    o.link=document.getElementById('idea-yt-ref').value;
+  }
   if(id)await sb.from('ideas').update(o).eq('id',id);
   else await sb.from('ideas').insert(o);
   closeM('m-idea');
