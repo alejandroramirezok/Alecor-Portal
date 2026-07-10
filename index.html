@@ -450,12 +450,89 @@ table.t tr:hover td{background:var(--d2)}
           <button class="ctab" onclick="showCtab('hist',this)">📱 Historias</button>
           <button class="ctab" onclick="showCtab('yt',this)">▶️ YouTube</button>
         </div>
-        <div class="ctab-panel active" id="ctab-reels"><div id="dc-reels-kpis"></div><div style="font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;margin-top:14px">Top 3 últimos 90 días (comentarios)</div><div id="dc-reels-top"></div>
-<div style="display:flex;align-items:center;justify-content:space-between;margin-top:16px;margin-bottom:8px"><div style="font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:1px">Todos los reels</div><select class="fsort" id="dc-reels-list-sort" onchange="renderContentList('dc-reels-list',KPI.reels,'reels')"><option value="views">Por visitas</option><option value="comentarios">Por comentarios</option></select></div><div id="dc-reels-list"></div></div>
-        <div class="ctab-panel" id="ctab-hist"><div id="dc-hist-kpis"></div><div style="font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;margin-top:14px">Top 3 últimos 90 días (respuestas CTA)</div><div id="dc-hist-top"></div>
-<div style="display:flex;align-items:center;justify-content:space-between;margin-top:16px;margin-bottom:8px"><div style="font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:1px">Todas las historias</div><select class="fsort" id="dc-hist-list-sort" onchange="renderContentList('dc-hist-list',KPI.historias,'historias')"><option value="views">Por visitas</option><option value="respuestas_cta">Por resp. CTA</option></select></div><div id="dc-hist-list"></div></div>
-        <div class="ctab-panel" id="ctab-yt"><div id="dc-yt-kpis"></div><div style="font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;margin-top:14px">Top 3 últimos 90 días (visitas)</div><div id="dc-yt-top"></div>
-<div style="display:flex;align-items:center;justify-content:space-between;margin-top:16px;margin-bottom:8px"><div style="font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:1px">Todos los videos</div><select class="fsort" id="dc-yt-list-sort" onchange="renderContentList('dc-yt-list',KPI.yt,'yt')"><option value="views">Por visitas</option><option value="ctr">Por CTR</option></select></div><div id="dc-yt-list"></div></div>
+
+        <!-- LEADS DE CONTENIDO -->
+        <div id="dc-leads-contenido" style="background:linear-gradient(135deg,rgba(201,168,76,0.08),rgba(201,168,76,0.03));border:1px solid rgba(201,168,76,0.25);border-radius:12px;padding:14px 18px;margin-bottom:16px;display:flex;gap:24px;align-items:center;flex-wrap:wrap">
+          <div><div style="font-size:9px;color:var(--gold);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:4px">🎯 Leads totales de contenido</div><div style="font-size:24px;font-weight:800;color:var(--gold)" id="dc-leads-total">0</div><div style="font-size:10px;color:var(--t3)">comentarios + respuestas CTA</div></div>
+          <div style="width:1px;height:40px;background:rgba(201,168,76,0.2)"></div>
+          <div><div style="font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">💬 De Reels</div><div style="font-size:18px;font-weight:700;color:var(--tx)" id="dc-leads-reels">0</div></div>
+          <div><div style="font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">📱 De Historias</div><div style="font-size:18px;font-weight:700;color:var(--tx)" id="dc-leads-hist">0</div></div>
+          <div><div style="font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">💰 Ventas de contenido</div><div style="font-size:18px;font-weight:700;color:var(--ok)" id="dc-ventas-total">0</div></div>
+        </div>
+
+        <!-- TIMELINE CHART -->
+        <div style="background:var(--d2);border:1px solid var(--br);border-radius:12px;padding:14px 16px;margin-bottom:16px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+            <div style="font-size:11px;font-weight:600;color:var(--tx)">📈 Timeline de visitas</div>
+            <select id="dc-timeline-type" onchange="renderTimelineChart()" style="background:var(--d3);border:1px solid var(--br);border-radius:6px;padding:4px 8px;color:var(--t2);font-size:10px;font-family:var(--font);outline:none">
+              <option value="all">Todos</option><option value="reels">Solo Reels</option><option value="hist">Solo Historias</option><option value="yt">Solo YouTube</option>
+            </select>
+          </div>
+          <canvas id="dc-timeline-chart" height="120"></canvas>
+        </div>
+
+        <!-- REELS PANEL -->
+        <div class="ctab-panel active" id="ctab-reels">
+          <div id="dc-reels-kpis"></div>
+          <!-- Filtros reels -->
+          <div style="display:flex;gap:6px;margin:12px 0;flex-wrap:wrap;align-items:center">
+            <div style="display:flex;align-items:center;gap:6px;background:var(--d3);border:1px solid var(--br);border-radius:8px;padding:6px 10px;flex:1;min-width:150px">
+              <span style="color:var(--t3);font-size:12px">🔍</span>
+              <input id="reel-search" oninput="filterContentReels()" placeholder="Buscar reel..." style="background:none;border:none;outline:none;color:var(--tx);font-size:11px;font-family:var(--font);width:100%">
+            </div>
+            <select id="reel-filter-est" onchange="filterContentReels()" style="background:var(--d3);border:1px solid var(--br);border-radius:8px;padding:6px 10px;color:var(--t2);font-size:11px;font-family:var(--font);outline:none">
+              <option value="">Todas las estructuras</option>
+              <option>Respondiendo a comentario polémico</option><option>La regla de 3</option><option>Gancho controversial</option><option>La paradoja personal</option><option>El espejo</option><option>Video 100% viral</option><option>El roba audiencia</option><option>Vacío de información</option><option>How to template</option><option>El momento WTF</option><option>El desafío contracorriente</option><option>El efecto boomerang</option><option>Viaje del héroe</option><option>Caída doble</option><option>El efecto mariposa</option><option>La teoría del loco</option><option>Pitch de venta perfecto</option><option>Construcción de autoridad para venta</option><option>Testimonio corto + venta directa</option>
+            </select>
+            <select id="reel-sort" onchange="filterContentReels()" style="background:var(--d3);border:1px solid var(--br);border-radius:8px;padding:6px 10px;color:var(--t2);font-size:11px;font-family:var(--font);outline:none">
+              <option value="views">🏆 Por visitas</option><option value="comentarios">Por comentarios</option><option value="retencion">Por retención</option><option value="ventas">Por ventas</option>
+            </select>
+          </div>
+          <div style="font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Top 3 últimos 30 días</div>
+          <div id="dc-reels-top"></div>
+          <div style="margin-top:14px;margin-bottom:8px;font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:1px">Todos los reels</div>
+          <div id="dc-reels-list"></div>
+        </div>
+
+        <!-- HISTORIAS PANEL -->
+        <div class="ctab-panel" id="ctab-hist">
+          <div id="dc-hist-kpis"></div>
+          <div style="display:flex;gap:6px;margin:12px 0;flex-wrap:wrap;align-items:center">
+            <div style="display:flex;align-items:center;gap:6px;background:var(--d3);border:1px solid var(--br);border-radius:8px;padding:6px 10px;flex:1;min-width:150px">
+              <span style="color:var(--t3);font-size:12px">🔍</span>
+              <input id="hist-search" oninput="filterContentHist()" placeholder="Buscar historia..." style="background:none;border:none;outline:none;color:var(--tx);font-size:11px;font-family:var(--font);width:100%">
+            </div>
+            <select id="hist-filter-fmt" onchange="filterContentHist()" style="background:var(--d3);border:1px solid var(--br);border-radius:8px;padding:6px 10px;color:var(--t2);font-size:11px;font-family:var(--font);outline:none">
+              <option value="">Todas las estructuras</option>
+              <option>POV / Reflexión</option><option>Caja de Preguntas</option><option>Todos hacen esto</option><option>Mini-Reel</option><option>Fórmula AIDA</option><option>Problema-Solución</option><option>Caso de éxito</option><option>P.A.S</option><option>P.S.A</option><option>Pastor</option><option>Doble CTA</option><option>Pregunta trampa</option>
+            </select>
+            <select id="hist-sort" onchange="filterContentHist()" style="background:var(--d3);border:1px solid var(--br);border-radius:8px;padding:6px 10px;color:var(--t2);font-size:11px;font-family:var(--font);outline:none">
+              <option value="respuestas_cta">🏆 Por respuestas</option><option value="views">Por visitas</option><option value="ventas">Por ventas</option>
+            </select>
+          </div>
+          <div style="font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Top 3 últimos 30 días</div>
+          <div id="dc-hist-top"></div>
+          <div style="margin-top:14px;margin-bottom:8px;font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:1px">Todas las historias</div>
+          <div id="dc-hist-list"></div>
+        </div>
+
+        <!-- YOUTUBE PANEL -->
+        <div class="ctab-panel" id="ctab-yt">
+          <div id="dc-yt-kpis"></div>
+          <div style="display:flex;gap:6px;margin:12px 0;align-items:center">
+            <div style="display:flex;align-items:center;gap:6px;background:var(--d3);border:1px solid var(--br);border-radius:8px;padding:6px 10px;flex:1">
+              <span style="color:var(--t3);font-size:12px">🔍</span>
+              <input id="yt-search" oninput="filterContentYT()" placeholder="Buscar video..." style="background:none;border:none;outline:none;color:var(--tx);font-size:11px;font-family:var(--font);width:100%">
+            </div>
+            <select id="yt-sort" onchange="filterContentYT()" style="background:var(--d3);border:1px solid var(--br);border-radius:8px;padding:6px 10px;color:var(--t2);font-size:11px;font-family:var(--font);outline:none">
+              <option value="views">🏆 Por visitas</option><option value="ctr">Por CTR</option><option value="retencion">Por retención</option>
+            </select>
+          </div>
+          <div style="font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Top 3 últimos 30 días</div>
+          <div id="dc-yt-top"></div>
+          <div style="margin-top:14px;margin-bottom:8px;font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:1px">Todos los videos</div>
+          <div id="dc-yt-list"></div>
+        </div>
       </div>
 
       <!-- MODULE SECTIONS (leads, agendas, etc.) -->
@@ -723,10 +800,30 @@ table.t tr:hover td{background:var(--d2)}
 <div class="ov" id="m-win"><div class="modal"><div class="mh"><h3>Nueva Win</h3><button class="mc" onclick="closeM('m-win')">✕</button></div><div class="mb"><div class="fg"><div class="fr"><label>Cliente</label><input id="w-cl"></div><div class="fr"><label>Fecha</label><input type="date" id="w-f"></div></div><div class="fr"><label>Win / Resultado</label><textarea id="w-t" rows="3" style="resize:none"></textarea></div><div class="fg"><div class="fr"><label>Grandeza</label><select id="w-g"><option>Grande</option><option>Media</option><option>Pequeña</option></select></div><div class="fr"><label>¿Usada en historias?</label><select id="w-u"><option value="No">No</option><option value="Si">Sí</option></select></div></div><button class="bp" onclick="saveWin()">Guardar</button></div></div></div>
 
 <!-- REEL -->
-<div class="ov" id="m-reel"><div class="modal"><div class="mh"><h3 id="m-reel-t">Nuevo Reel</h3><button class="mc" onclick="closeM('m-reel')">✕</button></div><div class="mb"><input type="hidden" id="reel-idx"><div class="fr"><label>Link del video (opcional)</label><input id="r-link" placeholder="https://..." oninput="detectYTThumb(this.value)"></div><div id="r-thumb-preview" style="margin-bottom:8px"></div><div class="fg"><div class="fr"><label>Nombre</label><input id="r-n"></div><div class="fr"><label>Estructura</label><select id="r-est"><option>Respondiendo a comentario polémico</option><option>La regla de 3</option><option>Gancho controversial</option><option>La paradoja personal</option><option>El espejo</option><option>Video 100% viral</option><option>El roba audiencia</option><option>Vacío de información</option><option>How to template</option><option>El momento WTF</option><option>El desafío contracorriente</option><option>El efecto boomerang</option><option>Viaje del héroe</option><option>Caída doble</option><option>El efecto mariposa</option><option>La teoría del loco</option><option>Pitch de venta perfecto</option><option>Construcción de autoridad para venta</option><option>Testimonio corto + venta directa</option></select></div></div><div class="fr"><label>Gancho (frase de apertura)</label><input id="r-gancho" placeholder="Ej: El 90% de los emprendedores cometen este error..."></div><div class="fg"><div class="fr"><label>Formato visual</label><select id="r-fmt"><option>Hablando a cámara</option><option>POV (Point of View)</option><option>Entrevista</option><option>Vlog</option><option>Selfie (modo celular)</option><option>B-roll</option><option>Comparación A/B</option><option>Reaccionando</option><option>Respuesta a comentario</option><option>Pantalla dividida</option><option>Ranking (Top 3, Top 5...)</option></select></div><div class="fr"><label>Fecha</label><input type="date" id="r-f"></div></div><div class="fg"><div class="fr"><label>Views</label><input type="number" id="r-v" value="0"></div><div class="fr"><label>Comentarios</label><input type="number" id="r-c" value="0"></div></div><div class="fg"><div class="fr"><label>Seguidores Nuevos</label><input type="number" id="r-s" value="0"></div><div class="fr"><label>Likes</label><input type="number" id="r-l" value="0"></div></div><button class="bp" onclick="saveReel()">Guardar</button></div></div></div>
+<div class="ov" id="m-reel"><div class="modal"><div class="mh"><h3 id="m-reel-t">Nuevo Reel</h3><button class="mc" onclick="closeM('m-reel')">✕</button></div><div class="mb"><input type="hidden" id="reel-idx">
+  <div class="fr"><label>Link del video (opcional)</label><input id="r-link" placeholder="https://..." oninput="detectYTThumb(this.value)"></div>
+  <div id="r-thumb-preview" style="margin-bottom:8px"></div>
+  <div class="fg"><div class="fr"><label>Nombre</label><input id="r-n"></div><div class="fr"><label>Fecha</label><input type="date" id="r-f"></div></div>
+  <div class="fr"><label>Gancho (frase de apertura)</label><input id="r-gancho" placeholder="Ej: El 90% de los emprendedores cometen este error..."></div>
+  <div class="fg"><div class="fr"><label>Estructura</label><select id="r-est"><option>Respondiendo a comentario polémico</option><option>La regla de 3</option><option>Gancho controversial</option><option>La paradoja personal</option><option>El espejo</option><option>Video 100% viral</option><option>El roba audiencia</option><option>Vacío de información</option><option>How to template</option><option>El momento WTF</option><option>El desafío contracorriente</option><option>El efecto boomerang</option><option>Viaje del héroe</option><option>Caída doble</option><option>El efecto mariposa</option><option>La teoría del loco</option><option>Pitch de venta perfecto</option><option>Construcción de autoridad para venta</option><option>Testimonio corto + venta directa</option></select></div>
+  <div class="fr"><label>Formato visual</label><select id="r-fmt"><option>Hablando a cámara</option><option>POV (Point of View)</option><option>Entrevista</option><option>Vlog</option><option>Selfie (modo celular)</option><option>B-roll</option><option>Comparación A/B</option><option>Reaccionando</option><option>Respuesta a comentario</option><option>Pantalla dividida</option><option>Ranking (Top 3, Top 5...)</option></select></div></div>
+  <div class="fr"><label>SubDolor / SubDeseo tocado</label><input id="r-subdolor" placeholder="Ej: Miedo a no poder pagar las cuentas..."></div>
+  <div class="fr"><label>Lead Magnet utilizado</label><input id="r-lm" placeholder="Ej: PDF gratuito de 3 errores..."></div>
+  <div class="fg"><div class="fr"><label>Views</label><input type="number" id="r-v" value="0"></div><div class="fr"><label>Comentarios</label><input type="number" id="r-c" value="0"></div></div>
+  <div class="fg"><div class="fr"><label>Seguidores Nuevos</label><input type="number" id="r-s" value="0"></div><div class="fr"><label>% Retención</label><input type="number" id="r-ret" value="0" placeholder="0-100"></div></div>
+  <div class="fg"><div class="fr"><label>Likes</label><input type="number" id="r-l" value="0"></div><div class="fr"><label>Ventas traídas</label><input type="number" id="r-ventas" value="0"></div></div>
+  <button class="bp" onclick="saveReel()">Guardar</button>
+</div></div></div>
 
 <!-- HISTORIA -->
-<div class="ov" id="m-hist"><div class="modal"><div class="mh"><h3 id="m-hist-t">Nueva Secuencia</h3><button class="mc" onclick="closeM('m-hist')">✕</button></div><div class="mb"><input type="hidden" id="hist-idx"><div class="fg"><div class="fr"><label>Idea de secuencia</label><input id="h-idea"></div><div class="fr"><label>Formato</label><select id="h-fmt"><option>POV / Reflexión</option><option>Caja de Preguntas</option><option>Todos hacen esto</option><option>Lo que decían</option><option>Lo que dejo fuera es tan importante</option><option>Cómo piensa tu mente</option><option>Mini-Reel</option><option>Directo + Final</option><option>Mi punto de quiebre</option><option>Fórmula AIDA</option><option>Problema-Solución</option><option>Caso de éxito</option><option>3 pasos</option><option>P.A.S</option><option>P.S.A</option><option>Pastor</option><option>Doble CTA</option><option>Casos de éxito + entregable</option><option>Pregunta trampa</option><option>Explicar qué haces</option><option>Casos de éxitos masivos</option></select></div></div><div class="fg"><div class="fr"><label>Fecha</label><input type="date" id="h-f"></div><div class="fr"><label>Views última historia</label><input type="number" id="h-v" value="0" oninput="calcTasa()"></div></div><div class="fg"><div class="fr"><label>Respuestas al CTA</label><input type="number" id="h-cta" value="0" oninput="calcTasa()"></div><div class="fr"><label>Tasa interacción (auto)</label><input id="h-tasa" readonly style="background:var(--d4);cursor:default"></div></div><button class="bp" onclick="saveHist()">Guardar</button></div></div></div>
+<div class="ov" id="m-hist"><div class="modal"><div class="mh"><h3 id="m-hist-t">Nueva Secuencia</h3><button class="mc" onclick="closeM('m-hist')">✕</button></div><div class="mb"><input type="hidden" id="hist-idx">
+  <div class="fg"><div class="fr"><label>Idea de secuencia</label><input id="h-idea"></div><div class="fr"><label>Estructura</label><select id="h-fmt"><option>POV / Reflexión</option><option>Caja de Preguntas</option><option>Todos hacen esto</option><option>Lo que decían</option><option>Lo que dejo fuera es tan importante</option><option>Cómo piensa tu mente</option><option>Mini-Reel</option><option>Directo + Final</option><option>Mi punto de quiebre</option><option>Fórmula AIDA</option><option>Problema-Solución</option><option>Caso de éxito</option><option>3 pasos</option><option>P.A.S</option><option>P.S.A</option><option>Pastor</option><option>Doble CTA</option><option>Casos de éxito + entregable</option><option>Pregunta trampa</option><option>Explicar qué haces</option><option>Casos de éxitos masivos</option></select></div></div>
+  <div class="fr"><label>Lead Magnet / Recurso gratis utilizado</label><input id="h-lm" placeholder="Ej: Checklist gratuito, clase, PDF..."></div>
+  <div class="fg"><div class="fr"><label>Fecha</label><input type="date" id="h-f"></div><div class="fr"><label>Views (última historia)</label><input type="number" id="h-v" value="0" oninput="calcTasa()"></div></div>
+  <div class="fg"><div class="fr"><label>Respuestas al CTA</label><input type="number" id="h-cta" value="0" oninput="calcTasa()"></div><div class="fr"><label>Ventas traídas</label><input type="number" id="h-ventas" value="0"></div></div>
+  <div class="fr"><label>Tasa interacción (auto)</label><input id="h-tasa" readonly style="background:var(--d4);cursor:default"></div>
+  <button class="bp" onclick="saveHist()">Guardar</button>
+</div></div></div>
 
 <!-- YOUTUBE -->
 <div class="ov" id="m-yt"><div class="modal"><div class="mh"><h3 id="m-yt-t">Nuevo Video YouTube</h3><button class="mc" onclick="closeM('m-yt')">✕</button></div><div class="mb"><input type="hidden" id="yt-idx"><div class="fg"><div class="fr"><label>Título</label><input id="y-t"></div><div class="fr"><label>Fecha</label><input type="date" id="y-f"></div></div><div class="fg"><div class="fr"><label>Duración (min)</label><input type="number" id="y-d" step="0.5"></div><div class="fr"><label>Views</label><input type="number" id="y-v" value="0"></div></div><div class="fg"><div class="fr"><label>% CTR</label><input type="number" id="y-ctr" step="0.1"></div><div class="fr"><label>% Retención</label><input type="number" id="y-ret" step="0.1"></div></div><button class="bp" onclick="saveYT()">Guardar</button></div></div></div>
@@ -785,7 +882,101 @@ const SUPA_URL='https://tnzaioxqrykrduwgqluj.supabase.co';
 const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRuemFpb3hxcnlrcmR1d2dxbHVqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4MzAzMDksImV4cCI6MjA5MTQwNjMwOX0.D4rSCaJjsJZ1hnKtBWXRmh2DC0yF7yH_YHv5gEl4gbY';
 const sb=supabase.createClient(SUPA_URL,SUPA_KEY);
 
-let CU=null;let CP=null;let curPeriod='month';let tipoIng='nuevo';let chartOps=null;
+let CU=null;let CP=null;let curPeriod='month';let tipoIng='nuevo';let chartTimeline=null;
+function renderTimelineChart(){
+  const tipo=document.getElementById('dc-timeline-type')?.value||'all';
+  const now=new Date();
+  const labels=[];const dataReels=[];const dataHist=[];const dataYT=[];
+  for(let i=11;i>=0;i--){
+    const d=new Date(now.getFullYear(),now.getMonth()-i,1);
+    labels.push(d.toLocaleString('es',{month:'short',year:'2-digit'}));
+    const m=d.getMonth(),y=d.getFullYear();
+    dataReels.push(KPI.reels.filter(r=>{if(!r.fecha)return false;const rd=new Date(r.fecha+'T12:00:00');return rd.getMonth()===m&&rd.getFullYear()===y;}).reduce((s,r)=>s+Number(r.views||0),0));
+    dataHist.push(KPI.historias.filter(h=>{if(!h.fecha)return false;const hd=new Date(h.fecha+'T12:00:00');return hd.getMonth()===m&&hd.getFullYear()===y;}).reduce((s,h)=>s+Number(h.views||0),0));
+    dataYT.push(KPI.yt.filter(v=>{if(!v.fecha)return false;const vd=new Date(v.fecha+'T12:00:00');return vd.getMonth()===m&&vd.getFullYear()===y;}).reduce((s,v)=>s+Number(v.views||0),0));
+  }
+  const ctx=document.getElementById('dc-timeline-chart');if(!ctx)return;
+  if(chartTimeline)chartTimeline.destroy();
+  const datasets=[];
+  if(tipo==='all'||tipo==='reels')datasets.push({label:'Reels',data:dataReels,borderColor:'#C9A84C',backgroundColor:'rgba(201,168,76,0.1)',tension:0.4,fill:true,pointBackgroundColor:'#C9A84C',pointRadius:3});
+  if(tipo==='all'||tipo==='hist')datasets.push({label:'Historias',data:dataHist,borderColor:'#a78bfa',backgroundColor:'rgba(167,139,250,0.08)',tension:0.4,fill:true,pointBackgroundColor:'#a78bfa',pointRadius:3});
+  if(tipo==='all'||tipo==='yt')datasets.push({label:'YouTube',data:dataYT,borderColor:'#f87171',backgroundColor:'rgba(248,113,113,0.08)',tension:0.4,fill:true,pointBackgroundColor:'#f87171',pointRadius:3});
+  chartTimeline=new Chart(ctx,{type:'line',data:{labels,datasets},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{labels:{color:'#888',font:{family:'Poppins',size:10},boxWidth:10}}},scales:{x:{ticks:{color:'#666',font:{family:'Poppins',size:9}},grid:{color:'rgba(128,128,128,0.05)'}},y:{ticks:{color:'#666',font:{family:'Poppins',size:9},callback:v=>v>=1000?Math.round(v/1000)+'K':v},grid:{color:'rgba(128,128,128,0.05)'}}}}});
+}
+
+function updateLeadsContenido(){
+  const leadsReels=KPI.reels.reduce((s,r)=>s+Number(r.comentarios||0),0);
+  const leadsHist=KPI.historias.reduce((s,h)=>s+Number(h.respuestas_cta||0),0);
+  const ventasTotal=KPI.reels.reduce((s,r)=>s+Number(r.ventas||0),0)+KPI.historias.reduce((s,h)=>s+Number(h.ventas||0),0);
+  const el1=document.getElementById('dc-leads-total');const el2=document.getElementById('dc-leads-reels');const el3=document.getElementById('dc-leads-hist');const el4=document.getElementById('dc-ventas-total');
+  if(el1)el1.textContent=(leadsReels+leadsHist).toLocaleString();
+  if(el2)el2.textContent=leadsReels.toLocaleString();
+  if(el3)el3.textContent=leadsHist.toLocaleString();
+  if(el4)el4.textContent=ventasTotal.toLocaleString();
+}
+
+function filterContentReels(){
+  const q=(document.getElementById('reel-search')?.value||'').toLowerCase();
+  const est=document.getElementById('reel-filter-est')?.value||'';
+  const sort=document.getElementById('reel-sort')?.value||'views';
+  let data=[...KPI.reels];
+  if(q)data=data.filter(r=>(r.nombre||'').toLowerCase().includes(q)||(r.gancho||'').toLowerCase().includes(q)||(r.subdolor||'').toLowerCase().includes(q));
+  if(est)data=data.filter(r=>r.estructura===est);
+  data.sort((a,b)=>Number(b[sort]||0)-Number(a[sort]||0));
+  renderContentListFiltered('dc-reels-list',data,'reels');
+}
+
+function filterContentHist(){
+  const q=(document.getElementById('hist-search')?.value||'').toLowerCase();
+  const fmt=document.getElementById('hist-filter-fmt')?.value||'';
+  const sort=document.getElementById('hist-sort')?.value||'respuestas_cta';
+  let data=[...KPI.historias];
+  if(q)data=data.filter(h=>(h.idea||'').toLowerCase().includes(q)||(h.lead_magnet||'').toLowerCase().includes(q));
+  if(fmt)data=data.filter(h=>h.formato===fmt);
+  data.sort((a,b)=>Number(b[sort]||0)-Number(a[sort]||0));
+  renderContentListFiltered('dc-hist-list',data,'historias');
+}
+
+function filterContentYT(){
+  const q=(document.getElementById('yt-search')?.value||'').toLowerCase();
+  const sort=document.getElementById('yt-sort')?.value||'views';
+  let data=[...KPI.yt];
+  if(q)data=data.filter(v=>(v.titulo||'').toLowerCase().includes(q));
+  data.sort((a,b)=>Number(b[sort]||0)-Number(a[sort]||0));
+  renderContentListFiltered('dc-yt-list',data,'yt');
+}
+
+function renderContentListFiltered(elId,data,type){
+  const el=document.getElementById(elId);if(!el)return;
+  if(!data||!data.length){el.innerHTML='<div style="font-size:11px;color:var(--t3);padding:12px 0">Sin resultados</div>';return;}
+  el.innerHTML=data.map(r=>{
+    const isReel=type==='reels';const isHist=type==='historias';const isYT=type==='yt';
+    const views=Number(r.views||0);const score=isReel?Number(r.comentarios||0):isHist?Number(r.respuestas_cta||0):Number(r.ctr||0);
+    const ventas=Number(r.ventas||0);const ret=Number(r.retencion||r.retencion||0);
+    const semaforo=views>2000||score>10?'var(--ok)':views>500||score>3?'var(--wn)':'var(--er)';
+    return`<div class="top-card" ondblclick="openEdit('${type}','${r.id}')" style="flex-direction:column;align-items:flex-start;gap:6px;cursor:pointer;border-left:3px solid ${semaforo}">
+      <div style="display:flex;align-items:flex-start;gap:10px;width:100%">
+        ${r.link&&(r.link.includes('youtube')||r.link.includes('youtu.be'))?`<img src="https://img.youtube.com/vi/${r.link.match(/(?:v=|youtu\.be\/)([^&\s]+)/)?.[1]}/mqdefault.jpg" style="width:60px;height:40px;object-fit:cover;border-radius:5px;flex-shrink:0" onerror="this.style.display='none'">`:
+        `<div style="width:40px;height:40px;border-radius:8px;background:${semaforo}22;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">${isReel?'🎬':isHist?'📱':'▶️'}</div>`}
+        <div style="flex:1">
+          <div style="font-size:12px;font-weight:600;color:var(--tx);margin-bottom:3px">${r.nombre||r.idea||r.titulo||'—'}</div>
+          <div style="font-size:10px;color:var(--t3)">${fD(r.fecha)}${r.estructura||r.formato?` · ${r.estructura||r.formato}`:''}</div>
+          ${r.gancho?`<div style="font-size:10px;color:var(--t2);margin-top:3px;font-style:italic">"${r.gancho}"</div>`:''}
+        </div>
+        <div style="display:flex;gap:12px;flex-shrink:0;text-align:right">
+          <div><div style="font-size:14px;font-weight:700;color:var(--tx)">${views>=1000?(views/1000).toFixed(1)+'K':views}</div><div style="font-size:9px;color:var(--t3)">views</div></div>
+          ${isReel?`<div><div style="font-size:14px;font-weight:700;color:var(--t2)">${score}</div><div style="font-size:9px;color:var(--t3)">coms</div></div>`:''}
+          ${isHist?`<div><div style="font-size:14px;font-weight:700;color:var(--t2)">${score}</div><div style="font-size:9px;color:var(--t3)">resp</div></div>`:''}
+          ${isYT?`<div><div style="font-size:14px;font-weight:700;color:var(--t2)">${r.ctr||0}%</div><div style="font-size:9px;color:var(--t3)">CTR</div></div>`:''}
+          ${ventas>0?`<div><div style="font-size:14px;font-weight:700;color:var(--ok)">${ventas}</div><div style="font-size:9px;color:var(--t3)">ventas</div></div>`:''}
+          ${ret>0?`<div><div style="font-size:14px;font-weight:700;color:var(--inf)">${ret}%</div><div style="font-size:9px;color:var(--t3)">ret.</div></div>`:''}
+        </div>
+      </div>
+      ${(r.subdolor||r.lead_magnet)?`<div style="display:flex;gap:6px;flex-wrap:wrap">${r.subdolor?`<span style="font-size:9px;background:rgba(167,139,250,0.1);color:#a78bfa;padding:2px 7px;border-radius:4px">🎯 ${r.subdolor}</span>`:''}${r.lead_magnet?`<span style="font-size:9px;background:rgba(29,158,117,0.1);color:var(--ok);padding:2px 7px;border-radius:4px">🎁 ${r.lead_magnet}</span>`:''}</div>`:''}
+    </div>`;
+  }).join('');
+}
+
 let KPI={leads:[],agendas:[],ingresos:[],gastos:[],clientes:[],wins:[],reels:[],historias:[],yt:[],viralidad:[],programas:[],pasarelas:[]};
 let portalClientId=null;
 
@@ -1145,7 +1336,7 @@ function showKpiSec(sec,el){
   document.getElementById('ksec-'+sec).classList.add('active');
   if(el)el.classList.add('active');
   if(sec==='ops')renderOps();
-  else if(sec==='content'){renderContentReels();renderContentHist();renderContentYT();}
+  if(sec==='content'){renderContentReels();renderContentHist();renderContentYT();updateLeadsContenido();setTimeout(renderTimelineChart,100);}
   else if(sec==='leads-m')renderTbl('leads','tbl-leads');
   else if(sec==='agendas-m')renderTbl('agendas','tbl-agendas');
   else if(sec==='ingresos-m')renderTbl('ingresos','tbl-ingresos');
@@ -1234,31 +1425,48 @@ function onSegChange(){const at=document.querySelector('.ctab-panel.active');if(
 function getYTThumb(link){if(!link)return null;const m=link.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|shorts\/))([a-zA-Z0-9_-]{11})/);return m?`https://img.youtube.com/vi/${m[1]}/mqdefault.jpg`:null;}
 function detectYTThumb(link){const thumb=getYTThumb(link);const prev=document.getElementById('r-thumb-preview');if(!prev)return;prev.innerHTML=thumb?`<img src="${thumb}" style="width:80px;height:56px;border-radius:6px;object-fit:cover;margin-bottom:4px" onerror="this.style.display='none'">`:''}
 function renderContentReels(){
-  const seg=getSeg();const all=KPI.reels;const r90=all.filter(r=>isWithin90(r.fecha));
+  const seg=getSeg();const all=KPI.reels;const r90=all.filter(r=>isWithin90(r.fecha));const r30=all.filter(r=>isWithin30(r.fecha));
   const avgV=all.length?Math.round(all.reduce((s,r)=>s+Number(r.views||0),0)/all.length):0;
   const avgC=all.length?Math.round(all.reduce((s,r)=>s+Number(r.comentarios||0),0)/all.length):0;
   const avgS=all.length?Math.round(all.reduce((s,r)=>s+Number(r.seguidores_nuevos||0),0)/all.length):0;
+  const avgRet=all.length?Math.round(all.reduce((s,r)=>s+Number(r.retencion||0),0)/all.length):0;
+  const totalVentas=all.reduce((s,r)=>s+Number(r.ventas||0),0);
   const rr=seg>0&&avgV>0?Math.round(avgV/seg*100):0;
-  document.getElementById('dc-reels-kpis').innerHTML=`<div class="dst"><span>🎬</span>Reels — ${all.length} total · ${r90.length} últimos 90 días</div><div class="kg"><div class="kcard"><div class="kl">Promedio Views</div><div class="kv">${avgV.toLocaleString()}</div><div class="ks">${seg>0?rendRV(avgV,seg):'—'}</div></div><div class="kcard"><div class="kl">Prom. Comentarios</div><div class="kv">${avgC}</div><div class="ks">${avgC&&avgV?rendRC(avgC,avgV):'—'}</div></div><div class="kcard"><div class="kl">Prom. Seg. Nuevos</div><div class="kv">${avgS}</div><div class="ks">${avgS&&avgV?rendRS(avgS,avgV):'—'}</div></div>${seg>0?`<div class="kcard${rr<12?' r':rr>=35?' g':'y'}"><div class="kl">Reach Rate</div><div class="kv">${rr}%</div><div class="ks">Views/Seguidores</div></div>`:''}</div>`;
-  document.getElementById('dc-reels-top').innerHTML=top3Cards(sortD(r90.length?r90:all,'comentarios').slice(0,3),'nombre','comentarios','comentarios','Sin reels registrados');
-  renderContentList('dc-reels-list',all,'reels');
+  document.getElementById('dc-reels-kpis').innerHTML=`<div class="dst"><span>🎬</span>Reels — ${all.length} total · ${r30.length} últimos 30 días</div><div class="kg">
+    <div class="kcard"><div class="kl">Promedio Views</div><div class="kv">${avgV.toLocaleString()}</div><div class="ks">${seg>0?rendRV(avgV,seg):'—'}</div></div>
+    <div class="kcard"><div class="kl">Prom. Comentarios</div><div class="kv">${avgC}</div><div class="ks">${avgC&&avgV?rendRC(avgC,avgV):'—'}</div></div>
+    <div class="kcard"><div class="kl">Prom. Seg. Nuevos</div><div class="kv">${avgS}</div><div class="ks">${avgS&&avgV?rendRS(avgS,avgV):'—'}</div></div>
+    <div class="kcard${avgRet<20?' r':avgRet>=40?' g':'y'}"><div class="kl">Retención Prom.</div><div class="kv">${avgRet}%</div><div class="ks">Meta: +40%</div></div>
+    <div class="kcard g"><div class="kl">Ventas totales</div><div class="kv">${totalVentas}</div><div class="ks">De reels</div></div>
+    ${seg>0?`<div class="kcard${rr<12?' r':rr>=35?' g':'y'}"><div class="kl">Reach Rate</div><div class="kv">${rr}%</div><div class="ks">Views/Seguidores</div></div>`:''}
+  </div>`;
+  const top30=sortD(r30.length?r30:all,'comentarios').slice(0,3);
+  document.getElementById('dc-reels-top').innerHTML=top30.length?top30.map((it,i)=>`<div class="top-card" style="flex-direction:column;align-items:flex-start;gap:5px"><div style="display:flex;align-items:center;gap:10px;width:100%"><div class="tr-rank">${['🥇','🥈','🥉'][i]}</div><div class="tr-info"><div class="tr-name">${it.nombre||'—'}</div><div class="tr-meta">${fD(it.fecha)}</div></div><div style="display:flex;gap:10px"><div class="tr-stat"><div class="tv">${Number(it.views||0).toLocaleString()}</div><div class="tl">views</div></div><div class="tr-stat"><div class="tv">${it.comentarios||0}</div><div class="tl">coms</div></div>${it.retencion?`<div class="tr-stat"><div class="tv">${it.retencion}%</div><div class="tl">ret.</div></div>`:''}</div></div>${it.gancho?`<div style="font-size:10px;color:var(--t2);padding:4px 8px;background:var(--d3);border-radius:5px;width:100%">🎣 ${it.gancho}</div>`:''}${it.subdolor?`<span style="font-size:9px;background:rgba(167,139,250,0.1);color:#a78bfa;padding:2px 7px;border-radius:4px">🎯 ${it.subdolor}</span>`:''}</div>`).join(''):'<div style="font-size:10px;color:var(--t3)">Sin reels recientes</div>';
+  filterContentReels();
 }
 function renderContentHist(){
-  const seg=getSeg();const all=KPI.historias;const h90=all.filter(h=>isWithin90(h.fecha));
+  const seg=getSeg();const all=KPI.historias;const h90=all.filter(h=>isWithin90(h.fecha));const h30=all.filter(h=>isWithin30(h.fecha));
   const avgV=all.length?Math.round(all.reduce((s,h)=>s+Number(h.views||0),0)/all.length):0;
   const avgC=all.length?Math.round(all.reduce((s,h)=>s+Number(h.respuestas_cta||0),0)/all.length):0;
-  document.getElementById('dc-hist-kpis').innerHTML=`<div class="dst"><span>📱</span>Historias — ${all.length} total · ${h90.length} últimos 90 días</div><div class="kg"><div class="kcard"><div class="kl">Promedio Views</div><div class="kv">${avgV.toLocaleString()}</div><div class="ks">${seg>0?rendHV(avgV,seg):'—'}</div></div><div class="kcard"><div class="kl">Prom. Resp. CTA</div><div class="kv">${avgC}</div><div class="ks">${seg>0?rendHC(avgC,seg):'—'}</div></div></div>`;
-  document.getElementById('dc-hist-top').innerHTML=top3Cards(sortD(h90.length?h90:all,'respuestas_cta').slice(0,3),'idea','respuestas_cta','resp. CTA','Sin historias registradas');
-  renderContentList('dc-hist-list',all,'historias');
+  const totalVentas=all.reduce((s,h)=>s+Number(h.ventas||0),0);
+  document.getElementById('dc-hist-kpis').innerHTML=`<div class="dst"><span>📱</span>Historias — ${all.length} total · ${h30.length} últimos 30 días</div><div class="kg">
+    <div class="kcard"><div class="kl">Promedio Views</div><div class="kv">${avgV.toLocaleString()}</div><div class="ks">${seg>0?rendHV(avgV,seg):'—'}</div></div>
+    <div class="kcard"><div class="kl">Prom. Resp. CTA</div><div class="kv">${avgC}</div><div class="ks">${seg>0?rendHC(avgC,seg):'—'}</div></div>
+    <div class="kcard g"><div class="kl">Ventas totales</div><div class="kv">${totalVentas}</div><div class="ks">De historias</div></div>
+  </div>`;
+  const top30h=sortD(h30.length?h30:all,'respuestas_cta').slice(0,3);
+  document.getElementById('dc-hist-top').innerHTML=top30h.length?top30h.map((it,i)=>`<div class="top-card" style="flex-direction:column;align-items:flex-start;gap:5px"><div style="display:flex;align-items:center;gap:10px;width:100%"><div class="tr-rank">${['🥇','🥈','🥉'][i]}</div><div class="tr-info"><div class="tr-name">${it.idea||'—'}</div><div class="tr-meta">${fD(it.fecha)}</div></div><div style="display:flex;gap:10px"><div class="tr-stat"><div class="tv">${Number(it.views||0).toLocaleString()}</div><div class="tl">views</div></div><div class="tr-stat"><div class="tv">${it.respuestas_cta||0}</div><div class="tl">resp</div></div></div></div>${it.formato?`<div style="font-size:10px;color:var(--t2);padding:4px 8px;background:var(--d3);border-radius:5px;width:100%">📋 ${it.formato}</div>`:''}${it.lead_magnet?`<span style="font-size:9px;background:rgba(29,158,117,0.1);color:var(--ok);padding:2px 7px;border-radius:4px">🎁 ${it.lead_magnet}</span>`:''}</div>`).join(''):'<div style="font-size:10px;color:var(--t3)">Sin historias recientes</div>';
+  filterContentHist();
 }
 function renderContentYT(){
-  const all=KPI.yt;const y90=all.filter(y=>isWithin90(y.fecha));
+  const all=KPI.yt;const y90=all.filter(y=>isWithin90(y.fecha));const y30=all.filter(y=>isWithin30(y.fecha));
   const avgV=all.length?Math.round(all.reduce((s,y)=>s+Number(y.views||0),0)/all.length):0;
   const avgC=all.length?(all.reduce((s,y)=>s+Number(y.ctr||0),0)/all.length).toFixed(1):0;
   const avgR=all.length?(all.reduce((s,y)=>s+Number(y.retencion||0),0)/all.length).toFixed(1):0;
-  document.getElementById('dc-yt-kpis').innerHTML=`<div class="dst"><span>▶️</span>YouTube — ${all.length} total · ${y90.length} últimos 90 días</div><div class="kg"><div class="kcard"><div class="kl">Promedio Views</div><div class="kv">${avgV.toLocaleString()}</div><div class="ks">Por video</div></div><div class="kcard"><div class="kl">CTR Promedio</div><div class="kv">${avgC}%</div><div class="ks">${rendYC(avgC)}</div></div><div class="kcard"><div class="kl">Retención Prom.</div><div class="kv">${avgR}%</div><div class="ks">Meta: +40%</div></div></div>`;
-  document.getElementById('dc-yt-top').innerHTML=top3Cards(sortD(y90.length?y90:all,'views').slice(0,3),'titulo','views','views','Sin videos registrados');
-  renderContentList('dc-yt-list',all,'yt');
+  document.getElementById('dc-yt-kpis').innerHTML=`<div class="dst"><span>▶️</span>YouTube — ${all.length} total · ${y30.length} últimos 30 días</div><div class="kg"><div class="kcard"><div class="kl">Promedio Views</div><div class="kv">${avgV.toLocaleString()}</div><div class="ks">Por video</div></div><div class="kcard"><div class="kl">CTR Promedio</div><div class="kv">${avgC}%</div><div class="ks">${rendYC(avgC)}</div></div><div class="kcard${avgR<30?' r':avgR>=40?' g':'y'}"><div class="kl">Retención Prom.</div><div class="kv">${avgR}%</div><div class="ks">Meta: +40%</div></div></div>`;
+  const top30y=sortD(y30.length?y30:all,'views').slice(0,3);
+  document.getElementById('dc-yt-top').innerHTML=top30y.length?top30y.map((it,i)=>`<div class="top-card" style="gap:10px"><div class="tr-rank">${['🥇','🥈','🥉'][i]}</div><div class="tr-info"><div class="tr-name">${it.titulo||'—'}</div><div class="tr-meta">${fD(it.fecha)}</div></div><div style="display:flex;gap:10px"><div class="tr-stat"><div class="tv">${Number(it.views||0).toLocaleString()}</div><div class="tl">views</div></div><div class="tr-stat"><div class="tv">${it.ctr||0}%</div><div class="tl">CTR</div></div><div class="tr-stat"><div class="tv">${it.retencion||0}%</div><div class="tl">ret.</div></div></div></div>`).join(''):'<div style="font-size:10px;color:var(--t3)">Sin videos recientes</div>';
+  filterContentYT();
 }
 
 function editPencilBtn(type,id){return`<button onclick="openEdit('${type}','${id}')" style="background:none;border:none;color:var(--t3);cursor:pointer;padding:2px 5px;font-size:13px;transition:color .2s" title="Editar" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--t3)'">✏️</button><button class="del-btn" onclick="deleteRow('${type}','${id}')" title="Eliminar">✕</button>`;}
@@ -1410,8 +1618,8 @@ function fillAgendaEdit(r){document.getElementById('ag-idx').value=r.id;document
 function fillIngresoEdit(r){populateIngDD();document.getElementById('ing-idx').value=r.id;setTipo(r.tipo||'nuevo');document.getElementById('in-n').value=r.nombre||'';document.getElementById('in-f').value=r.fecha||'';document.getElementById('in-m').value=r.monto||0;document.getElementById('in-prog').value=r.programa||'';document.getElementById('in-pas').value=r.pasarela||'';document.getElementById('m-ing-t').textContent='Editar Ingreso';}
 function fillGastoEdit(r){document.getElementById('gas-idx').value=r.id;document.getElementById('g-d').value=r.detalle||'';document.getElementById('g-f').value=r.fecha||'';document.getElementById('g-m').value=r.monto||0;document.getElementById('g-cat').value=r.categoria||'Herramientas';document.getElementById('g-desc').value=r.descripcion||'';document.getElementById('m-gas-t').textContent='Editar Gasto';}
 function fillClienteEdit(r){populateCProg();document.getElementById('cl-idx').value=r.id;document.getElementById('cl-n').value=r.nombre||'';document.getElementById('cl-ig').value=r.ig||'';document.getElementById('cl-tel').value=r.telefono||'';document.getElementById('cl-ing').value=r.fecha_ingreso||'';document.getElementById('cl-activo').value=r.activo||'Si';document.getElementById('m-cl-t').textContent='Editar Cliente';}
-function fillReelEdit(r){document.getElementById('reel-idx').value=r.id;document.getElementById('r-n').value=r.nombre||'';document.getElementById('r-est').value=r.estructura||'';document.getElementById('r-gancho').value=r.gancho||'';document.getElementById('r-fmt').value=r.formato||'';document.getElementById('r-f').value=r.fecha||'';document.getElementById('r-v').value=r.views||0;document.getElementById('r-c').value=r.comentarios||0;document.getElementById('r-s').value=r.seguidores_nuevos||0;document.getElementById('r-l').value=r.likes||0;if(document.getElementById('r-link'))document.getElementById('r-link').value=r.link||'';document.getElementById('m-reel-t').textContent='Editar Reel';}
-function fillHistEdit(r){document.getElementById('hist-idx').value=r.id;document.getElementById('h-idea').value=r.idea||'';document.getElementById('h-fmt').value=r.formato||'';document.getElementById('h-f').value=r.fecha||'';document.getElementById('h-v').value=r.views||0;document.getElementById('h-cta').value=r.respuestas_cta||0;document.getElementById('h-tasa').value=r.tasa||'';document.getElementById('m-hist-t').textContent='Editar Historia';}
+function fillReelEdit(r){document.getElementById('reel-idx').value=r.id;document.getElementById('r-n').value=r.nombre||'';document.getElementById('r-est').value=r.estructura||'';document.getElementById('r-gancho').value=r.gancho||'';document.getElementById('r-fmt').value=r.formato||'';document.getElementById('r-f').value=r.fecha||'';document.getElementById('r-v').value=r.views||0;document.getElementById('r-c').value=r.comentarios||0;document.getElementById('r-s').value=r.seguidores_nuevos||0;document.getElementById('r-l').value=r.likes||0;if(document.getElementById('r-link'))document.getElementById('r-link').value=r.link||'';if(document.getElementById('r-ret'))document.getElementById('r-ret').value=r.retencion||0;if(document.getElementById('r-ventas'))document.getElementById('r-ventas').value=r.ventas||0;if(document.getElementById('r-lm'))document.getElementById('r-lm').value=r.lead_magnet||'';if(document.getElementById('r-subdolor'))document.getElementById('r-subdolor').value=r.subdolor||'';document.getElementById('m-reel-t').textContent='Editar Reel';}
+function fillHistEdit(r){document.getElementById('hist-idx').value=r.id;document.getElementById('h-idea').value=r.idea||'';document.getElementById('h-fmt').value=r.formato||'';document.getElementById('h-f').value=r.fecha||'';document.getElementById('h-v').value=r.views||0;document.getElementById('h-cta').value=r.respuestas_cta||0;document.getElementById('h-tasa').value=r.tasa||'';if(document.getElementById('h-ventas'))document.getElementById('h-ventas').value=r.ventas||0;if(document.getElementById('h-lm'))document.getElementById('h-lm').value=r.lead_magnet||'';document.getElementById('m-hist-t').textContent='Editar Historia';}
 function fillYTEdit(r){document.getElementById('yt-idx').value=r.id;document.getElementById('y-t').value=r.titulo||'';document.getElementById('y-f').value=r.fecha||'';document.getElementById('y-d').value=r.duracion||0;document.getElementById('y-v').value=r.views||0;document.getElementById('y-ctr').value=r.ctr||0;document.getElementById('y-ret').value=r.retencion||0;document.getElementById('m-yt-t').textContent='Editar Video';}
 
 function renderWins(){const el=document.getElementById('wins-list');if(!KPI.wins.length){el.innerHTML=emptyEl('Sin wins');return}el.innerHTML=KPI.wins.map(w=>`<div class="wc"><div style="display:flex;gap:5px;margin-bottom:5px"><span class="st sy">${w.grandeza}</span>${w.usada_historias==='Si'?'<span class="st sg">En historias</span>':''}</div><div style="font-size:12px;color:var(--tx);margin:4px 0">${w.win}</div><div style="font-size:9px;color:var(--t3)">${w.cliente} · ${fD(w.fecha)}</div></div>`).join('');}
@@ -1613,17 +1821,17 @@ async function saveGasto(){
 async function saveWin(){const o={user_id:portalClientId,cliente:document.getElementById('w-cl').value,fecha:document.getElementById('w-f').value||null,win:document.getElementById('w-t').value,grandeza:document.getElementById('w-g').value,usada_historias:document.getElementById('w-u').value};await sb.from('wins').insert(o);closeM('m-win');await loadKPIData();renderWins();showToast('Win guardada');}
 async function saveReel(){
   const id=document.getElementById('reel-idx').value;
-  const o={user_id:portalClientId,nombre:document.getElementById('r-n').value,estructura:document.getElementById('r-est').value,gancho:document.getElementById('r-gancho').value,formato:document.getElementById('r-fmt').value,fecha:document.getElementById('r-f').value||null,views:parseInt(document.getElementById('r-v').value)||0,comentarios:parseInt(document.getElementById('r-c').value)||0,seguidores_nuevos:parseInt(document.getElementById('r-s').value)||0,likes:parseInt(document.getElementById('r-l').value)||0,link:document.getElementById('r-link')?.value||''};
+  const o={user_id:portalClientId,nombre:document.getElementById('r-n').value,estructura:document.getElementById('r-est').value,gancho:document.getElementById('r-gancho').value,formato:document.getElementById('r-fmt').value,fecha:document.getElementById('r-f').value||null,views:parseInt(document.getElementById('r-v').value)||0,comentarios:parseInt(document.getElementById('r-c').value)||0,seguidores_nuevos:parseInt(document.getElementById('r-s').value)||0,likes:parseInt(document.getElementById('r-l').value)||0,link:document.getElementById('r-link')?.value||'',retencion:parseInt(document.getElementById('r-ret')?.value)||0,ventas:parseInt(document.getElementById('r-ventas')?.value)||0,lead_magnet:document.getElementById('r-lm')?.value||'',subdolor:document.getElementById('r-subdolor')?.value||''};
   if(id)await sb.from('reels').update(o).eq('id',id);
   else await sb.from('reels').insert(o);
-  closeM('m-reel');await loadKPIData();renderTbl('reels','tbl-reels');showToast(id?'Reel actualizado':'Reel guardado');
+  closeM('m-reel');await loadKPIData();renderTbl('reels','tbl-reels');renderContentReels();showToast(id?'Reel actualizado':'Reel guardado');
 }
 async function saveHist(){
   const id=document.getElementById('hist-idx').value;
-  const o={user_id:portalClientId,idea:document.getElementById('h-idea').value,formato:document.getElementById('h-fmt').value,fecha:document.getElementById('h-f').value||null,views:parseInt(document.getElementById('h-v').value)||0,respuestas_cta:parseInt(document.getElementById('h-cta').value)||0,tasa:document.getElementById('h-tasa').value};
+  const o={user_id:portalClientId,idea:document.getElementById('h-idea').value,formato:document.getElementById('h-fmt').value,fecha:document.getElementById('h-f').value||null,views:parseInt(document.getElementById('h-v').value)||0,respuestas_cta:parseInt(document.getElementById('h-cta').value)||0,tasa:document.getElementById('h-tasa').value,ventas:parseInt(document.getElementById('h-ventas')?.value)||0,lead_magnet:document.getElementById('h-lm')?.value||''};
   if(id)await sb.from('historias').update(o).eq('id',id);
   else await sb.from('historias').insert(o);
-  closeM('m-hist');await loadKPIData();renderTbl('historias','tbl-hist');showToast(id?'Historia actualizada':'Historia guardada');
+  closeM('m-hist');await loadKPIData();renderTbl('historias','tbl-hist');renderContentHist();showToast(id?'Historia actualizada':'Historia guardada');
 }
 async function saveYT(){
   const id=document.getElementById('yt-idx').value;
