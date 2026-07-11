@@ -444,6 +444,17 @@ table.t tr:hover td{background:var(--d2)}
 
       <!-- CONTENT DASHBOARD -->
       <div class="kpi-section" id="ksec-content">
+        <!-- TABS PRIMERO -->
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+          <div class="ctabs" style="gap:6px">
+            <button class="ctab active" id="ctab-btn-general" onclick="showCtab('general',this)" style="padding:8px 18px;font-size:12px">📊 General</button>
+            <button class="ctab" id="ctab-btn-reels" onclick="showCtab('reels',this)" style="padding:8px 18px;font-size:12px">🎬 Reels</button>
+            <button class="ctab" id="ctab-btn-hist" onclick="showCtab('hist',this)" style="padding:8px 18px;font-size:12px">📱 Historias</button>
+            <button class="ctab" id="ctab-btn-yt" onclick="showCtab('yt',this)" style="padding:8px 18px;font-size:12px">▶️ YouTube</button>
+          </div>
+          <button id="ctab-add-btn" onclick="ctabAddContent()" style="background:var(--gold);border:none;color:#000;border-radius:9px;padding:8px 18px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font)">+ Agregar Reel</button>
+        </div>
+
         <div class="seg-bar"><label>Seguidores cuenta</label><input type="number" class="seg-inp" id="seg-n" placeholder="Ej: 5400" oninput="saveSeguidores(this.value);onSegChange()"><span id="seg-txt" style="font-size:10px;color:var(--t3)"></span></div>
 
         <!-- LEADS DE CONTENIDO -->
@@ -470,16 +481,6 @@ table.t tr:hover td{background:var(--d2)}
         <div style="background:var(--d2);border:1px solid var(--br);border-radius:12px;padding:14px 16px;margin-bottom:10px">
           <div style="font-size:11px;font-weight:600;color:var(--tx);margin-bottom:12px">🧬 Content DNA — Distribución de estructuras</div>
           <div id="dc-dna" style="display:flex;gap:6px;flex-wrap:wrap"></div>
-        </div>
-
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:14px;flex-wrap:wrap">
-          <div class="ctabs" style="gap:6px">
-            <button class="ctab active" id="ctab-btn-general" onclick="showCtab('general',this)" style="padding:8px 18px;font-size:12px">📊 General</button>
-            <button class="ctab" id="ctab-btn-reels" onclick="showCtab('reels',this)" style="padding:8px 18px;font-size:12px">🎬 Reels</button>
-            <button class="ctab" id="ctab-btn-hist" onclick="showCtab('hist',this)" style="padding:8px 18px;font-size:12px">📱 Historias</button>
-            <button class="ctab" id="ctab-btn-yt" onclick="showCtab('yt',this)" style="padding:8px 18px;font-size:12px">▶️ YouTube</button>
-          </div>
-          <button id="ctab-add-btn" onclick="ctabAddContent()" style="background:var(--gold);border:none;color:#000;border-radius:9px;padding:8px 18px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font)">+ Agregar Reel</button>
         </div>
 
         <!-- GENERAL PANEL -->
@@ -929,7 +930,7 @@ function top5Group(items,field,label,color){
   const counts={};
   items.forEach(r=>{const v=r[field];if(v&&v.trim())counts[v]=(counts[v]||0)+1;});
   const sorted=Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,5);
-  if(!sorted.length)return`<div style="font-size:10px;color:var(--t3);padding:8px 0">Sin datos</div>`;
+  if(!sorted.length)return'';
   return`<div style="font-size:9px;color:${color};text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:6px">${label}</div>`+
   sorted.map(([k,v],i)=>`<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
     <span style="font-size:11px;font-weight:700;color:${color};min-width:18px">#${i+1}</span>
@@ -958,12 +959,13 @@ function renderWinners(tipo){
     const el=document.getElementById('dc-reels-winners');if(!el)return;
     const data=filterByWinnerPeriod(KPI.reels,'fecha',p);
     if(!data.length){el.innerHTML='<div style="font-size:11px;color:var(--t3);text-align:center;padding:12px">Sin reels en este período</div>';return;}
-    el.innerHTML=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-      <div>${top5Group(data,'gancho','🎣 Ganchos ganadores','var(--gold)')}</div>
-      <div>${top5Group(data,'estructura','🧱 Estructuras ganadoras','var(--gold)')}</div>
-      <div>${top5Group(data,'subdolor','🎯 SubDolores/SubDeseos','var(--gold)')}</div>
-      <div>${top5Videos(data,'nombre','views','views','var(--gold)')}</div>
-    </div>`;
+    const g=top5Group(data,'gancho','🎣 Ganchos ganadores','var(--gold)');
+    const e=top5Group(data,'estructura','🧱 Estructuras ganadoras','var(--gold)');
+    const s=top5Group(data,'subdolor','🎯 SubDolores/SubDeseos','var(--gold)');
+    const v=top5Videos(data,'nombre','views','views','var(--gold)');
+    const cols=[g,e,s,v].filter(x=>x).map(x=>`<div>${x}</div>`).join('');
+    const count=[g,e,s,v].filter(x=>x).length;
+    el.innerHTML=`<div style="display:grid;grid-template-columns:repeat(${Math.min(count,2)},1fr);gap:12px">${cols}</div>`;
   }else if(tipo==='hist'){
     const el=document.getElementById('dc-hist-winners');if(!el)return;
     const data=filterByWinnerPeriod(KPI.historias,'fecha',p);
