@@ -447,12 +447,23 @@ table.t tr:hover td{background:var(--d2)}
         <div class="seg-bar"><label>Seguidores cuenta</label><input type="number" class="seg-inp" id="seg-n" placeholder="Ej: 5400" oninput="saveSeguidores(this.value);onSegChange()"><span id="seg-txt" style="font-size:10px;color:var(--t3)"></span></div>
 
         <!-- LEADS DE CONTENIDO -->
-        <div style="background:linear-gradient(135deg,rgba(201,168,76,0.08),rgba(201,168,76,0.03));border:1px solid rgba(201,168,76,0.25);border-radius:12px;padding:14px 18px;margin-bottom:14px;display:flex;gap:24px;align-items:center;flex-wrap:wrap">
-          <div><div style="font-size:9px;color:var(--gold);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:4px">🎯 Leads totales de contenido</div><div style="font-size:26px;font-weight:800;color:var(--gold)" id="dc-leads-total">0</div><div style="font-size:10px;color:var(--t3)">comentarios + respuestas CTA</div></div>
-          <div style="width:1px;height:40px;background:rgba(201,168,76,0.2)"></div>
-          <div><div style="font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">💬 De Reels</div><div style="font-size:18px;font-weight:700;color:var(--tx)" id="dc-leads-reels">0</div></div>
-          <div><div style="font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">📱 De Historias</div><div style="font-size:18px;font-weight:700;color:var(--tx)" id="dc-leads-hist">0</div></div>
-          <div><div style="font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">💰 Ventas de contenido</div><div style="font-size:18px;font-weight:700;color:var(--ok)" id="dc-ventas-total">0</div></div>
+        <div style="background:linear-gradient(135deg,rgba(201,168,76,0.08),rgba(201,168,76,0.03));border:1px solid rgba(201,168,76,0.25);border-radius:12px;padding:14px 18px;margin-bottom:14px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+            <div style="font-size:9px;color:var(--gold);text-transform:uppercase;letter-spacing:1px;font-weight:600">🎯 Leads totales de contenido</div>
+            <div style="display:flex;gap:4px">
+              <button onclick="setLeadsPeriodo('semana',this)" style="background:var(--d3);border:1px solid var(--br);color:var(--t3);border-radius:6px;padding:4px 10px;font-size:10px;cursor:pointer;font-family:var(--font)">Semana</button>
+              <button onclick="setLeadsPeriodo('mes',this)" id="btn-leads-mes" style="background:rgba(201,168,76,0.2);border:1px solid var(--gold);color:var(--gold);border-radius:6px;padding:4px 10px;font-size:10px;cursor:pointer;font-family:var(--font);font-weight:600">Mes</button>
+              <button onclick="setLeadsPeriodo('año',this)" style="background:var(--d3);border:1px solid var(--br);color:var(--t3);border-radius:6px;padding:4px 10px;font-size:10px;cursor:pointer;font-family:var(--font)">Año</button>
+              <button onclick="setLeadsPeriodo('siempre',this)" style="background:var(--d3);border:1px solid var(--br);color:var(--t3);border-radius:6px;padding:4px 10px;font-size:10px;cursor:pointer;font-family:var(--font)">Siempre</button>
+            </div>
+          </div>
+          <div style="display:flex;gap:24px;align-items:center;flex-wrap:wrap">
+            <div><div style="font-size:26px;font-weight:800;color:var(--gold)" id="dc-leads-total">0</div><div style="font-size:10px;color:var(--t3)">comentarios + respuestas CTA</div></div>
+            <div style="width:1px;height:40px;background:rgba(201,168,76,0.2)"></div>
+            <div><div style="font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">💬 De Reels</div><div style="font-size:18px;font-weight:700;color:var(--tx)" id="dc-leads-reels">0</div></div>
+            <div><div style="font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">📱 De Historias</div><div style="font-size:18px;font-weight:700;color:var(--tx)" id="dc-leads-hist">0</div></div>
+            <div><div style="font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">💰 Ventas de contenido</div><div style="font-size:18px;font-weight:700;color:var(--ok)" id="dc-ventas-total">0</div></div>
+          </div>
         </div>
 
         <!-- CONTENT DNA -->
@@ -477,12 +488,12 @@ table.t tr:hover td{background:var(--d2)}
         <div class="ctab-panel active" id="ctab-reels">
           <div id="dc-reels-kpis"></div>
           <!-- Timeline reels -->
-          <div style="background:var(--d2);border:1px solid var(--br);border-radius:12px;padding:12px 14px;margin:12px 0">
+          <div style="background:var(--d2);border:1px solid var(--br);border-radius:12px;padding:12px 14px;margin:12px 0;overflow:hidden">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
               <div style="font-size:11px;font-weight:600;color:var(--tx)">📈 Timeline de views — Reels</div>
               <input type="month" id="dc-reels-desde" onchange="renderContentReels()" style="background:var(--d3);border:1px solid var(--br);border-radius:6px;padding:4px 8px;color:var(--t2);font-size:10px;font-family:var(--font);outline:none">
             </div>
-            <canvas id="dc-timeline-reels" height="100"></canvas>
+            <div style="position:relative;height:80px"><canvas id="dc-timeline-reels"></canvas></div>
           </div>
           <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;align-items:center">
             <div style="display:flex;align-items:center;gap:6px;background:var(--d3);border:1px solid var(--br);border-radius:8px;padding:6px 10px;flex:1;min-width:150px"><span style="color:var(--t3);font-size:12px">🔍</span><input id="reel-search" oninput="filterContentReels()" placeholder="Buscar reel..." style="background:none;border:none;outline:none;color:var(--tx);font-size:11px;font-family:var(--font);width:100%"></div>
@@ -499,12 +510,12 @@ table.t tr:hover td{background:var(--d2)}
         <div class="ctab-panel" id="ctab-hist">
           <div id="dc-hist-kpis"></div>
           <!-- Timeline historias -->
-          <div style="background:var(--d2);border:1px solid var(--br);border-radius:12px;padding:12px 14px;margin:12px 0">
+          <div style="background:var(--d2);border:1px solid var(--br);border-radius:12px;padding:12px 14px;margin:12px 0;overflow:hidden">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
               <div style="font-size:11px;font-weight:600;color:var(--tx)">📈 Timeline de views — Historias</div>
               <input type="month" id="dc-hist-desde" onchange="renderContentHist()" style="background:var(--d3);border:1px solid var(--br);border-radius:6px;padding:4px 8px;color:var(--t2);font-size:10px;font-family:var(--font);outline:none">
             </div>
-            <canvas id="dc-timeline-hist" height="100"></canvas>
+            <div style="position:relative;height:80px"><canvas id="dc-timeline-hist"></canvas></div>
           </div>
           <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;align-items:center">
             <div style="display:flex;align-items:center;gap:6px;background:var(--d3);border:1px solid var(--br);border-radius:8px;padding:6px 10px;flex:1;min-width:150px"><span style="color:var(--t3);font-size:12px">🔍</span><input id="hist-search" oninput="filterContentHist()" placeholder="Buscar historia..." style="background:none;border:none;outline:none;color:var(--tx);font-size:11px;font-family:var(--font);width:100%"></div>
@@ -521,12 +532,12 @@ table.t tr:hover td{background:var(--d2)}
         <div class="ctab-panel" id="ctab-yt">
           <div id="dc-yt-kpis"></div>
           <!-- Timeline YT -->
-          <div style="background:var(--d2);border:1px solid var(--br);border-radius:12px;padding:12px 14px;margin:12px 0">
+          <div style="background:var(--d2);border:1px solid var(--br);border-radius:12px;padding:12px 14px;margin:12px 0;overflow:hidden">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
               <div style="font-size:11px;font-weight:600;color:var(--tx)">📈 Timeline de views — YouTube</div>
               <input type="month" id="dc-yt-desde" onchange="renderContentYT()" style="background:var(--d3);border:1px solid var(--br);border-radius:6px;padding:4px 8px;color:var(--t2);font-size:10px;font-family:var(--font);outline:none">
             </div>
-            <canvas id="dc-timeline-yt" height="100"></canvas>
+            <div style="position:relative;height:80px"><canvas id="dc-timeline-yt"></canvas></div>
           </div>
           <div style="display:flex;gap:6px;margin-bottom:10px;align-items:center">
             <div style="display:flex;align-items:center;gap:6px;background:var(--d3);border:1px solid var(--br);border-radius:8px;padding:6px 10px;flex:1"><span style="color:var(--t3);font-size:12px">🔍</span><input id="yt-search" oninput="filterContentYT()" placeholder="Buscar video..." style="background:none;border:none;outline:none;color:var(--tx);font-size:11px;font-family:var(--font);width:100%"></div>
@@ -540,8 +551,43 @@ table.t tr:hover td{background:var(--d2)}
       </div>
 
       <!-- MODULE SECTIONS (leads, agendas, etc.) -->
-      <div class="kpi-section" id="ksec-leads-m"><div class="tw"><div class="th2"><h3>Leads</h3><button class="ba" onclick="openMod('m-lead');resetMod('lead')">+ Nuevo Lead</button></div><div class="tbl-scroll"><div id="tbl-leads"></div></div></div></div>
-      <div class="kpi-section" id="ksec-agendas-m"><div class="tw"><div class="th2"><h3>Agendas</h3><button class="ba" onclick="openAgModal()">+ Nueva Agenda</button></div><div class="tbl-scroll"><div id="tbl-agendas"></div></div></div></div>
+      <div class="kpi-section" id="ksec-leads-m"><div class="tw">
+        <div class="th2"><h3>Leads <span id="leads-count-badge" style="font-size:10px;font-weight:400;color:var(--t3);margin-left:6px"></span></h3><button class="ba" onclick="openMod('m-lead');resetMod('lead')">+ Nuevo Lead</button></div>
+        <div style="display:grid;grid-template-columns:1fr auto;gap:8px;margin-bottom:8px">
+          <div style="display:flex;align-items:center;gap:8px;background:var(--d3);border:1px solid var(--br);border-radius:10px;padding:8px 12px">
+            <span style="color:var(--t3);font-size:14px;flex-shrink:0">🔍</span>
+            <input id="leads-search" oninput="filterLeadsTable()" placeholder="Buscar por nombre o @instagram..." style="background:none;border:none;outline:none;color:var(--tx);font-size:12px;font-family:var(--font);width:100%">
+            <button onclick="document.getElementById('leads-search').value='';filterLeadsTable()" style="background:none;border:none;color:var(--t3);cursor:pointer;font-size:12px;padding:0 2px">✕</button>
+          </div>
+          <button onclick="filterLeadsTable()" style="background:var(--gold);border:none;color:#000;border-radius:10px;padding:8px 16px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font)">Buscar</button>
+        </div>
+        <div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap">
+          <select id="leads-filter-estado" onchange="filterLeadsTable()" style="flex:1;min-width:130px;background:var(--d3);border:1px solid var(--br);border-radius:8px;padding:7px 10px;color:var(--t2);font-size:11px;font-family:var(--font);outline:none">
+            <option value="">Todos los estados</option>
+            <option>Nuevo</option><option>Primer mensaje enviado</option><option>Aporte de valor hecho</option><option>En seguimiento</option><option>Agendado</option><option>Lead Magnet</option><option>VSL enviado</option><option>Seguimiento post-VSL</option><option>Agenda enviada</option><option>Varios lead magnets vistos</option><option>Perdido</option>
+          </select>
+          <select id="leads-filter-fuente" onchange="filterLeadsTable()" style="flex:1;min-width:130px;background:var(--d3);border:1px solid var(--br);border-radius:8px;padding:7px 10px;color:var(--t2);font-size:11px;font-family:var(--font);outline:none">
+            <option value="">Todas las fuentes</option>
+            <option>Instagram Orgánico</option><option>Instagram ADS</option><option>Referido</option><option>TikTok</option><option>YouTube</option><option>Prospección en frío</option><option>Otro</option>
+          </select>
+          <select id="leads-filter-seg" onchange="filterLeadsTable()" style="flex:1;min-width:130px;background:var(--d3);border:1px solid var(--br);border-radius:8px;padding:7px 10px;color:var(--t2);font-size:11px;font-family:var(--font);outline:none">
+            <option value="">Todos los seguimientos</option>
+            <option>Sin seguimiento</option><option>1 seguimiento</option><option>2 seguimientos</option><option>3 seguimientos</option><option>4 seguimientos</option><option>5 seguimientos</option>
+          </select>
+          <button onclick="document.getElementById('leads-search').value='';document.getElementById('leads-filter-estado').value='';document.getElementById('leads-filter-fuente').value='';document.getElementById('leads-filter-seg').value='';filterLeadsTable()" style="background:var(--d3);border:1px solid var(--br);color:var(--t3);border-radius:8px;padding:7px 12px;font-size:11px;cursor:pointer;font-family:var(--font)">↺ Reset</button>
+        </div>
+        <div class="tbl-scroll"><div id="tbl-leads"></div></div></div></div>
+      <div class="kpi-section" id="ksec-agendas-m"><div class="tw"><div class="th2"><h3>Agendas</h3><button class="ba" onclick="openAgModal()">+ Nueva Agenda</button></div>
+        <div style="display:flex;gap:8px;margin-bottom:12px;align-items:center">
+          <div style="display:flex;align-items:center;gap:8px;background:var(--d3);border:1px solid var(--br);border-radius:10px;padding:8px 12px;flex:1">
+            <span style="color:var(--t3);font-size:14px;flex-shrink:0">🔍</span>
+            <input id="agendas-search" oninput="filterAgendasTable()" placeholder="Buscar por nombre..." style="background:none;border:none;outline:none;color:var(--tx);font-size:12px;font-family:var(--font);width:100%">
+          </div>
+          <select id="agendas-filter-resultado" onchange="filterAgendasTable()" style="background:var(--d3);border:1px solid var(--br);border-radius:8px;padding:7px 10px;color:var(--t2);font-size:11px;font-family:var(--font);outline:none">
+            <option value="">Todos los resultados</option><option>Pendiente</option><option>Cerrado</option><option>No Show</option><option>Reagendado</option>
+          </select>
+        </div>
+        <div class="tbl-scroll"><div id="tbl-agendas"></div></div></div></div>
       <div class="kpi-section" id="ksec-ingresos-m"><div class="tw"><div class="th2"><h3>Ingresos</h3><button class="ba" onclick="openIngModal()">+ Nuevo Ingreso</button></div><div class="tbl-scroll"><div id="tbl-ingresos"></div></div></div></div>
       <div class="kpi-section" id="ksec-gastos-m"><div class="tw"><div class="th2"><h3>Gastos</h3><button class="ba" onclick="openMod('m-gasto');resetMod('gasto')">+ Nuevo Gasto</button></div><div class="tbl-scroll"><div id="tbl-gastos"></div></div></div></div>
       <div class="kpi-section" id="ksec-clientes-m">
@@ -549,18 +595,45 @@ table.t tr:hover td{background:var(--d2)}
           <div class="kcard g"><div class="kl">Clientes Activos</div><div class="kv" id="cli-activos-cnt">0</div><div class="ks">En programa</div></div>
           <div class="kcard r"><div class="kl">Clientes Inactivos</div><div class="kv" id="cli-inactivos-cnt">0</div><div class="ks">Finalizados</div></div>
         </div>
-        <div class="tw"><div class="th2"><h3>Clientes</h3><button class="ba" onclick="openClienteModal()">+ Nuevo Cliente</button></div><div class="tbl-scroll"><div id="tbl-clientes"></div></div></div>
+        <div class="tw"><div class="th2"><h3>Clientes</h3><button class="ba" onclick="openClienteModal()">+ Nuevo Cliente</button></div>
+          <div style="display:flex;gap:8px;margin-bottom:12px;align-items:center">
+            <div style="display:flex;align-items:center;gap:8px;background:var(--d3);border:1px solid var(--br);border-radius:10px;padding:8px 12px;flex:1">
+              <span style="color:var(--t3);font-size:14px;flex-shrink:0">🔍</span>
+              <input id="clientes-search" oninput="filterClientesTable()" placeholder="Buscar por nombre..." style="background:none;border:none;outline:none;color:var(--tx);font-size:12px;font-family:var(--font);width:100%">
+            </div>
+            <select id="clientes-filter-activo" onchange="filterClientesTable()" style="background:var(--d3);border:1px solid var(--br);border-radius:8px;padding:7px 10px;color:var(--t2);font-size:11px;font-family:var(--font);outline:none">
+              <option value="">Todos</option><option value="Si">Activos</option><option value="No">Inactivos</option>
+            </select>
+          </div>
+          <div class="tbl-scroll"><div id="tbl-clientes"></div></div></div>
       </div>
       <div class="kpi-section" id="ksec-wins-m">
         <div class="kcard" style="margin-bottom:14px;background:rgba(201,168,76,.06);border-color:rgba(201,168,76,.3)"><div class="kl">Total Wins de Clientes</div><div class="kv" id="wins-total-cnt" style="color:var(--gold)">0</div><div class="ks">Registradas</div></div>
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:13px"><div style="font-size:15px;font-weight:600;color:var(--tx)">Wins Clientes</div><button class="ba" onclick="openMod('m-win')">+ Nueva Win</button></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><div style="font-size:15px;font-weight:600;color:var(--tx)">Wins Clientes</div><button class="ba" onclick="openMod('m-win')">+ Nueva Win</button></div>
+        <div style="display:flex;gap:8px;margin-bottom:12px;align-items:center">
+          <div style="display:flex;align-items:center;gap:8px;background:var(--d3);border:1px solid var(--br);border-radius:10px;padding:8px 12px;flex:1">
+            <span style="color:var(--t3);font-size:14px;flex-shrink:0">🔍</span>
+            <input id="wins-search" oninput="filterWinsTable()" placeholder="Buscar por cliente o win..." style="background:none;border:none;outline:none;color:var(--tx);font-size:12px;font-family:var(--font);width:100%">
+          </div>
+          <select id="wins-filter-usada" onchange="filterWinsTable()" style="background:var(--d3);border:1px solid var(--br);border-radius:8px;padding:7px 10px;color:var(--t2);font-size:11px;font-family:var(--font);outline:none">
+            <option value="">Todas</option><option value="No">No usadas</option><option value="Si">Usadas en contenido</option>
+          </select>
+        </div>
         <div id="wins-list"></div>
       </div>
       <div class="kpi-section" id="ksec-reels-m"><div class="tw"><div class="th2"><h3>Reels</h3><button class="ba" onclick="openMod('m-reel');resetMod('reel')">+ Nuevo Reel</button></div><div class="tbl-scroll"><div id="tbl-reels"></div></div></div></div>
       <div class="kpi-section" id="ksec-hist-m"><div class="tw"><div class="th2"><h3>Historias</h3><button class="ba" onclick="openMod('m-hist');resetMod('hist')">+ Nueva Secuencia</button></div><div class="tbl-scroll"><div id="tbl-hist"></div></div></div></div>
       <div class="kpi-section" id="ksec-yt-m"><div class="tw"><div class="th2"><h3>YouTube</h3><button class="ba" onclick="openMod('m-yt');resetMod('yt')">+ Nuevo Video</button></div><div class="tbl-scroll"><div id="tbl-yt"></div></div></div></div>
       <div class="kpi-section" id="ksec-ideas-m">
-        <div class="tw"><div class="th2"><h3>Banco de Ideas</h3><button class="ba" onclick="openIdeaModal()">+ Nueva Idea</button></div><div class="tbl-scroll"><div id="ideas-list"></div></div></div>
+        <div class="tw">
+          <div class="th2"><h3>Banco de Ideas</h3><button class="ba" onclick="openIdeaModal()">+ Nueva Idea</button></div>
+          <div style="display:flex;gap:6px;margin-bottom:14px;border-bottom:1px solid var(--br);padding-bottom:10px">
+            <button id="ideas-tab-reel" onclick="setIdeasTab('reel')" style="padding:5px 14px;border-radius:7px;border:1px solid var(--gold);background:rgba(201,168,76,0.15);color:var(--gold);font-size:11px;font-weight:600;cursor:pointer;font-family:var(--font)">🎬 Reels</button>
+            <button id="ideas-tab-historia" onclick="setIdeasTab('historia')" style="padding:5px 14px;border-radius:7px;border:1px solid var(--br);background:transparent;color:var(--t2);font-size:11px;font-weight:600;cursor:pointer;font-family:var(--font)">📱 Historias</button>
+            <button id="ideas-tab-youtube" onclick="setIdeasTab('youtube')" style="padding:5px 14px;border-radius:7px;border:1px solid var(--br);background:transparent;color:var(--t2);font-size:11px;font-weight:600;cursor:pointer;font-family:var(--font)">▶️ YouTube</button>
+          </div>
+          <div class="tbl-scroll"><div id="ideas-list"></div></div>
+        </div>
       </div>
       <div class="kpi-section" id="ksec-viral-m">
         <div class="tw" style="padding:16px;margin-bottom:14px">
@@ -780,11 +853,31 @@ function onLeadFuenteChange(){
   if(row)row.style.display=fue==='Instagram Orgánico'?'block':'none';
 }
 
-// Leads y ventas de contenido
+let leadsPeriodo='mes';
+function setLeadsPeriodo(p,btn){
+  leadsPeriodo=p;
+  document.querySelectorAll('[onclick^="setLeadsPeriodo"]').forEach(b=>{
+    b.style.background='var(--d3)';b.style.borderColor='var(--br)';b.style.color='var(--t3)';b.style.fontWeight='400';
+  });
+  btn.style.background='rgba(201,168,76,0.2)';btn.style.borderColor='var(--gold)';btn.style.color='var(--gold)';btn.style.fontWeight='600';
+  updateLeadsContenido();
+}
+
 function updateLeadsContenido(){
-  const lr=KPI.reels.reduce((s,r)=>s+Number(r.comentarios||0),0);
-  const lh=KPI.historias.reduce((s,h)=>s+Number(h.respuestas_cta||0),0);
-  const vt=KPI.reels.reduce((s,r)=>s+Number(r.ventas||0),0)+KPI.historias.reduce((s,h)=>s+Number(h.ventas||0),0);
+  const now=new Date();
+  function inPeriod(fecha){
+    if(!fecha)return false;
+    const d=new Date(fecha+'T12:00:00');
+    if(leadsPeriodo==='semana'){const w=new Date(now);w.setDate(now.getDate()-7);return d>=w;}
+    if(leadsPeriodo==='mes'){return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear();}
+    if(leadsPeriodo==='año'){return d.getFullYear()===now.getFullYear();}
+    return true; // siempre
+  }
+  const reelsFilt=KPI.reels.filter(r=>inPeriod(r.fecha));
+  const histFilt=KPI.historias.filter(h=>inPeriod(h.fecha));
+  const lr=reelsFilt.reduce((s,r)=>s+Number(r.comentarios||0),0);
+  const lh=histFilt.reduce((s,h)=>s+Number(h.respuestas_cta||0),0);
+  const vt=reelsFilt.reduce((s,r)=>s+Number(r.ventas||0),0)+histFilt.reduce((s,h)=>s+Number(h.ventas||0),0);
   const e1=document.getElementById('dc-leads-total');const e2=document.getElementById('dc-leads-reels');const e3=document.getElementById('dc-leads-hist');const e4=document.getElementById('dc-ventas-total');
   if(e1)e1.textContent=(lr+lh).toLocaleString();if(e2)e2.textContent=lr.toLocaleString();if(e3)e3.textContent=lh.toLocaleString();if(e4)e4.textContent=vt.toLocaleString();
 }
@@ -836,18 +929,16 @@ function renderFunnel(){
 let chartReels=null,chartHist=null,chartYT=null;
 function renderSectionTimeline(canvasId,data,color,chartRef,setRef){
   const canvas=document.getElementById(canvasId);if(!canvas)return;
-  const desdeEl=document.getElementById(canvasId.replace('dc-timeline-','dc-').replace('-reels','-reels-desde').replace('-hist','-hist-desde').replace('-yt','-yt-desde'));
   const now=new Date();
-  // Build last 12 months or from selected month
   const labels=[];const values=[];
   for(let i=11;i>=0;i--){
     const d=new Date(now.getFullYear(),now.getMonth()-i,1);
-    labels.push(d.toLocaleString('es',{month:'short',year:'2-digit'}));
+    labels.push(d.toLocaleString('es',{month:'short'}));
     const m=d.getMonth(),y=d.getFullYear();
     values.push(data.filter(r=>{if(!r.fecha)return false;const rd=new Date(r.fecha+'T12:00:00');return rd.getMonth()===m&&rd.getFullYear()===y;}).reduce((s,r)=>s+Number(r.views||0),0));
   }
   if(chartRef)chartRef.destroy();
-  const newChart=new Chart(canvas,{type:'line',data:{labels,datasets:[{label:'Views',data:values,borderColor:color,backgroundColor:color+'22',tension:0.4,fill:true,pointBackgroundColor:color,pointRadius:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#666',font:{family:'Poppins',size:9}},grid:{color:'rgba(128,128,128,0.05)'}},y:{ticks:{color:'#666',font:{family:'Poppins',size:9},callback:v=>v>=1000?Math.round(v/1000)+'K':v},grid:{color:'rgba(128,128,128,0.05)'}}}}});
+  const newChart=new Chart(canvas,{type:'line',data:{labels,datasets:[{label:'Views',data:values,borderColor:color,backgroundColor:color+'18',tension:0.4,fill:true,pointBackgroundColor:color,pointRadius:2,pointHoverRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.parsed.y>=1000?(ctx.parsed.y/1000).toFixed(1)+'K':ctx.parsed.y} views`}}},scales:{x:{ticks:{color:'#555',font:{family:'Poppins',size:8}},grid:{display:false}},y:{ticks:{color:'#555',font:{family:'Poppins',size:8},callback:v=>v>=1000?Math.round(v/1000)+'K':v},grid:{color:'rgba(128,128,128,0.04)'}}}}});
   setRef(newChart);
 }
 
@@ -1431,13 +1522,23 @@ function renderTbl(type,elId){
   el.innerHTML=`<table class="t"><thead><tr>${cfg.cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead><tbody>${data.map(row=>`<tr ondblclick="openEdit('${type}','${row.id}')" style="cursor:pointer">${cfg.keys.map(k=>{if(k==='_edit')return`<td>${editPencilBtn(type,row.id)}</td>`;let v=row[k]??'—';if(cfg.fmt&&cfg.fmt[k])v=cfg.fmt[k](row[k]);return`<td>${v}</td>`;}).join('')}</tr>`).join('')}</tbody></table>`;
 }
 
-function renderLeadsTbl(el){
-  const data=KPI.leads;
+// Ideas tabs
+let ideasTabActual='reel';
+function setIdeasTab(tipo){
+  ideasTabActual=tipo;
+  ['reel','historia','youtube'].forEach(t=>{
+    const btn=document.getElementById('ideas-tab-'+t);if(!btn)return;
+    if(t===tipo){btn.style.background='rgba(201,168,76,0.15)';btn.style.borderColor='var(--gold)';btn.style.color='var(--gold)';}
+    else{btn.style.background='transparent';btn.style.borderColor='var(--br)';btn.style.color='var(--t2)';}
+  });
+  renderIdeas();
+}
+
+function renderLeadsTbl(el,data){
+  data=data||KPI.leads;
   if(!data||!data.length){el.innerHTML=emptyEl('Sin leads aún');return;}
   el.innerHTML=`<table class="t"><thead><tr><th>Nombre</th><th>Instagram</th><th>Fecha</th><th>Estado</th><th>Fuente</th><th>Seguimientos</th><th></th></tr></thead><tbody>${data.map(row=>`<tr ondblclick="openEdit('leads','${row.id}')" style="cursor:pointer">
-    <td>${row.nombre||'—'}</td>
-    <td>${row.ig||'—'}</td>
-    <td>${fD(row.fecha)}</td>
+    <td>${row.nombre||'—'}</td><td>${row.ig||'—'}</td><td>${fD(row.fecha)}</td>
     <td><span class="st ${row.estado==='Agendado'?'sg':row.estado==='Perdido'?'sr':row.estado==='Nuevo'?'sy':'sm'}">${row.estado||'-'}</span></td>
     <td>${row.fuente||'—'}</td>
     <td><select onchange="updateSeguimiento('${row.id}',this.value)" style="background:var(--d3);border:1px solid var(--br);color:var(--tx);padding:3px 6px;border-radius:5px;font-size:10px;font-family:var(--font);outline:none;cursor:pointer">
@@ -1445,6 +1546,57 @@ function renderLeadsTbl(el){
     </select></td>
     <td>${editPencilBtn('leads',row.id)}</td>
   </tr>`).join('')}</tbody></table>`;
+}
+function filterLeadsTable(){
+  const q=(document.getElementById('leads-search')?.value||'').toLowerCase().trim();
+  const est=document.getElementById('leads-filter-estado')?.value||'';
+  const fue=document.getElementById('leads-filter-fuente')?.value||'';
+  const seg=document.getElementById('leads-filter-seg')?.value||'';
+  const filtered=KPI.leads.filter(l=>{
+    if(q&&!(l.nombre||'').toLowerCase().includes(q)&&!(l.ig||'').toLowerCase().includes(q))return false;
+    if(est&&l.estado!==est)return false;
+    if(fue&&l.fuente!==fue)return false;
+    const segLabel=Number(l.seguimientos||0)===0?'Sin seguimiento':`${l.seguimientos} seguimiento${Number(l.seguimientos)>1?'s':''}`;
+    if(seg&&segLabel!==seg)return false;
+    return true;
+  });
+  const badge=document.getElementById('leads-count-badge');
+  if(badge)badge.textContent=`${filtered.length} de ${KPI.leads.length}`;
+  renderLeadsTbl(document.getElementById('tbl-leads'),filtered);
+}
+function filterAgendasTable(){
+  const q=(document.getElementById('agendas-search')?.value||'').toLowerCase();
+  const res=document.getElementById('agendas-filter-resultado')?.value||'';
+  const filtered=KPI.agendas.filter(a=>{
+    if(q&&!(a.nombre||'').toLowerCase().includes(q))return false;
+    if(res&&a.resultado!==res)return false;
+    return true;
+  });
+  const el=document.getElementById('tbl-agendas');if(!el)return;
+  if(!filtered.length){el.innerHTML=emptyEl('Sin resultados');return;}
+  el.innerHTML=`<table class="t"><thead><tr><th>Nombre</th><th>Fecha</th><th>Cal.</th><th>Resultado</th><th>Notas</th><th></th></tr></thead><tbody>${filtered.map(row=>`<tr ondblclick="openEdit('agendas','${row.id}')" style="cursor:pointer"><td>${row.nombre||'—'}</td><td>${fD(row.fecha)}</td><td><span class="st ${row.calificacion==='Alta'?'sg':row.calificacion==='Media'?'sy':'sm'}">${row.calificacion||'-'}</span></td><td><span class="st ${row.resultado==='Cerrado'?'sg':row.resultado==='No Show'?'sr':row.resultado==='Pendiente'?'sy':'sm'}">${row.resultado||'-'}</span></td><td>${row.notas||'—'}</td><td>${editPencilBtn('agendas',row.id)}</td></tr>`).join('')}</tbody></table>`;
+}
+function filterClientesTable(){
+  const q=(document.getElementById('clientes-search')?.value||'').toLowerCase();
+  const act=document.getElementById('clientes-filter-activo')?.value||'';
+  const filtered=KPI.clientes.filter(c=>{
+    if(q&&!(c.nombre||'').toLowerCase().includes(q))return false;
+    if(act&&c.activo!==act)return false;
+    return true;
+  });
+  renderClientesTbl(document.getElementById('tbl-clientes'),filtered);
+}
+function filterWinsTable(){
+  const q=(document.getElementById('wins-search')?.value||'').toLowerCase();
+  const usada=document.getElementById('wins-filter-usada')?.value||'';
+  const el=document.getElementById('wins-list');if(!el)return;
+  const filtered=KPI.wins.filter(w=>{
+    if(q&&!(w.win||'').toLowerCase().includes(q)&&!(w.cliente||'').toLowerCase().includes(q))return false;
+    if(usada&&w.usada_historias!==usada)return false;
+    return true;
+  });
+  if(!filtered.length){el.innerHTML=emptyEl('Sin wins');return;}
+  el.innerHTML=filtered.map(w=>`<div class="wc"><div style="display:flex;gap:5px;margin-bottom:5px"><span class="st sy">${w.grandeza}</span>${w.usada_historias==='Si'?'<span class="st sg">En historias</span>':''}</div><div style="font-size:12px;color:var(--tx);margin:4px 0">${w.win}</div><div style="font-size:9px;color:var(--t3)">${w.cliente} · ${fD(w.fecha)}</div></div>`).join('');
 }
 
 async function updateSeguimiento(id,val){
@@ -1792,17 +1944,19 @@ function showCalPopup(title,desc,cat){
 }
 
 function renderIdeas(){
-  const el=document.getElementById('ideas-list');
-  if(!KPI.ideas||!KPI.ideas.length){el.innerHTML='<div style="padding:16px;font-size:11px;color:var(--t3);text-align:center">Sin ideas aún. ¡Agrega tu primera idea!</div>';return;}
-  el.innerHTML=KPI.ideas.map(idea=>{
+  const el=document.getElementById('ideas-list');if(!el)return;
+  if(!KPI.ideas||!KPI.ideas.length){el.innerHTML='<div style="padding:16px;font-size:11px;color:var(--t3);text-align:center">Sin ideas aún.</div>';return;}
+  const filtered=KPI.ideas.filter(i=>(i.tipo||'reel')===ideasTabActual);
+  if(!filtered.length){el.innerHTML=`<div style="padding:16px;font-size:11px;color:var(--t3);text-align:center">Sin ideas de ${ideasTabActual} aún.</div>`;return;}
+  el.innerHTML=filtered.map(idea=>{
     const estadoClass={'idea':'estado-idea','guionizado':'estado-guionizado','grabado':'estado-grabado','subido':'estado-subido'}[idea.estado]||'estado-idea';
     return`<div class="idea-card" ondblclick="editIdea('${idea.id}')" style="cursor:pointer">
       <div class="idea-card-header">
         <div style="flex:1"><div class="idea-title">${idea.titulo||'Sin título'}</div><div class="idea-meta">${idea.tipo||'reel'} · ${fD(idea.created_at?.slice(0,10))}</div></div>
         <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
           <span class="estado-badge ${estadoClass}">${idea.estado||'idea'}</span>
-          <button onclick="event.stopPropagation();editIdea('${idea.id}')" style="background:none;border:none;color:var(--t3);cursor:pointer;font-size:14px;padding:2px 5px;transition:color .2s" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--t3)'" title="Editar">✏️</button>
-          <button onclick="event.stopPropagation();deleteIdea('${idea.id}')" style="background:none;border:none;color:rgba(226,75,74,.6);cursor:pointer;font-size:13px;padding:2px 5px;transition:color .2s" onmouseover="this.style.color='var(--er)'" onmouseout="this.style.color='rgba(226,75,74,.6)'" title="Eliminar">✕</button>
+          <button onclick="event.stopPropagation();editIdea('${idea.id}')" style="background:none;border:none;color:var(--t3);cursor:pointer;font-size:14px;padding:2px 5px" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--t3)'">✏️</button>
+          <button onclick="event.stopPropagation();deleteIdea('${idea.id}')" style="background:none;border:none;color:rgba(226,75,74,.6);cursor:pointer;font-size:13px;padding:2px 5px" onmouseover="this.style.color='var(--er)'" onmouseout="this.style.color='rgba(226,75,74,.6)'">✕</button>
         </div>
       </div>
       ${idea.gancho?`<div style="font-size:11px;color:var(--t2);margin-bottom:6px">💡 ${idea.gancho}</div>`:''}
