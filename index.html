@@ -478,14 +478,25 @@ table.t tr:hover td{background:var(--d2)}
           <div id="dc-funnel" style="display:flex;gap:0;align-items:stretch"></div>
         </div>
 
-        <div class="ctabs">
-          <button class="ctab active" onclick="showCtab('reels',this)">🎬 Reels</button>
-          <button class="ctab" onclick="showCtab('hist',this)">📱 Historias</button>
-          <button class="ctab" onclick="showCtab('yt',this)">▶️ YouTube</button>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:14px;flex-wrap:wrap">
+          <div class="ctabs" style="gap:6px">
+            <button class="ctab active" id="ctab-btn-general" onclick="showCtab('general',this)" style="padding:8px 18px;font-size:12px">📊 General</button>
+            <button class="ctab" id="ctab-btn-reels" onclick="showCtab('reels',this)" style="padding:8px 18px;font-size:12px">🎬 Reels</button>
+            <button class="ctab" id="ctab-btn-hist" onclick="showCtab('hist',this)" style="padding:8px 18px;font-size:12px">📱 Historias</button>
+            <button class="ctab" id="ctab-btn-yt" onclick="showCtab('yt',this)" style="padding:8px 18px;font-size:12px">▶️ YouTube</button>
+          </div>
+          <button id="ctab-add-btn" onclick="ctabAddContent()" style="background:var(--gold);border:none;color:#000;border-radius:9px;padding:8px 18px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font)">+ Agregar Reel</button>
+        </div>
+
+        <!-- GENERAL PANEL -->
+        <div class="ctab-panel active" id="ctab-general">
+          <div id="dc-reels-kpis-gen"></div>
+          <div id="dc-hist-kpis-gen" style="margin-top:12px"></div>
+          <div id="dc-yt-kpis-gen" style="margin-top:12px"></div>
         </div>
 
         <!-- REELS PANEL -->
-        <div class="ctab-panel active" id="ctab-reels">
+        <div class="ctab-panel" id="ctab-reels">
           <div id="dc-reels-kpis"></div>
           <!-- Timeline reels -->
           <div style="background:var(--d2);border:1px solid var(--br);border-radius:12px;padding:12px 14px;margin:12px 0;overflow:hidden">
@@ -883,9 +894,11 @@ function updateLeadsContenido(){
 }
 
 // Content DNA
-function renderContentDNA(){
+function renderContentDNA(tipo){
   const el=document.getElementById('dc-dna');if(!el)return;
-  const all=[...KPI.reels,...KPI.historias];
+  let all=[];
+  if(tipo==='reels'||tipo==='all')all=[...all,...KPI.reels];
+  if(tipo==='hist'||tipo==='all')all=[...all,...KPI.historias];
   if(!all.length){el.innerHTML='<div style="font-size:11px;color:var(--t3)">Sin datos aún</div>';return;}
   const counts={};
   all.forEach(r=>{const e=r.estructura||r.formato||'Sin estructura';counts[e]=(counts[e]||0)+1;});
@@ -929,13 +942,26 @@ function renderFunnel(){
 let chartReels=null,chartHist=null,chartYT=null;
 function renderSectionTimeline(canvasId,data,color,chartRef,setRef){
   const canvas=document.getElementById(canvasId);if(!canvas)return;
+  const mesId=canvasId.replace('dc-timeline-','dc-').replace('-reels','-reels-desde').replace('-hist','-hist-desde').replace('-yt','-yt-desde');
+  const mesVal=document.getElementById(mesId)?.value||'';
   const now=new Date();
-  const labels=[];const values=[];
-  for(let i=11;i>=0;i--){
-    const d=new Date(now.getFullYear(),now.getMonth()-i,1);
-    labels.push(d.toLocaleString('es',{month:'short'}));
-    const m=d.getMonth(),y=d.getFullYear();
-    values.push(data.filter(r=>{if(!r.fecha)return false;const rd=new Date(r.fecha+'T12:00:00');return rd.getMonth()===m&&rd.getFullYear()===y;}).reduce((s,r)=>s+Number(r.views||0),0));
+  let labels=[];let values=[];
+  if(mesVal){
+    // Monthly mode: show days of selected month
+    const [y,m]=mesVal.split('-').map(Number);
+    const daysInMonth=new Date(y,m,0).getDate();
+    for(let d=1;d<=daysInMonth;d++){
+      labels.push(d+'');
+      values.push(data.filter(r=>{if(!r.fecha)return false;const rd=new Date(r.fecha+'T12:00:00');return rd.getFullYear()===y&&rd.getMonth()===m-1&&rd.getDate()===d;}).reduce((s,r)=>s+Number(r.views||0),0));
+    }
+  }else{
+    // Annual mode: last 12 months
+    for(let i=11;i>=0;i--){
+      const d=new Date(now.getFullYear(),now.getMonth()-i,1);
+      labels.push(d.toLocaleString('es',{month:'short'}));
+      const mo=d.getMonth(),yr=d.getFullYear();
+      values.push(data.filter(r=>{if(!r.fecha)return false;const rd=new Date(r.fecha+'T12:00:00');return rd.getMonth()===mo&&rd.getFullYear()===yr;}).reduce((s,r)=>s+Number(r.views||0),0));
+    }
   }
   if(chartRef)chartRef.destroy();
   const newChart=new Chart(canvas,{type:'line',data:{labels,datasets:[{label:'Views',data:values,borderColor:color,backgroundColor:color+'18',tension:0.4,fill:true,pointBackgroundColor:color,pointRadius:2,pointHoverRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.parsed.y>=1000?(ctx.parsed.y/1000).toFixed(1)+'K':ctx.parsed.y} views`}}},scales:{x:{ticks:{color:'#555',font:{family:'Poppins',size:8}},grid:{display:false}},y:{ticks:{color:'#555',font:{family:'Poppins',size:8},callback:v=>v>=1000?Math.round(v/1000)+'K':v},grid:{color:'rgba(128,128,128,0.04)'}}}}});
@@ -1364,7 +1390,7 @@ function showKpiSec(sec,el){
   document.getElementById('ksec-'+sec).classList.add('active');
   if(el)el.classList.add('active');
   if(sec==='ops')renderOps();
-  else if(sec==='content'){renderContentReels();renderContentHist();renderContentYT();}
+  else if(sec==='content'){renderContentGeneral();}
   else if(sec==='leads-m')renderTbl('leads','tbl-leads');
   else if(sec==='agendas-m')renderTbl('agendas','tbl-agendas');
   else if(sec==='ingresos-m')renderTbl('ingresos','tbl-ingresos');
@@ -1447,14 +1473,56 @@ function rBadge(v){if(!v)return'—';const m={Excelente:'re',Bueno:'re','Muy bue
 function sortD(arr,k){return[...arr].sort((a,b)=>Number(b[k]||0)-Number(a[k]||0));}
 function top3Cards(items,nk,sk,sl,empty){if(!items.length)return`<div style="font-size:10px;color:var(--t3);padding:10px 0">${empty}</div>`;return items.map((it,i)=>`<div class="top-card"><div class="tr-rank">${['🥇','🥈','🥉'][i]}</div><div class="tr-info"><div class="tr-name">${it[nk]||'—'}</div><div class="tr-meta">${fD(it.fecha)}</div></div><div class="tr-stat"><div class="tv">${Number(it[sk]||0).toLocaleString()}</div><div class="tl">${sl}</div></div></div>`).join('');}
 
-function showCtab(t,el){document.querySelectorAll('.ctab-panel').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.ctab').forEach(x=>x.classList.remove('active'));document.getElementById('ctab-'+t).classList.add('active');el.classList.add('active');if(t==='reels')renderContentReels();else if(t==='hist')renderContentHist();else renderContentYT();}
-function onSegChange(){const at=document.querySelector('.ctab-panel.active');if(!at)return;const id=at.id.replace('ctab-','');if(id==='reels')renderContentReels();else if(id==='hist')renderContentHist();else renderContentYT();}
+let currentCtab='general';
+function showCtab(t,el){
+  currentCtab=t;
+  document.querySelectorAll('.ctab-panel').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.ctab').forEach(x=>x.classList.remove('active'));
+  document.getElementById('ctab-'+t).classList.add('active');
+  el.classList.add('active');
+  // Update add button label
+  const addBtn=document.getElementById('ctab-add-btn');
+  if(addBtn){
+    const labels={general:'+ Agregar',reels:'+ Agregar Reel',hist:'+ Nueva Historia',yt:'+ Nuevo Video'};
+    addBtn.textContent=labels[t]||'+ Agregar';
+  }
+  if(t==='general'){renderContentGeneral();}
+  else if(t==='reels'){renderContentReels();}
+  else if(t==='hist'){renderContentHist();}
+  else if(t==='yt'){renderContentYT();}
+}
+function ctabAddContent(){
+  if(currentCtab==='reels'){openMod('m-reel');resetMod('reel');}
+  else if(currentCtab==='hist'){openMod('m-hist');resetMod('hist');}
+  else if(currentCtab==='yt'){openMod('m-yt');resetMod('yt');}
+  else{openMod('m-reel');resetMod('reel');}
+}
+function renderContentGeneral(){
+  // Show all 3 KPI summaries in general tab
+  const seg=getSeg();
+  const rAll=KPI.reels;const hAll=KPI.historias;const yAll=KPI.yt;
+  const avgRV=rAll.length?Math.round(rAll.reduce((s,r)=>s+Number(r.views||0),0)/rAll.length):0;
+  const avgRC=rAll.length?Math.round(rAll.reduce((s,r)=>s+Number(r.comentarios||0),0)/rAll.length):0;
+  const avgHV=hAll.length?Math.round(hAll.reduce((s,h)=>s+Number(h.views||0),0)/hAll.length):0;
+  const avgHC=hAll.length?Math.round(hAll.reduce((s,h)=>s+Number(h.respuestas_cta||0),0)/hAll.length):0;
+  const avgYV=yAll.length?Math.round(yAll.reduce((s,y)=>s+Number(y.views||0),0)/yAll.length):0;
+  const avgYC=yAll.length?(yAll.reduce((s,y)=>s+Number(y.ctr||0),0)/yAll.length).toFixed(1):0;
+  const el1=document.getElementById('dc-reels-kpis-gen');
+  const el2=document.getElementById('dc-hist-kpis-gen');
+  const el3=document.getElementById('dc-yt-kpis-gen');
+  if(el1)el1.innerHTML=`<div class="dst"><span>🎬</span>Reels — ${rAll.length} total</div><div class="kg"><div class="kcard"><div class="kl">Prom. Views</div><div class="kv">${avgRV.toLocaleString()}</div></div><div class="kcard"><div class="kl">Prom. Comentarios</div><div class="kv">${avgRC}</div></div></div>`;
+  if(el2)el2.innerHTML=`<div class="dst"><span>📱</span>Historias — ${hAll.length} total</div><div class="kg"><div class="kcard"><div class="kl">Prom. Views</div><div class="kv">${avgHV.toLocaleString()}</div></div><div class="kcard"><div class="kl">Prom. Resp. CTA</div><div class="kv">${avgHC}</div></div></div>`;
+  if(el3)el3.innerHTML=`<div class="dst"><span>▶️</span>YouTube — ${yAll.length} total</div><div class="kg"><div class="kcard"><div class="kl">Prom. Views</div><div class="kv">${avgYV.toLocaleString()}</div></div><div class="kcard"><div class="kl">CTR Prom.</div><div class="kv">${avgYC}%</div></div></div>`;
+  renderContentDNA('all');
+  renderFunnel();
+  updateLeadsContenido();
+}
 
 function getYTThumb(link){if(!link)return null;const m=link.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|shorts\/))([a-zA-Z0-9_-]{11})/);return m?`https://img.youtube.com/vi/${m[1]}/mqdefault.jpg`:null;}
 function detectYTThumb(link){const thumb=getYTThumb(link);const prev=document.getElementById('r-thumb-preview');if(!prev)return;prev.innerHTML=thumb?`<img src="${thumb}" style="width:80px;height:56px;border-radius:6px;object-fit:cover;margin-bottom:4px" onerror="this.style.display='none'">`:''}
 
 function renderContentReels(){
-  const seg=getSeg();const all=KPI.reels;const r30=all.filter(r=>isWithin30(r.fecha));const r90=all.filter(r=>isWithin90(r.fecha));
+  const seg=getSeg();const all=KPI.reels;const r30=all.filter(r=>isWithin30(r.fecha));
   const avgV=all.length?Math.round(all.reduce((s,r)=>s+Number(r.views||0),0)/all.length):0;
   const avgC=all.length?Math.round(all.reduce((s,r)=>s+Number(r.comentarios||0),0)/all.length):0;
   const avgS=all.length?Math.round(all.reduce((s,r)=>s+Number(r.seguidores_nuevos||0),0)/all.length):0;
@@ -1463,7 +1531,7 @@ function renderContentReels(){
   const top30=sortD(r30.length?r30:all,'comentarios').slice(0,3);
   document.getElementById('dc-reels-top').innerHTML=top30.length?top30.map((it,i)=>`<div class="top-card" style="gap:10px"><div class="tr-rank">${['🥇','🥈','🥉'][i]}</div><div class="tr-info"><div class="tr-name">${it.nombre||'—'}</div><div class="tr-meta">${fD(it.fecha)}</div></div><div class="tr-stat"><div class="tv">${Number(it.views||0).toLocaleString()}</div><div class="tl">views</div></div><div class="tr-stat"><div class="tv">${it.comentarios||0}</div><div class="tl">coms</div></div></div>`).join(''):'<div style="font-size:10px;color:var(--t3)">Sin reels en los últimos 30 días</div>';
   renderSectionTimeline('dc-timeline-reels',KPI.reels,'#C9A84C',chartReels,(c)=>{chartReels=c;});
-  updateLeadsContenido();renderContentDNA();renderFunnel();
+  renderContentDNA('reels');
   filterContentReels();
 }
 function renderContentHist(){
@@ -1474,6 +1542,7 @@ function renderContentHist(){
   const top30h=sortD(h30.length?h30:all,'respuestas_cta').slice(0,3);
   document.getElementById('dc-hist-top').innerHTML=top30h.length?top30h.map((it,i)=>`<div class="top-card" style="gap:10px"><div class="tr-rank">${['🥇','🥈','🥉'][i]}</div><div class="tr-info"><div class="tr-name">${it.idea||'—'}</div><div class="tr-meta">${fD(it.fecha)}</div></div><div class="tr-stat"><div class="tv">${Number(it.views||0).toLocaleString()}</div><div class="tl">views</div></div><div class="tr-stat"><div class="tv">${it.respuestas_cta||0}</div><div class="tl">resp.</div></div></div>`).join(''):'<div style="font-size:10px;color:var(--t3)">Sin historias en los últimos 30 días</div>';
   renderSectionTimeline('dc-timeline-hist',KPI.historias,'#a78bfa',chartHist,(c)=>{chartHist=c;});
+  renderContentDNA('hist');
   filterContentHist();
 }
 function renderContentYT(){
@@ -1552,7 +1621,7 @@ function filterLeadsTable(){
   const est=document.getElementById('leads-filter-estado')?.value||'';
   const fue=document.getElementById('leads-filter-fuente')?.value||'';
   const seg=document.getElementById('leads-filter-seg')?.value||'';
-  const filtered=KPI.leads.filter(l=>{
+  let filtered=KPI.leads.filter(l=>{
     if(q&&!(l.nombre||'').toLowerCase().includes(q)&&!(l.ig||'').toLowerCase().includes(q))return false;
     if(est&&l.estado!==est)return false;
     if(fue&&l.fuente!==fue)return false;
@@ -1560,6 +1629,8 @@ function filterLeadsTable(){
     if(seg&&segLabel!==seg)return false;
     return true;
   });
+  // Sort by most recent first
+  filtered.sort((a,b)=>{if(!a.fecha&&!b.fecha)return 0;if(!a.fecha)return 1;if(!b.fecha)return -1;return new Date(b.fecha)-new Date(a.fecha);});
   const badge=document.getElementById('leads-count-badge');
   if(badge)badge.textContent=`${filtered.length} de ${KPI.leads.length}`;
   renderLeadsTbl(document.getElementById('tbl-leads'),filtered);
