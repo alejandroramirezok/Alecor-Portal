@@ -447,7 +447,7 @@ table.t tr:hover td{background:var(--d2)}
         <div class="seg-bar"><label>Seguidores cuenta</label><input type="number" class="seg-inp" id="seg-n" placeholder="Ej: 5400" oninput="saveSeguidores(this.value);onSegChange()"><span id="seg-txt" style="font-size:10px;color:var(--t3)"></span></div>
 
         <!-- LEADS DE CONTENIDO -->
-        <div style="background:linear-gradient(135deg,rgba(201,168,76,0.08),rgba(201,168,76,0.03));border:1px solid rgba(201,168,76,0.25);border-radius:12px;padding:14px 18px;margin-bottom:14px">
+        <div style="background:linear-gradient(135deg,rgba(201,168,76,0.08),rgba(201,168,76,0.03));border:1px solid rgba(201,168,76,0.25);border-radius:12px;padding:14px 18px;margin-bottom:10px">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">
             <div style="font-size:9px;color:var(--gold);text-transform:uppercase;letter-spacing:1px;font-weight:600">🎯 Leads totales de contenido</div>
             <div style="display:flex;gap:4px">
@@ -466,16 +466,10 @@ table.t tr:hover td{background:var(--d2)}
           </div>
         </div>
 
-        <!-- CONTENT DNA -->
-        <div style="background:var(--d2);border:1px solid var(--br);border-radius:12px;padding:14px 16px;margin-bottom:14px">
+        <!-- CONTENT DNA (siempre visible, cambia por pestaña) -->
+        <div style="background:var(--d2);border:1px solid var(--br);border-radius:12px;padding:14px 16px;margin-bottom:10px">
           <div style="font-size:11px;font-weight:600;color:var(--tx);margin-bottom:12px">🧬 Content DNA — Distribución de estructuras</div>
           <div id="dc-dna" style="display:flex;gap:6px;flex-wrap:wrap"></div>
-        </div>
-
-        <!-- FUNNEL PIPELINE -->
-        <div style="background:var(--d2);border:1px solid var(--br);border-radius:12px;padding:14px 16px;margin-bottom:14px">
-          <div style="font-size:11px;font-weight:600;color:var(--tx);margin-bottom:12px">⚡ Content Pipeline</div>
-          <div id="dc-funnel" style="display:flex;gap:0;align-items:stretch"></div>
         </div>
 
         <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:14px;flex-wrap:wrap">
@@ -493,6 +487,11 @@ table.t tr:hover td{background:var(--d2)}
           <div id="dc-reels-kpis-gen"></div>
           <div id="dc-hist-kpis-gen" style="margin-top:12px"></div>
           <div id="dc-yt-kpis-gen" style="margin-top:12px"></div>
+          <!-- PIPELINE solo en general -->
+          <div style="background:var(--d2);border:1px solid var(--br);border-radius:12px;padding:14px 16px;margin-top:14px">
+            <div style="font-size:11px;font-weight:600;color:var(--tx);margin-bottom:12px">⚡ Content Pipeline</div>
+            <div id="dc-funnel" style="display:flex;gap:0;align-items:stretch"></div>
+          </div>
         </div>
 
         <!-- REELS PANEL -->
@@ -505,6 +504,18 @@ table.t tr:hover td{background:var(--d2)}
               <input type="month" id="dc-reels-desde" onchange="renderContentReels()" style="background:var(--d3);border:1px solid var(--br);border-radius:6px;padding:4px 8px;color:var(--t2);font-size:10px;font-family:var(--font);outline:none">
             </div>
             <div style="position:relative;height:80px"><canvas id="dc-timeline-reels"></canvas></div>
+          </div>
+          <!-- TOP 5 GANADORES REELS -->
+          <div style="background:var(--d2);border:1px solid var(--br);border-radius:12px;padding:14px 16px;margin-bottom:14px">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+              <div style="font-size:11px;font-weight:700;color:var(--gold)">🏆 Ganadores de Reels</div>
+              <div style="display:flex;gap:4px">
+                <button onclick="setWinnersPeriodo('reels','semana',this)" style="background:var(--d3);border:1px solid var(--br);color:var(--t3);border-radius:6px;padding:3px 9px;font-size:10px;cursor:pointer;font-family:var(--font)">Semana</button>
+                <button onclick="setWinnersPeriodo('reels','mes',this)" style="background:rgba(201,168,76,0.2);border:1px solid var(--gold);color:var(--gold);border-radius:6px;padding:3px 9px;font-size:10px;cursor:pointer;font-family:var(--font);font-weight:600">Mes</button>
+                <button onclick="setWinnersPeriodo('reels','lifetime',this)" style="background:var(--d3);border:1px solid var(--br);color:var(--t3);border-radius:6px;padding:3px 9px;font-size:10px;cursor:pointer;font-family:var(--font)">Lifetime</button>
+              </div>
+            </div>
+            <div id="dc-reels-winners"></div>
           </div>
           <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;align-items:center">
             <div style="display:flex;align-items:center;gap:6px;background:var(--d3);border:1px solid var(--br);border-radius:8px;padding:6px 10px;flex:1;min-width:150px"><span style="color:var(--t3);font-size:12px">🔍</span><input id="reel-search" oninput="filterContentReels()" placeholder="Buscar reel..." style="background:none;border:none;outline:none;color:var(--tx);font-size:11px;font-family:var(--font);width:100%"></div>
@@ -520,13 +531,24 @@ table.t tr:hover td{background:var(--d2)}
         <!-- HISTORIAS PANEL -->
         <div class="ctab-panel" id="ctab-hist">
           <div id="dc-hist-kpis"></div>
-          <!-- Timeline historias -->
           <div style="background:var(--d2);border:1px solid var(--br);border-radius:12px;padding:12px 14px;margin:12px 0;overflow:hidden">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
               <div style="font-size:11px;font-weight:600;color:var(--tx)">📈 Timeline de views — Historias</div>
               <input type="month" id="dc-hist-desde" onchange="renderContentHist()" style="background:var(--d3);border:1px solid var(--br);border-radius:6px;padding:4px 8px;color:var(--t2);font-size:10px;font-family:var(--font);outline:none">
             </div>
             <div style="position:relative;height:80px"><canvas id="dc-timeline-hist"></canvas></div>
+          </div>
+          <!-- TOP 5 GANADORES HISTORIAS -->
+          <div style="background:var(--d2);border:1px solid var(--br);border-radius:12px;padding:14px 16px;margin-bottom:14px">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+              <div style="font-size:11px;font-weight:700;color:#a78bfa">🏆 Ganadoras de Historias</div>
+              <div style="display:flex;gap:4px">
+                <button onclick="setWinnersPeriodo('hist','semana',this)" style="background:var(--d3);border:1px solid var(--br);color:var(--t3);border-radius:6px;padding:3px 9px;font-size:10px;cursor:pointer;font-family:var(--font)">Semana</button>
+                <button onclick="setWinnersPeriodo('hist','mes',this)" style="background:rgba(167,139,250,0.2);border:1px solid #a78bfa;color:#a78bfa;border-radius:6px;padding:3px 9px;font-size:10px;cursor:pointer;font-family:var(--font);font-weight:600">Mes</button>
+                <button onclick="setWinnersPeriodo('hist','lifetime',this)" style="background:var(--d3);border:1px solid var(--br);color:var(--t3);border-radius:6px;padding:3px 9px;font-size:10px;cursor:pointer;font-family:var(--font)">Lifetime</button>
+              </div>
+            </div>
+            <div id="dc-hist-winners"></div>
           </div>
           <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;align-items:center">
             <div style="display:flex;align-items:center;gap:6px;background:var(--d3);border:1px solid var(--br);border-radius:8px;padding:6px 10px;flex:1;min-width:150px"><span style="color:var(--t3);font-size:12px">🔍</span><input id="hist-search" oninput="filterContentHist()" placeholder="Buscar historia..." style="background:none;border:none;outline:none;color:var(--tx);font-size:11px;font-family:var(--font);width:100%"></div>
@@ -542,13 +564,24 @@ table.t tr:hover td{background:var(--d2)}
         <!-- YOUTUBE PANEL -->
         <div class="ctab-panel" id="ctab-yt">
           <div id="dc-yt-kpis"></div>
-          <!-- Timeline YT -->
           <div style="background:var(--d2);border:1px solid var(--br);border-radius:12px;padding:12px 14px;margin:12px 0;overflow:hidden">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
               <div style="font-size:11px;font-weight:600;color:var(--tx)">📈 Timeline de views — YouTube</div>
               <input type="month" id="dc-yt-desde" onchange="renderContentYT()" style="background:var(--d3);border:1px solid var(--br);border-radius:6px;padding:4px 8px;color:var(--t2);font-size:10px;font-family:var(--font);outline:none">
             </div>
             <div style="position:relative;height:80px"><canvas id="dc-timeline-yt"></canvas></div>
+          </div>
+          <!-- TOP 5 GANADORES YOUTUBE -->
+          <div style="background:var(--d2);border:1px solid var(--br);border-radius:12px;padding:14px 16px;margin-bottom:14px">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+              <div style="font-size:11px;font-weight:700;color:#f87171">🏆 Ganadores de YouTube</div>
+              <div style="display:flex;gap:4px">
+                <button onclick="setWinnersPeriodo('yt','semana',this)" style="background:var(--d3);border:1px solid var(--br);color:var(--t3);border-radius:6px;padding:3px 9px;font-size:10px;cursor:pointer;font-family:var(--font)">Semana</button>
+                <button onclick="setWinnersPeriodo('yt','mes',this)" style="background:rgba(248,113,113,0.2);border:1px solid #f87171;color:#f87171;border-radius:6px;padding:3px 9px;font-size:10px;cursor:pointer;font-family:var(--font);font-weight:600">Mes</button>
+                <button onclick="setWinnersPeriodo('yt','lifetime',this)" style="background:var(--d3);border:1px solid var(--br);color:var(--t3);border-radius:6px;padding:3px 9px;font-size:10px;cursor:pointer;font-family:var(--font)">Lifetime</button>
+              </div>
+            </div>
+            <div id="dc-yt-winners"></div>
           </div>
           <div style="display:flex;gap:6px;margin-bottom:10px;align-items:center">
             <div style="display:flex;align-items:center;gap:6px;background:var(--d3);border:1px solid var(--br);border-radius:8px;padding:6px 10px;flex:1"><span style="color:var(--t3);font-size:12px">🔍</span><input id="yt-search" oninput="filterContentYT()" placeholder="Buscar video..." style="background:none;border:none;outline:none;color:var(--tx);font-size:11px;font-family:var(--font);width:100%"></div>
@@ -865,6 +898,92 @@ function onLeadFuenteChange(){
 }
 
 let leadsPeriodo='mes';
+// Winners period state
+const winnersPeriodo={reels:'mes',hist:'mes',yt:'mes'};
+
+function setWinnersPeriodo(tipo,p,btn){
+  winnersPeriodo[tipo]=p;
+  // Update button styles within parent container
+  btn.parentElement.querySelectorAll('button').forEach(b=>{
+    b.style.background='var(--d3)';b.style.borderColor='var(--br)';b.style.color='var(--t3)';b.style.fontWeight='400';
+  });
+  const colors={reels:'rgba(201,168,76,0.2)',hist:'rgba(167,139,250,0.2)',yt:'rgba(248,113,113,0.2)'};
+  const borders={reels:'var(--gold)',hist:'#a78bfa',yt:'#f87171'};
+  const txts={reels:'var(--gold)',hist:'#a78bfa',yt:'#f87171'};
+  btn.style.background=colors[tipo];btn.style.borderColor=borders[tipo];btn.style.color=txts[tipo];btn.style.fontWeight='600';
+  renderWinners(tipo);
+}
+
+function filterByWinnerPeriod(data,dateField,periodo){
+  const now=new Date();
+  return data.filter(r=>{
+    if(!r[dateField])return periodo==='lifetime';
+    const d=new Date(r[dateField]+'T12:00:00');
+    if(periodo==='semana'){const w=new Date(now);w.setDate(now.getDate()-7);return d>=w;}
+    if(periodo==='mes'){return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear();}
+    return true; // lifetime
+  });
+}
+
+function top5Group(items,field,label,color){
+  const counts={};
+  items.forEach(r=>{const v=r[field];if(v&&v.trim())counts[v]=(counts[v]||0)+1;});
+  const sorted=Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  if(!sorted.length)return`<div style="font-size:10px;color:var(--t3);padding:8px 0">Sin datos</div>`;
+  return`<div style="font-size:9px;color:${color};text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:6px">${label}</div>`+
+  sorted.map(([k,v],i)=>`<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+    <span style="font-size:11px;font-weight:700;color:${color};min-width:18px">#${i+1}</span>
+    <div style="flex:1;background:var(--d3);border-radius:6px;padding:5px 10px;font-size:11px;color:var(--tx)">${k}</div>
+    <span style="font-size:10px;color:var(--t3);flex-shrink:0">${v}x</span>
+  </div>`).join('');
+}
+
+function top5Videos(items,nameField,scoreField,scoreLabel,color){
+  const sorted=[...items].sort((a,b)=>Number(b[scoreField]||0)-Number(a[scoreField]||0)).slice(0,5);
+  if(!sorted.length)return`<div style="font-size:10px;color:var(--t3);padding:8px 0">Sin datos</div>`;
+  return`<div style="font-size:9px;color:${color};text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:6px">📹 Videos ganadores</div>`+
+  sorted.map((r,i)=>`<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+    <span style="font-size:11px;font-weight:700;color:${color};min-width:18px">#${i+1}</span>
+    <div style="flex:1;background:var(--d3);border-radius:6px;padding:5px 10px">
+      <div style="font-size:11px;color:var(--tx);font-weight:500">${r[nameField]||'—'}</div>
+      ${r.gancho||r.idea?`<div style="font-size:9px;color:var(--t3);margin-top:1px">${r.gancho||r.idea||''}</div>`:''}
+    </div>
+    <span style="font-size:10px;color:${color};font-weight:700;flex-shrink:0">${Number(r[scoreField]||0).toLocaleString()} ${scoreLabel}</span>
+  </div>`).join('');
+}
+
+function renderWinners(tipo){
+  const p=winnersPeriodo[tipo];
+  if(tipo==='reels'){
+    const el=document.getElementById('dc-reels-winners');if(!el)return;
+    const data=filterByWinnerPeriod(KPI.reels,'fecha',p);
+    if(!data.length){el.innerHTML='<div style="font-size:11px;color:var(--t3);text-align:center;padding:12px">Sin reels en este período</div>';return;}
+    el.innerHTML=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div>${top5Group(data,'gancho','🎣 Ganchos ganadores','var(--gold)')}</div>
+      <div>${top5Group(data,'estructura','🧱 Estructuras ganadoras','var(--gold)')}</div>
+      <div>${top5Group(data,'subdolor','🎯 SubDolores/SubDeseos','var(--gold)')}</div>
+      <div>${top5Videos(data,'nombre','views','views','var(--gold)')}</div>
+    </div>`;
+  }else if(tipo==='hist'){
+    const el=document.getElementById('dc-hist-winners');if(!el)return;
+    const data=filterByWinnerPeriod(KPI.historias,'fecha',p);
+    if(!data.length){el.innerHTML='<div style="font-size:11px;color:var(--t3);text-align:center;padding:12px">Sin historias en este período</div>';return;}
+    el.innerHTML=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div>${top5Group(data,'formato','🧱 Estructuras ganadoras','#a78bfa')}</div>
+      <div>${top5Group(data,'lead_magnet','🎁 Lead Magnets ganadores','#a78bfa')}</div>
+      <div>${top5Videos(data,'idea','respuestas_cta','resp','#a78bfa')}</div>
+    </div>`;
+  }else if(tipo==='yt'){
+    const el=document.getElementById('dc-yt-winners');if(!el)return;
+    const data=filterByWinnerPeriod(KPI.yt,'fecha',p);
+    if(!data.length){el.innerHTML='<div style="font-size:11px;color:var(--t3);text-align:center;padding:12px">Sin videos en este período</div>';return;}
+    el.innerHTML=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div>${top5Videos(data,'titulo','views','views','#f87171')}</div>
+      <div>${top5Videos(data,'titulo','ctr','% CTR','#f87171')}</div>
+    </div>`;
+  }
+}
+
 function setLeadsPeriodo(p,btn){
   leadsPeriodo=p;
   document.querySelectorAll('[onclick^="setLeadsPeriodo"]').forEach(b=>{
@@ -1532,6 +1651,7 @@ function renderContentReels(){
   document.getElementById('dc-reels-top').innerHTML=top30.length?top30.map((it,i)=>`<div class="top-card" style="gap:10px"><div class="tr-rank">${['🥇','🥈','🥉'][i]}</div><div class="tr-info"><div class="tr-name">${it.nombre||'—'}</div><div class="tr-meta">${fD(it.fecha)}</div></div><div class="tr-stat"><div class="tv">${Number(it.views||0).toLocaleString()}</div><div class="tl">views</div></div><div class="tr-stat"><div class="tv">${it.comentarios||0}</div><div class="tl">coms</div></div></div>`).join(''):'<div style="font-size:10px;color:var(--t3)">Sin reels en los últimos 30 días</div>';
   renderSectionTimeline('dc-timeline-reels',KPI.reels,'#C9A84C',chartReels,(c)=>{chartReels=c;});
   renderContentDNA('reels');
+  renderWinners('reels');
   filterContentReels();
 }
 function renderContentHist(){
@@ -1543,6 +1663,7 @@ function renderContentHist(){
   document.getElementById('dc-hist-top').innerHTML=top30h.length?top30h.map((it,i)=>`<div class="top-card" style="gap:10px"><div class="tr-rank">${['🥇','🥈','🥉'][i]}</div><div class="tr-info"><div class="tr-name">${it.idea||'—'}</div><div class="tr-meta">${fD(it.fecha)}</div></div><div class="tr-stat"><div class="tv">${Number(it.views||0).toLocaleString()}</div><div class="tl">views</div></div><div class="tr-stat"><div class="tv">${it.respuestas_cta||0}</div><div class="tl">resp.</div></div></div>`).join(''):'<div style="font-size:10px;color:var(--t3)">Sin historias en los últimos 30 días</div>';
   renderSectionTimeline('dc-timeline-hist',KPI.historias,'#a78bfa',chartHist,(c)=>{chartHist=c;});
   renderContentDNA('hist');
+  renderWinners('hist');
   filterContentHist();
 }
 function renderContentYT(){
@@ -1554,6 +1675,7 @@ function renderContentYT(){
   const top30y=sortD(y30.length?y30:all,'views').slice(0,3);
   document.getElementById('dc-yt-top').innerHTML=top30y.length?top30y.map((it,i)=>`<div class="top-card" style="gap:10px"><div class="tr-rank">${['🥇','🥈','🥉'][i]}</div><div class="tr-info"><div class="tr-name">${it.titulo||'—'}</div><div class="tr-meta">${fD(it.fecha)}</div></div><div class="tr-stat"><div class="tv">${Number(it.views||0).toLocaleString()}</div><div class="tl">views</div></div><div class="tr-stat"><div class="tv">${it.ctr||0}%</div><div class="tl">CTR</div></div><div class="tr-stat"><div class="tv">${it.retencion||0}%</div><div class="tl">ret.</div></div></div>`).join(''):'<div style="font-size:10px;color:var(--t3)">Sin videos en los últimos 30 días</div>';
   renderSectionTimeline('dc-timeline-yt',KPI.yt,'#f87171',chartYT,(c)=>{chartYT=c;});
+  renderWinners('yt');
   filterContentYT();
 }
 
