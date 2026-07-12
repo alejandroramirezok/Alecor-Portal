@@ -1664,7 +1664,7 @@ function showKpiSec(sec,el){
   if(el)el.classList.add('active');
   if(sec==='ops')renderOps();
   else if(sec==='content'){renderContentGeneral();}
-  else if(sec==='leads-m')renderTbl('leads','tbl-leads');
+  else if(sec==='leads-m')filterLeadsTable();
   else if(sec==='agendas-m')renderTbl('agendas','tbl-agendas');
   else if(sec==='ingresos-m')renderTbl('ingresos','tbl-ingresos');
   else if(sec==='gastos-m')renderTbl('gastos','tbl-gastos');
@@ -1887,6 +1887,8 @@ function setIdeasTab(tipo){
 
 function renderLeadsTbl(el,data){
   data=data||KPI.leads;
+  // Siempre ordenar por fecha más reciente primero
+  data=[...data].sort((a,b)=>{if(!a.fecha&&!b.fecha)return 0;if(!a.fecha)return 1;if(!b.fecha)return -1;return new Date(b.fecha)-new Date(a.fecha);});
   if(!data||!data.length){el.innerHTML=emptyEl('Sin leads aún');return;}
   el.innerHTML=`<table class="t"><thead><tr><th>Nombre</th><th>Instagram</th><th>Fecha</th><th>Estado</th><th>Fuente</th><th>Seguimientos</th><th></th></tr></thead><tbody>${data.map(row=>`<tr ondblclick="openEdit('leads','${row.id}')" style="cursor:pointer">
     <td>${row.nombre||'—'}</td><td>${row.ig||'—'}</td><td>${fD(row.fecha)}</td>
@@ -2173,7 +2175,7 @@ async function saveLead(){
   } else {
     showToast(id?'Lead actualizado':'Lead guardado');
   }
-  closeM('m-lead');await loadKPIData();renderTbl('leads','tbl-leads');
+  closeM('m-lead');await loadKPIData();filterLeadsTable();
   document.getElementById('agenda-prefill-notice')?.remove();
 }
 async function saveAgenda(){
