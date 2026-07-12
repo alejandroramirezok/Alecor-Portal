@@ -414,9 +414,7 @@ table.t tr:hover td{background:var(--d2)}
       <div class="ksi-item" onclick="showKpiSec('clientes-m',this)">⬡ Clientes</div>
       <div class="ksi-item" onclick="showKpiSec('wins-m',this)">⬡ Wins Clientes</div>
       <div class="ksi-section">Marketing</div>
-      <div class="ksi-item" onclick="showKpiSec('reels-m',this)">⬡ Reels</div>
-      <div class="ksi-item" onclick="showKpiSec('hist-m',this)">⬡ Historias</div>
-      <div class="ksi-item" onclick="showKpiSec('yt-m',this)">⬡ YouTube</div>
+      
       <div class="ksi-item" onclick="showKpiSec('ideas-m',this)">⬡ Banco de Ideas</div>
       <div class="ksi-item" onclick="showKpiSec('viral-m',this)">⬡ Calculadora</div>
       <div class="ksi-section">Config</div>
@@ -704,9 +702,7 @@ table.t tr:hover td{background:var(--d2)}
         </div>
         <div id="wins-list"></div>
       </div>
-      <div class="kpi-section" id="ksec-reels-m"><div class="tw"><div class="th2"><h3>Reels</h3><button class="ba" onclick="openMod('m-reel');resetMod('reel')">+ Nuevo Reel</button></div><div class="tbl-scroll"><div id="tbl-reels"></div></div></div></div>
-      <div class="kpi-section" id="ksec-hist-m"><div class="tw"><div class="th2"><h3>Historias</h3><button class="ba" onclick="openMod('m-hist');resetMod('hist')">+ Nueva Secuencia</button></div><div class="tbl-scroll"><div id="tbl-hist"></div></div></div></div>
-      <div class="kpi-section" id="ksec-yt-m"><div class="tw"><div class="th2"><h3>YouTube</h3><button class="ba" onclick="openMod('m-yt');resetMod('yt')">+ Nuevo Video</button></div><div class="tbl-scroll"><div id="tbl-yt"></div></div></div></div>
+      
       <div class="kpi-section" id="ksec-ideas-m">
         <div class="tw">
           <div class="th2"><h3>Banco de Ideas</h3><button class="ba" onclick="openIdeaModal()">+ Nueva Idea</button></div>
@@ -1279,21 +1275,26 @@ function renderContentListFiltered(elId,data,type){
     const score=isReel?Number(r.comentarios||0):isHist?Number(r.respuestas_cta||0):Number(r.ctr||0);
     const ventas=Number(r.ventas||0);const ret=Number(r.retencion||0);
     const sem=views>2000||score>10?'var(--ok)':views>500||score>3?'var(--wn)':'var(--er)';
-    return`<div class="top-card" ondblclick="openEdit('${type}','${r.id}')" style="flex-direction:column;align-items:flex-start;gap:6px;cursor:pointer;border-left:3px solid ${sem}">
+    const table=isReel?'reels':isHist?'historias':'yt';
+    return`<div class="top-card" style="flex-direction:column;align-items:flex-start;gap:6px;border-left:3px solid ${sem}">
       <div style="display:flex;align-items:flex-start;gap:10px;width:100%">
         <div style="width:38px;height:38px;border-radius:8px;background:${sem}22;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">${isReel?'🎬':isHist?'📱':'▶️'}</div>
-        <div style="flex:1">
+        <div style="flex:1;cursor:pointer" ondblclick="openEdit('${table}','${r.id}')">
           <div style="font-size:12px;font-weight:600;color:var(--tx);margin-bottom:3px">${r.nombre||r.idea||r.titulo||'—'}</div>
           <div style="font-size:10px;color:var(--t3)">${fD(r.fecha)}${r.estructura||r.formato?` · ${r.estructura||r.formato}`:''}</div>
           ${r.gancho?`<div style="font-size:10px;color:var(--t2);margin-top:3px;font-style:italic">"${r.gancho}"</div>`:''}
         </div>
-        <div style="display:flex;gap:10px;flex-shrink:0;text-align:right">
+        <div style="display:flex;gap:10px;flex-shrink:0;text-align:right;align-items:center">
           <div><div style="font-size:14px;font-weight:700;color:var(--tx)">${views>=1000?(views/1000).toFixed(1)+'K':views}</div><div style="font-size:9px;color:var(--t3)">views</div></div>
           ${isReel?`<div><div style="font-size:14px;font-weight:700;color:var(--t2)">${score}</div><div style="font-size:9px;color:var(--t3)">coms</div></div>`:''}
           ${isHist?`<div><div style="font-size:14px;font-weight:700;color:var(--t2)">${score}</div><div style="font-size:9px;color:var(--t3)">resp</div></div>`:''}
           ${!isReel&&!isHist?`<div><div style="font-size:14px;font-weight:700;color:var(--t2)">${r.ctr||0}%</div><div style="font-size:9px;color:var(--t3)">CTR</div></div>`:''}
           ${ventas>0?`<div><div style="font-size:14px;font-weight:700;color:var(--ok)">${ventas}</div><div style="font-size:9px;color:var(--t3)">ventas</div></div>`:''}
           ${ret>0?`<div><div style="font-size:14px;font-weight:700;color:var(--inf)">${ret}%</div><div style="font-size:9px;color:var(--t3)">ret.</div></div>`:''}
+          <div style="display:flex;flex-direction:column;gap:3px;margin-left:4px">
+            <button onclick="openEdit('${table}','${r.id}')" title="Editar" style="background:none;border:none;color:var(--t3);cursor:pointer;font-size:13px;padding:2px 4px;line-height:1" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--t3)'">✏️</button>
+            <button onclick="deleteContent('${table}','${r.id}')" title="Eliminar" style="background:none;border:none;color:rgba(226,75,74,.6);cursor:pointer;font-size:12px;padding:2px 4px;line-height:1" onmouseover="this.style.color='var(--er)'" onmouseout="this.style.color='rgba(226,75,74,.6)'">✕</button>
+          </div>
         </div>
       </div>
       ${(r.subdolor||r.lead_magnet)?`<div style="display:flex;gap:6px;flex-wrap:wrap">${r.subdolor?`<span style="font-size:9px;background:rgba(167,139,250,0.1);color:#a78bfa;padding:2px 7px;border-radius:4px">🎯 ${r.subdolor}</span>`:''}${r.lead_magnet?`<span style="font-size:9px;background:rgba(29,158,117,0.1);color:var(--ok);padding:2px 7px;border-radius:4px">🎁 ${r.lead_magnet}</span>`:''}</div>`:''}
@@ -2192,6 +2193,17 @@ async function saveGasto(){
   closeM('m-gasto');await loadKPIData();renderTbl('gastos','tbl-gastos');showToast(id?'Gasto actualizado':'Gasto guardado');
 }
 async function saveWin(){const o={user_id:portalClientId,cliente:document.getElementById('w-cl').value,fecha:document.getElementById('w-f').value||null,win:document.getElementById('w-t').value,grandeza:document.getElementById('w-g').value,usada_historias:document.getElementById('w-u').value};await sb.from('wins').insert(o);closeM('m-win');await loadKPIData();renderWins();showToast('Win guardada');}
+async function deleteContent(table,id){
+  if(!confirm('¿Eliminar este registro?'))return;
+  await sb.from(table).delete().eq('id',id);
+  await loadKPIData();
+  const tab=currentCtab;
+  if(tab==='reels')renderContentReels();
+  else if(tab==='hist')renderContentHist();
+  else if(tab==='yt')renderContentYT();
+  showToast('Eliminado');
+}
+
 async function saveReel(){
   const id=document.getElementById('reel-idx').value;
   const o={user_id:portalClientId,nombre:document.getElementById('r-n').value,estructura:document.getElementById('r-est').value,gancho:document.getElementById('r-gancho').value,formato:document.getElementById('r-fmt').value,fecha:document.getElementById('r-f').value||null,views:parseInt(document.getElementById('r-v').value)||0,comentarios:parseInt(document.getElementById('r-c').value)||0,seguidores_nuevos:parseInt(document.getElementById('r-s').value)||0,likes:parseInt(document.getElementById('r-l').value)||0,link:document.getElementById('r-link')?.value||''};
