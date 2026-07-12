@@ -895,10 +895,29 @@ table.t tr:hover td{background:var(--d2)}
 <div class="ov" id="m-win"><div class="modal"><div class="mh"><h3>Nueva Win</h3><button class="mc" onclick="closeM('m-win')">✕</button></div><div class="mb"><div class="fg"><div class="fr"><label>Cliente</label><input id="w-cl"></div><div class="fr"><label>Fecha</label><input type="date" id="w-f"></div></div><div class="fr"><label>Win / Resultado</label><textarea id="w-t" rows="3" style="resize:none"></textarea></div><div class="fg"><div class="fr"><label>Grandeza</label><select id="w-g"><option>Grande</option><option>Media</option><option>Pequeña</option></select></div><div class="fr"><label>¿Usada en historias?</label><select id="w-u"><option value="No">No</option><option value="Si">Sí</option></select></div></div><button class="bp" onclick="saveWin()">Guardar</button></div></div></div>
 
 <!-- REEL -->
-<div class="ov" id="m-reel"><div class="modal"><div class="mh"><h3 id="m-reel-t">Nuevo Reel</h3><button class="mc" onclick="closeM('m-reel')">✕</button></div><div class="mb"><input type="hidden" id="reel-idx"><div class="fr"><label>Link del video (opcional)</label><input id="r-link" placeholder="https://..." oninput="detectYTThumb(this.value)"></div><div id="r-thumb-preview" style="margin-bottom:8px"></div><div class="fg"><div class="fr"><label>Nombre</label><input id="r-n"></div><div class="fr"><label>Estructura</label><select id="r-est"><option>Respondiendo a comentario polémico</option><option>La regla de 3</option><option>Gancho controversial</option><option>La paradoja personal</option><option>El espejo</option><option>Video 100% viral</option><option>El roba audiencia</option><option>Vacío de información</option><option>How to template</option><option>El momento WTF</option><option>El desafío contracorriente</option><option>El efecto boomerang</option><option>Viaje del héroe</option><option>Caída doble</option><option>El efecto mariposa</option><option>La teoría del loco</option><option>Pitch de venta perfecto</option><option>Construcción de autoridad para venta</option><option>Testimonio corto + venta directa</option></select></div></div><div class="fr"><label>Gancho (frase de apertura)</label><input id="r-gancho" placeholder="Ej: El 90% de los emprendedores cometen este error..."></div><div class="fg"><div class="fr"><label>Formato visual</label><select id="r-fmt"><option>Hablando a cámara</option><option>POV (Point of View)</option><option>Entrevista</option><option>Vlog</option><option>Selfie (modo celular)</option><option>B-roll</option><option>Comparación A/B</option><option>Reaccionando</option><option>Respuesta a comentario</option><option>Pantalla dividida</option><option>Ranking (Top 3, Top 5...)</option></select></div><div class="fr"><label>Fecha</label><input type="date" id="r-f"></div></div><div class="fg"><div class="fr"><label>Views</label><input type="number" id="r-v" value="0"></div><div class="fr"><label>Comentarios</label><input type="number" id="r-c" value="0"></div></div><div class="fg"><div class="fr"><label>Seguidores Nuevos</label><input type="number" id="r-s" value="0"></div><div class="fr"><label>Likes</label><input type="number" id="r-l" value="0"></div></div><button class="bp" onclick="saveReel()">Guardar</button></div></div></div>
+<div class="ov" id="m-reel"><div class="modal"><div class="mh"><h3 id="m-reel-t">Nuevo Reel</h3><button class="mc" onclick="closeM('m-reel')">✕</button></div><div class="mb"><input type="hidden" id="reel-idx">
+  <div class="fg"><div class="fr"><label>Nombre / Título</label><input id="r-n" placeholder="Ej: El error que nadie te dice..."></div><div class="fr"><label>Fecha</label><input type="date" id="r-f"></div></div>
+  <div class="fr"><label>Gancho (frase de apertura)</label><input id="r-gancho" placeholder="Ej: El 90% de los emprendedores cometen este error..."></div>
+  <div class="fg"><div class="fr"><label>Estructura</label><select id="r-est"><option>Respondiendo a comentario polémico</option><option>La regla de 3</option><option>Gancho controversial</option><option>La paradoja personal</option><option>El espejo</option><option>Video 100% viral</option><option>El roba audiencia</option><option>Vacío de información</option><option>How to template</option><option>El momento WTF</option><option>El desafío contracorriente</option><option>El efecto boomerang</option><option>Viaje del héroe</option><option>Caída doble</option><option>El efecto mariposa</option><option>La teoría del loco</option><option>Pitch de venta perfecto</option><option>Construcción de autoridad para venta</option><option>Testimonio corto + venta directa</option></select></div>
+  <div class="fr"><label>Formato visual</label><select id="r-fmt"><option>Hablando a cámara</option><option>POV (Point of View)</option><option>Entrevista</option><option>Vlog</option><option>Selfie (modo celular)</option><option>B-roll</option><option>Comparación A/B</option><option>Reaccionando</option><option>Respuesta a comentario</option><option>Pantalla dividida</option><option>Ranking (Top 3, Top 5...)</option></select></div></div>
+  <div class="fr"><label>SubDolor / SubDeseo tocado</label><input id="r-subdolor" placeholder="Ej: Miedo a no poder pagar las cuentas..."></div>
+  <div class="fr"><label>Lead Magnet utilizado</label><input id="r-lm" placeholder="Ej: PDF gratuito, clase, checklist..."></div>
+  <div class="fg"><div class="fr"><label>Views</label><input type="number" id="r-v" value="0"></div><div class="fr"><label>Comentarios</label><input type="number" id="r-c" value="0"></div></div>
+  <div class="fg"><div class="fr"><label>% Retención</label><input type="number" id="r-ret" value="0" placeholder="0-100"></div><div class="fr"><label>Ventas traídas</label><input type="number" id="r-ventas" value="0"></div></div>
+  <div class="fg"><div class="fr"><label>Seguidores nuevos</label><input type="number" id="r-s" value="0"></div><div class="fr"><label>Link del video (opcional)</label><input id="r-link" placeholder="https://..."></div></div>
+  <button class="bp" onclick="saveReel()">Guardar</button>
+</div></div></div>
 
 <!-- HISTORIA -->
-<div class="ov" id="m-hist"><div class="modal"><div class="mh"><h3 id="m-hist-t">Nueva Secuencia</h3><button class="mc" onclick="closeM('m-hist')">✕</button></div><div class="mb"><input type="hidden" id="hist-idx"><div class="fg"><div class="fr"><label>Idea de secuencia</label><input id="h-idea"></div><div class="fr"><label>Formato</label><select id="h-fmt"><option>POV / Reflexión</option><option>Caja de Preguntas</option><option>Todos hacen esto</option><option>Lo que decían</option><option>Lo que dejo fuera es tan importante</option><option>Cómo piensa tu mente</option><option>Mini-Reel</option><option>Directo + Final</option><option>Mi punto de quiebre</option><option>Fórmula AIDA</option><option>Problema-Solución</option><option>Caso de éxito</option><option>3 pasos</option><option>P.A.S</option><option>P.S.A</option><option>Pastor</option><option>Doble CTA</option><option>Casos de éxito + entregable</option><option>Pregunta trampa</option><option>Explicar qué haces</option><option>Casos de éxitos masivos</option></select></div></div><div class="fg"><div class="fr"><label>Fecha</label><input type="date" id="h-f"></div><div class="fr"><label>Views última historia</label><input type="number" id="h-v" value="0" oninput="calcTasa()"></div></div><div class="fg"><div class="fr"><label>Respuestas al CTA</label><input type="number" id="h-cta" value="0" oninput="calcTasa()"></div><div class="fr"><label>Tasa interacción (auto)</label><input id="h-tasa" readonly style="background:var(--d4);cursor:default"></div></div><button class="bp" onclick="saveHist()">Guardar</button></div></div></div>
+<div class="ov" id="m-hist"><div class="modal"><div class="mh"><h3 id="m-hist-t">Nueva Historia</h3><button class="mc" onclick="closeM('m-hist')">✕</button></div><div class="mb"><input type="hidden" id="hist-idx">
+  <div class="fg"><div class="fr"><label>Idea / Título de la secuencia</label><input id="h-idea" placeholder="Ej: Historia de autoridad sobre..."></div><div class="fr"><label>Fecha</label><input type="date" id="h-f"></div></div>
+  <div class="fr"><label>Estructura</label><select id="h-fmt"><option>POV / Reflexión</option><option>Caja de Preguntas</option><option>Todos hacen esto</option><option>Lo que decían</option><option>Lo que dejo fuera es tan importante</option><option>Cómo piensa tu mente</option><option>Mini-Reel</option><option>Directo + Final</option><option>Mi punto de quiebre</option><option>Fórmula AIDA</option><option>Problema-Solución</option><option>Caso de éxito</option><option>3 pasos</option><option>P.A.S</option><option>P.S.A</option><option>Pastor</option><option>Doble CTA</option><option>Casos de éxito + entregable</option><option>Pregunta trampa</option><option>Explicar qué haces</option><option>Casos de éxitos masivos</option></select></div>
+  <div class="fr"><label>SubDolor / SubDeseo tocado</label><input id="h-subdolor" placeholder="Ej: Miedo a no generar consistencia..."></div>
+  <div class="fr"><label>Lead Magnet / Recurso gratis utilizado</label><input id="h-lm" placeholder="Ej: Checklist gratuito, clase, PDF..."></div>
+  <div class="fg"><div class="fr"><label>Views</label><input type="number" id="h-v" value="0" oninput="calcTasa()"></div><div class="fr"><label>Respuestas al CTA</label><input type="number" id="h-cta" value="0" oninput="calcTasa()"></div></div>
+  <div class="fg"><div class="fr"><label>Ventas traídas</label><input type="number" id="h-ventas" value="0"></div><div class="fr"><label>Tasa interacción (auto)</label><input id="h-tasa" readonly style="background:var(--d4);cursor:default"></div></div>
+  <button class="bp" onclick="saveHist()">Guardar</button>
+</div></div></div>
 
 <!-- YOUTUBE -->
 <div class="ov" id="m-yt"><div class="modal"><div class="mh"><h3 id="m-yt-t">Nuevo Video YouTube</h3><button class="mc" onclick="closeM('m-yt')">✕</button></div><div class="mb"><input type="hidden" id="yt-idx"><div class="fg"><div class="fr"><label>Título</label><input id="y-t"></div><div class="fr"><label>Fecha</label><input type="date" id="y-f"></div></div><div class="fg"><div class="fr"><label>Duración (min)</label><input type="number" id="y-d" step="0.5"></div><div class="fr"><label>Views</label><input type="number" id="y-v" value="0"></div></div><div class="fg"><div class="fr"><label>% CTR</label><input type="number" id="y-ctr" step="0.1"></div><div class="fr"><label>% Retención</label><input type="number" id="y-ret" step="0.1"></div></div><button class="bp" onclick="saveYT()">Guardar</button></div></div></div>
@@ -1523,6 +1542,8 @@ async function adminOpenKPI(clientId){
   showScreen('s-kpi');
   document.getElementById('msel').value=now.getMonth().toString();
   loadSeguidores();
+  // Reset content counters to avoid showing previous user's data
+  ['dc-leads-total','dc-leads-reels','dc-leads-hist','dc-ventas-total'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='0';});
   renderOps();renderContentReels();renderViralidad();
 }
 
@@ -1994,8 +2015,36 @@ function fillAgendaEdit(r){document.getElementById('ag-idx').value=r.id;document
 function fillIngresoEdit(r){populateIngDD();document.getElementById('ing-idx').value=r.id;setTipo(r.tipo||'nuevo');document.getElementById('in-n').value=r.nombre||'';document.getElementById('in-f').value=r.fecha||'';document.getElementById('in-m').value=r.monto||0;document.getElementById('in-prog').value=r.programa||'';document.getElementById('in-pas').value=r.pasarela||'';document.getElementById('m-ing-t').textContent='Editar Ingreso';}
 function fillGastoEdit(r){document.getElementById('gas-idx').value=r.id;document.getElementById('g-d').value=r.detalle||'';document.getElementById('g-f').value=r.fecha||'';document.getElementById('g-m').value=r.monto||0;document.getElementById('g-cat').value=r.categoria||'Herramientas';document.getElementById('g-desc').value=r.descripcion||'';document.getElementById('m-gas-t').textContent='Editar Gasto';}
 function fillClienteEdit(r){populateCProg();document.getElementById('cl-idx').value=r.id;document.getElementById('cl-n').value=r.nombre||'';document.getElementById('cl-ig').value=r.ig||'';document.getElementById('cl-tel').value=r.telefono||'';document.getElementById('cl-ing').value=r.fecha_ingreso||'';document.getElementById('cl-activo').value=r.activo||'Si';document.getElementById('m-cl-t').textContent='Editar Cliente';}
-function fillReelEdit(r){document.getElementById('reel-idx').value=r.id;document.getElementById('r-n').value=r.nombre||'';document.getElementById('r-est').value=r.estructura||'';document.getElementById('r-gancho').value=r.gancho||'';document.getElementById('r-fmt').value=r.formato||'';document.getElementById('r-f').value=r.fecha||'';document.getElementById('r-v').value=r.views||0;document.getElementById('r-c').value=r.comentarios||0;document.getElementById('r-s').value=r.seguidores_nuevos||0;document.getElementById('r-l').value=r.likes||0;if(document.getElementById('r-link'))document.getElementById('r-link').value=r.link||'';document.getElementById('m-reel-t').textContent='Editar Reel';}
-function fillHistEdit(r){document.getElementById('hist-idx').value=r.id;document.getElementById('h-idea').value=r.idea||'';document.getElementById('h-fmt').value=r.formato||'';document.getElementById('h-f').value=r.fecha||'';document.getElementById('h-v').value=r.views||0;document.getElementById('h-cta').value=r.respuestas_cta||0;document.getElementById('h-tasa').value=r.tasa||'';document.getElementById('m-hist-t').textContent='Editar Historia';}
+function fillReelEdit(r){
+  document.getElementById('reel-idx').value=r.id;
+  document.getElementById('r-n').value=r.nombre||'';
+  document.getElementById('r-est').value=r.estructura||'';
+  document.getElementById('r-gancho').value=r.gancho||'';
+  document.getElementById('r-fmt').value=r.formato||'';
+  document.getElementById('r-f').value=r.fecha||'';
+  document.getElementById('r-v').value=r.views||0;
+  document.getElementById('r-c').value=r.comentarios||0;
+  document.getElementById('r-s').value=r.seguidores_nuevos||0;
+  document.getElementById('r-ret').value=r.retencion||0;
+  document.getElementById('r-ventas').value=r.ventas||0;
+  document.getElementById('r-subdolor').value=r.subdolor||'';
+  document.getElementById('r-lm').value=r.lead_magnet||'';
+  document.getElementById('r-link').value=r.link||'';
+  document.getElementById('m-reel-t').textContent='Editar Reel';
+}
+function fillHistEdit(r){
+  document.getElementById('hist-idx').value=r.id;
+  document.getElementById('h-idea').value=r.idea||'';
+  document.getElementById('h-fmt').value=r.formato||'';
+  document.getElementById('h-f').value=r.fecha||'';
+  document.getElementById('h-v').value=r.views||0;
+  document.getElementById('h-cta').value=r.respuestas_cta||0;
+  document.getElementById('h-tasa').value=r.tasa||'';
+  document.getElementById('h-ventas').value=r.ventas||0;
+  document.getElementById('h-subdolor').value=r.subdolor||'';
+  document.getElementById('h-lm').value=r.lead_magnet||'';
+  document.getElementById('m-hist-t').textContent='Editar Historia';
+}
 function fillYTEdit(r){document.getElementById('yt-idx').value=r.id;document.getElementById('y-t').value=r.titulo||'';document.getElementById('y-f').value=r.fecha||'';document.getElementById('y-d').value=r.duracion||0;document.getElementById('y-v').value=r.views||0;document.getElementById('y-ctr').value=r.ctr||0;document.getElementById('y-ret').value=r.retencion||0;document.getElementById('m-yt-t').textContent='Editar Video';}
 
 function renderWins(){const el=document.getElementById('wins-list');if(!KPI.wins.length){el.innerHTML=emptyEl('Sin wins');return}el.innerHTML=KPI.wins.map(w=>`<div class="wc"><div style="display:flex;gap:5px;margin-bottom:5px"><span class="st sy">${w.grandeza}</span>${w.usada_historias==='Si'?'<span class="st sg">En historias</span>':''}</div><div style="font-size:12px;color:var(--tx);margin:4px 0">${w.win}</div><div style="font-size:9px;color:var(--t3)">${w.cliente} · ${fD(w.fecha)}</div></div>`).join('');}
@@ -2208,24 +2257,48 @@ async function deleteContent(table,id){
 
 async function saveReel(){
   const id=document.getElementById('reel-idx').value;
-  const o={user_id:portalClientId,nombre:document.getElementById('r-n').value,estructura:document.getElementById('r-est').value,gancho:document.getElementById('r-gancho').value,formato:document.getElementById('r-fmt').value,fecha:document.getElementById('r-f').value||null,views:parseInt(document.getElementById('r-v').value)||0,comentarios:parseInt(document.getElementById('r-c').value)||0,seguidores_nuevos:parseInt(document.getElementById('r-s').value)||0,likes:parseInt(document.getElementById('r-l').value)||0,link:document.getElementById('r-link')?.value||''};
+  const o={user_id:portalClientId,
+    nombre:document.getElementById('r-n').value,
+    estructura:document.getElementById('r-est').value,
+    gancho:document.getElementById('r-gancho').value,
+    formato:document.getElementById('r-fmt').value,
+    fecha:document.getElementById('r-f').value||null,
+    views:parseInt(document.getElementById('r-v').value)||0,
+    comentarios:parseInt(document.getElementById('r-c').value)||0,
+    seguidores_nuevos:parseInt(document.getElementById('r-s').value)||0,
+    retencion:parseInt(document.getElementById('r-ret').value)||0,
+    ventas:parseInt(document.getElementById('r-ventas').value)||0,
+    subdolor:document.getElementById('r-subdolor').value||'',
+    lead_magnet:document.getElementById('r-lm').value||'',
+    link:document.getElementById('r-link').value||''
+  };
   if(id)await sb.from('reels').update(o).eq('id',id);
   else await sb.from('reels').insert(o);
-  closeM('m-reel');await loadKPIData();renderTbl('reels','tbl-reels');showToast(id?'Reel actualizado':'Reel guardado');
+  closeM('m-reel');await loadKPIData();renderContentReels();showToast(id?'Reel actualizado':'Reel guardado');
 }
 async function saveHist(){
   const id=document.getElementById('hist-idx').value;
-  const o={user_id:portalClientId,idea:document.getElementById('h-idea').value,formato:document.getElementById('h-fmt').value,fecha:document.getElementById('h-f').value||null,views:parseInt(document.getElementById('h-v').value)||0,respuestas_cta:parseInt(document.getElementById('h-cta').value)||0,tasa:document.getElementById('h-tasa').value};
+  const o={user_id:portalClientId,
+    idea:document.getElementById('h-idea').value,
+    formato:document.getElementById('h-fmt').value,
+    fecha:document.getElementById('h-f').value||null,
+    views:parseInt(document.getElementById('h-v').value)||0,
+    respuestas_cta:parseInt(document.getElementById('h-cta').value)||0,
+    tasa:document.getElementById('h-tasa').value,
+    ventas:parseInt(document.getElementById('h-ventas').value)||0,
+    subdolor:document.getElementById('h-subdolor').value||'',
+    lead_magnet:document.getElementById('h-lm').value||''
+  };
   if(id)await sb.from('historias').update(o).eq('id',id);
   else await sb.from('historias').insert(o);
-  closeM('m-hist');await loadKPIData();renderTbl('historias','tbl-hist');showToast(id?'Historia actualizada':'Historia guardada');
+  closeM('m-hist');await loadKPIData();renderContentHist();showToast(id?'Historia actualizada':'Historia guardada');
 }
 async function saveYT(){
   const id=document.getElementById('yt-idx').value;
-  const o={user_id:portalClientId,titulo:document.getElementById('y-t').value,fecha:document.getElementById('y-f').value||null,duracion:Number(document.getElementById('y-d').value)||0,views:parseInt(document.getElementById('y-v').value)||0,ctr:Number(document.getElementById('y-ctr').value)||0,retencion:Number(document.getElementById('y-ret').value)||0};
+  const o={user_id:portalClientId,titulo:document.getElementById('y-t').value,fecha:document.getElementById('y-f').value||null,views:parseInt(document.getElementById('y-v').value)||0,ctr:Number(document.getElementById('y-ctr').value)||0,retencion:Number(document.getElementById('y-ret').value)||0};
   if(id)await sb.from('yt_videos').update(o).eq('id',id);
   else await sb.from('yt_videos').insert(o);
-  closeM('m-yt');await loadKPIData();renderTbl('yt','tbl-yt');showToast(id?'Video actualizado':'Video guardado');
+  closeM('m-yt');await loadKPIData();renderContentYT();showToast(id?'Video actualizado':'Video guardado');
 }
 
 function renderContentList(elId,data,type){
