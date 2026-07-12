@@ -477,12 +477,6 @@ table.t tr:hover td{background:var(--d2)}
           </div>
         </div>
 
-        <!-- CONTENT DNA (siempre visible, cambia por pestaña) -->
-        <div style="background:var(--d2);border:1px solid var(--br);border-radius:12px;padding:14px 16px;margin-bottom:10px">
-          <div style="font-size:11px;font-weight:600;color:var(--tx);margin-bottom:12px">🧬 Content DNA — Distribución de estructuras</div>
-          <div id="dc-dna" style="display:flex;gap:6px;flex-wrap:wrap"></div>
-        </div>
-
         <!-- GENERAL PANEL -->
         <div class="ctab-panel active" id="ctab-general">
           <div id="dc-reels-kpis-gen"></div>
@@ -492,6 +486,12 @@ table.t tr:hover td{background:var(--d2)}
           <div style="background:var(--d2);border:1px solid var(--br);border-radius:12px;padding:14px 16px;margin-top:14px">
             <div style="font-size:11px;font-weight:600;color:var(--tx);margin-bottom:12px">⚡ Content Pipeline</div>
             <div id="dc-funnel" style="display:flex;gap:0;align-items:stretch"></div>
+          </div>
+          <!-- FATIGUE METER -->
+          <div style="background:var(--d2);border:1px solid var(--br);border-radius:12px;padding:14px 16px;margin-top:14px">
+            <div style="font-size:11px;font-weight:600;color:var(--tx);margin-bottom:4px">🔥 Fatigue Meter</div>
+            <div style="font-size:10px;color:var(--t3);margin-bottom:12px">Detecta si estás repitiendo demasiado el mismo patrón en tus últimos 10 reels</div>
+            <div id="dc-fatigue"></div>
           </div>
         </div>
 
@@ -517,6 +517,30 @@ table.t tr:hover td{background:var(--d2)}
               </div>
             </div>
             <div id="dc-reels-winners"></div>
+          </div>
+          <!-- SCATTER PLOT: Retención vs Views -->
+          <div style="background:var(--d2);border:1px solid var(--br);border-radius:12px;padding:14px 16px;margin-bottom:14px">
+            <div style="font-size:11px;font-weight:600;color:var(--tx);margin-bottom:4px">🎯 Scatter Plot — Retención vs Views</div>
+            <div style="font-size:10px;color:var(--t3);margin-bottom:10px">Cada punto es un reel. Los cuadrantes te dicen qué replicar y qué eliminar.</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px;font-size:9px;text-align:center">
+              <div style="padding:4px 8px;background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.2);border-radius:6px;color:#f87171">Muchos views / Poca ret. → Buen hook, mal contenido</div>
+              <div style="padding:4px 8px;background:rgba(52,211,153,0.08);border:1px solid rgba(52,211,153,0.2);border-radius:6px;color:#34d399">Muchos views / Alta ret. → ⭐ REPLICAR</div>
+              <div style="padding:4px 8px;background:rgba(251,146,60,0.08);border:1px solid rgba(251,146,60,0.2);border-radius:6px;color:#fb923c">Pocos views / Alta ret. → Problema distribución</div>
+              <div style="padding:4px 8px;background:rgba(148,163,184,0.08);border:1px solid rgba(148,163,184,0.2);border-radius:6px;color:#94a3b8">Pocos views / Poca ret. → ❌ Eliminar patrón</div>
+            </div>
+            <div style="position:relative;height:220px"><canvas id="dc-scatter-reels"></canvas></div>
+          </div>
+          <!-- HOOK LEADERBOARD -->
+          <div style="background:var(--d2);border:1px solid var(--br);border-radius:12px;padding:14px 16px;margin-bottom:14px">
+            <div style="font-size:11px;font-weight:600;color:var(--tx);margin-bottom:4px">🎣 Hook Leaderboard</div>
+            <div style="font-size:10px;color:var(--t3);margin-bottom:10px">Ganchos ordenados por views promedio generado</div>
+            <div id="dc-hook-leaderboard"></div>
+          </div>
+          <!-- OPPORTUNITY MATRIX -->
+          <div style="background:var(--d2);border:1px solid var(--br);border-radius:12px;padding:14px 16px;margin-bottom:14px">
+            <div style="font-size:11px;font-weight:600;color:var(--tx);margin-bottom:4px">💎 Opportunity Matrix — Estructuras</div>
+            <div style="font-size:10px;color:var(--t3);margin-bottom:10px">Frecuencia de uso vs performance promedio. Cuadrante superior izquierdo = oportunidad.</div>
+            <div style="position:relative;height:220px"><canvas id="dc-opp-matrix"></canvas></div>
           </div>
           <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;align-items:center">
             <div style="display:flex;align-items:center;gap:6px;background:var(--d3);border:1px solid var(--br);border-radius:8px;padding:6px 10px;flex:1;min-width:150px"><span style="color:var(--t3);font-size:12px">🔍</span><input id="reel-search" oninput="filterContentReels()" placeholder="Buscar reel..." style="background:none;border:none;outline:none;color:var(--tx);font-size:11px;font-family:var(--font);width:100%"></div>
@@ -551,6 +575,14 @@ table.t tr:hover td{background:var(--d2)}
             </div>
             <div id="dc-hist-winners"></div>
           </div>
+          <!-- DONUT ESTRUCTURAS HISTORIAS -->
+          <div style="background:var(--d2);border:1px solid var(--br);border-radius:12px;padding:14px 16px;margin-bottom:14px;display:flex;gap:16px;align-items:center;flex-wrap:wrap">
+            <div style="flex:0 0 160px;position:relative;height:160px"><canvas id="dc-donut-hist"></canvas></div>
+            <div style="flex:1;min-width:160px">
+              <div style="font-size:11px;font-weight:600;color:#a78bfa;margin-bottom:8px">📊 Distribución de estructuras</div>
+              <div id="dc-donut-hist-legend" style="display:flex;flex-direction:column;gap:5px"></div>
+            </div>
+          </div>
           <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;align-items:center">
             <div style="display:flex;align-items:center;gap:6px;background:var(--d3);border:1px solid var(--br);border-radius:8px;padding:6px 10px;flex:1;min-width:150px"><span style="color:var(--t3);font-size:12px">🔍</span><input id="hist-search" oninput="filterContentHist()" placeholder="Buscar historia..." style="background:none;border:none;outline:none;color:var(--tx);font-size:11px;font-family:var(--font);width:100%"></div>
             <select id="hist-filter-fmt" onchange="filterContentHist()" style="background:var(--d3);border:1px solid var(--br);border-radius:8px;padding:6px 10px;color:var(--t2);font-size:11px;font-family:var(--font);outline:none"><option value="">Todas las estructuras</option><option>POV / Reflexión</option><option>Caja de Preguntas</option><option>Todos hacen esto</option><option>Mini-Reel</option><option>Fórmula AIDA</option><option>Problema-Solución</option><option>Caso de éxito</option><option>P.A.S</option><option>P.S.A</option><option>Pastor</option><option>Doble CTA</option><option>Pregunta trampa</option></select>
@@ -583,6 +615,12 @@ table.t tr:hover td{background:var(--d2)}
               </div>
             </div>
             <div id="dc-yt-winners"></div>
+          </div>
+          <!-- SCATTER PLOT YT: CTR vs Retención -->
+          <div style="background:var(--d2);border:1px solid var(--br);border-radius:12px;padding:14px 16px;margin-bottom:14px">
+            <div style="font-size:11px;font-weight:600;color:var(--tx);margin-bottom:4px">🎯 Scatter Plot — CTR vs Retención</div>
+            <div style="font-size:10px;color:var(--t3);margin-bottom:10px">Alto CTR + Alta retención = video perfecto. Bajo en ambos = eliminar patrón.</div>
+            <div style="position:relative;height:220px"><canvas id="dc-scatter-yt"></canvas></div>
           </div>
           <div style="display:flex;gap:6px;margin-bottom:10px;align-items:center">
             <div style="display:flex;align-items:center;gap:6px;background:var(--d3);border:1px solid var(--br);border-radius:8px;padding:6px 10px;flex:1"><span style="color:var(--t3);font-size:12px">🔍</span><input id="yt-search" oninput="filterContentYT()" placeholder="Buscar video..." style="background:none;border:none;outline:none;color:var(--tx);font-size:11px;font-family:var(--font);width:100%"></div>
@@ -1060,7 +1098,120 @@ function renderFunnel(){
 }
 
 // Timeline por sección (solo su tipo de contenido)
-let chartReels=null,chartHist=null,chartYT=null;
+let chartReels=null,chartHist=null,chartYT=null,chartScatterReels=null,chartOppMatrix=null,chartDonutHist=null,chartScatterYT=null;
+
+function renderFatigueMeter(){
+  const el=document.getElementById('dc-fatigue');if(!el)return;
+  const last10=KPI.reels.slice().sort((a,b)=>new Date(b.fecha||0)-new Date(a.fecha||0)).slice(0,10);
+  if(last10.length<3){el.innerHTML='<div style="font-size:11px;color:var(--t3)">Necesitás al menos 3 reels para calcular fatiga</div>';return;}
+  // Count repetitions
+  const hooks={},structs={};
+  last10.forEach(r=>{if(r.gancho)hooks[r.gancho]=(hooks[r.gancho]||0)+1;if(r.estructura)structs[r.estructura]=(structs[r.estructura]||0)+1;});
+  const maxHook=Math.max(...Object.values(hooks),0);
+  const maxStruct=Math.max(...Object.values(structs),0);
+  const hookFatigue=Math.round((maxHook/last10.length)*100);
+  const structFatigue=Math.round((maxStruct/last10.length)*100);
+  const overall=Math.round((hookFatigue+structFatigue)/2);
+  const color=overall>=70?'var(--er)':overall>=40?'var(--wn)':'var(--ok)';
+  const msg=overall>=70?'⚠️ Estás repitiendo demasiado el mismo patrón':overall>=40?'👀 Algo de repetición — considera variar':'✅ Buena variedad de contenido';
+  el.innerHTML=`<div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap">
+    <div style="text-align:center;flex-shrink:0">
+      <div style="position:relative;width:90px;height:90px;margin:0 auto">
+        <svg viewBox="0 0 36 36" style="width:90px;height:90px;transform:rotate(-90deg)">
+          <circle cx="18" cy="18" r="15.9" fill="none" stroke="var(--d3)" stroke-width="3.5"/>
+          <circle cx="18" cy="18" r="15.9" fill="none" stroke="${color}" stroke-width="3.5" stroke-dasharray="${overall} ${100-overall}" stroke-linecap="round"/>
+        </svg>
+        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center">
+          <div style="font-size:18px;font-weight:800;color:${color}">${overall}%</div>
+        </div>
+      </div>
+      <div style="font-size:9px;color:var(--t3);margin-top:4px">Fatiga</div>
+    </div>
+    <div style="flex:1">
+      <div style="font-size:12px;color:${color};font-weight:600;margin-bottom:8px">${msg}</div>
+      <div style="margin-bottom:6px">
+        <div style="font-size:10px;color:var(--t3);margin-bottom:3px">Repetición de ganchos</div>
+        <div style="height:6px;background:var(--d3);border-radius:3px"><div style="height:6px;background:${color};border-radius:3px;width:${hookFatigue}%"></div></div>
+        <div style="font-size:9px;color:var(--t3);margin-top:2px">${hookFatigue}% — ${Object.entries(hooks).sort((a,b)=>b[1]-a[1])[0]?.[0]||'—'}</div>
+      </div>
+      <div>
+        <div style="font-size:10px;color:var(--t3);margin-bottom:3px">Repetición de estructuras</div>
+        <div style="height:6px;background:var(--d3);border-radius:3px"><div style="height:6px;background:${color};border-radius:3px;width:${structFatigue}%"></div></div>
+        <div style="font-size:9px;color:var(--t3);margin-top:2px">${structFatigue}% — ${Object.entries(structs).sort((a,b)=>b[1]-a[1])[0]?.[0]||'—'}</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderScatterReels(){
+  const canvas=document.getElementById('dc-scatter-reels');if(!canvas)return;
+  const data=KPI.reels.filter(r=>r.retencion>0&&r.views>0);
+  if(chartScatterReels)chartScatterReels.destroy();
+  if(!data.length){canvas.parentElement.innerHTML='<div style="font-size:11px;color:var(--t3);text-align:center;padding:20px">Sin datos suficientes. Asegurate de registrar retención y views en tus reels.</div>';return;}
+  const avgV=data.reduce((s,r)=>s+Number(r.views),0)/data.length;
+  const avgR=data.reduce((s,r)=>s+Number(r.retencion),0)/data.length;
+  const points=data.map(r=>({x:Number(r.retencion),y:Number(r.views),label:r.nombre||'—',estructura:r.estructura||''}));
+  chartScatterReels=new Chart(canvas,{type:'scatter',data:{datasets:[{data:points,backgroundColor:points.map(p=>p.x>=avgR&&p.y>=avgV?'rgba(52,211,153,0.7)':p.x<avgR&&p.y>=avgV?'rgba(248,113,113,0.7)':p.x>=avgR&&p.y<avgV?'rgba(251,146,60,0.7)':'rgba(148,163,184,0.5)'),pointRadius:7,pointHoverRadius:9}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>[`📹 ${ctx.raw.label}`,`Retención: ${ctx.raw.x}%`,`Views: ${Number(ctx.raw.y).toLocaleString()}`,`Estructura: ${ctx.raw.estructura}`]}}},scales:{x:{title:{display:true,text:'Retención (%)',color:'#666',font:{size:10}},ticks:{color:'#666',font:{size:9}},grid:{color:'rgba(128,128,128,0.06)'}},y:{title:{display:true,text:'Views',color:'#666',font:{size:10}},ticks:{color:'#666',font:{size:9},callback:v=>v>=1000?Math.round(v/1000)+'K':v},grid:{color:'rgba(128,128,128,0.06)'}}}}});
+  // Draw quadrant lines
+}
+
+function renderHookLeaderboard(){
+  const el=document.getElementById('dc-hook-leaderboard');if(!el)return;
+  const hooks={};
+  KPI.reels.forEach(r=>{if(r.gancho&&r.gancho.trim()){if(!hooks[r.gancho])hooks[r.gancho]={total:0,count:0};hooks[r.gancho].total+=Number(r.views||0);hooks[r.gancho].count++;}});
+  const sorted=Object.entries(hooks).map(([k,v])=>({hook:k,avg:Math.round(v.total/v.count),count:v.count})).sort((a,b)=>b.avg-a.avg).slice(0,8);
+  if(!sorted.length){el.innerHTML='<div style="font-size:11px;color:var(--t3)">Sin ganchos registrados aún</div>';return;}
+  const max=sorted[0].avg;
+  el.innerHTML=sorted.map((h,i)=>{
+    const pct=Math.round(h.avg/max*100);
+    const color=i===0?'var(--gold)':i<=2?'#a78bfa':'var(--t2)';
+    return`<div style="margin-bottom:8px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:3px">
+        <span style="font-size:11px;color:var(--tx);font-weight:${i===0?'600':'400'}">${i===0?'🥇 ':i===1?'🥈 ':i===2?'🥉 ':''}"${h.hook}"</span>
+        <span style="font-size:10px;color:${color};font-weight:600">${h.avg>=1000?(h.avg/1000).toFixed(1)+'K':h.avg} views prom.</span>
+      </div>
+      <div style="height:5px;background:var(--d3);border-radius:3px"><div style="height:5px;background:${color};border-radius:3px;width:${pct}%;transition:width .4s"></div></div>
+      <div style="font-size:9px;color:var(--t3);margin-top:1px">${h.count} reel${h.count>1?'s':''}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderOpportunityMatrix(){
+  const canvas=document.getElementById('dc-opp-matrix');if(!canvas)return;
+  const structs={};
+  KPI.reels.forEach(r=>{if(r.estructura){if(!structs[r.estructura])structs[r.estructura]={total:0,count:0};structs[r.estructura].total+=Number(r.views||0);structs[r.estructura].count++;}});
+  if(chartOppMatrix)chartOppMatrix.destroy();
+  const points=Object.entries(structs).map(([k,v])=>({x:v.count,y:Math.round(v.total/v.count),label:k}));
+  if(!points.length){canvas.parentElement.innerHTML='<div style="font-size:11px;color:var(--t3);text-align:center;padding:20px">Sin datos suficientes</div>';return;}
+  const avgX=points.reduce((s,p)=>s+p.x,0)/points.length;
+  const avgY=points.reduce((s,p)=>s+p.y,0)/points.length;
+  chartOppMatrix=new Chart(canvas,{type:'scatter',data:{datasets:[{data:points,backgroundColor:points.map(p=>p.x<avgX&&p.y>=avgY?'rgba(201,168,76,0.8)':p.x>=avgX&&p.y>=avgY?'rgba(52,211,153,0.7)':p.x>=avgX&&p.y<avgY?'rgba(248,113,113,0.7)':'rgba(148,163,184,0.5)'),pointRadius:8,pointHoverRadius:10}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>{const p=ctx.raw;const q=p.x<avgX&&p.y>=avgY?'💎 OPORTUNIDAD':p.x>=avgX&&p.y>=avgY?'✅ Mantener':p.x>=avgX&&p.y<avgY?'❌ Eliminar':'⚪ Sin prioridad';return[p.label,`Frecuencia: ${p.x}x`,`Views prom: ${Number(p.y).toLocaleString()}`,q]}}}},scales:{x:{title:{display:true,text:'Frecuencia de uso',color:'#666',font:{size:10}},ticks:{color:'#666',font:{size:9},stepSize:1},grid:{color:'rgba(128,128,128,0.06)'}},y:{title:{display:true,text:'Views promedio',color:'#666',font:{size:10}},ticks:{color:'#666',font:{size:9},callback:v=>v>=1000?Math.round(v/1000)+'K':v},grid:{color:'rgba(128,128,128,0.06)'}}}}});
+}
+
+function renderDonutHist(){
+  const canvas=document.getElementById('dc-donut-hist');if(!canvas)return;
+  const leg=document.getElementById('dc-donut-hist-legend');
+  const counts={};
+  KPI.historias.forEach(h=>{if(h.formato)counts[h.formato]=(counts[h.formato]||0)+1;});
+  if(chartDonutHist)chartDonutHist.destroy();
+  if(!Object.keys(counts).length){if(leg)leg.innerHTML='<div style="font-size:11px;color:var(--t3)">Sin datos aún</div>';return;}
+  const labels=Object.keys(counts);const vals=Object.values(counts);
+  const colors=['#a78bfa','#34d399','#C9A84C','#f87171','#60a5fa','#fb923c','#e879f9','#94a3b8'];
+  chartDonutHist=new Chart(canvas,{type:'doughnut',data:{labels,datasets:[{data:vals,backgroundColor:colors.slice(0,labels.length),borderWidth:0,hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:'70%',plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.label}: ${ctx.parsed}x`}}}}});
+  if(leg){const total=vals.reduce((s,v)=>s+v,0);leg.innerHTML=labels.map((l,i)=>`<div style="display:flex;align-items:center;gap:6px"><div style="width:8px;height:8px;border-radius:50%;background:${colors[i]};flex-shrink:0"></div><span style="font-size:10px;color:var(--t2);flex:1">${l}</span><span style="font-size:10px;color:var(--t3)">${Math.round(vals[i]/total*100)}%</span></div>`).join('');}
+}
+
+function renderScatterYT(){
+  const canvas=document.getElementById('dc-scatter-yt');if(!canvas)return;
+  const data=KPI.yt.filter(v=>v.ctr>0&&v.retencion>0);
+  if(chartScatterYT)chartScatterYT.destroy();
+  if(!data.length){canvas.parentElement.innerHTML='<div style="font-size:11px;color:var(--t3);text-align:center;padding:20px">Sin datos suficientes. Registrá CTR y retención en tus videos.</div>';return;}
+  const avgC=data.reduce((s,v)=>s+Number(v.ctr),0)/data.length;
+  const avgR=data.reduce((s,v)=>s+Number(v.retencion),0)/data.length;
+  const points=data.map(v=>({x:Number(v.ctr),y:Number(v.retencion),label:v.titulo||'—'}));
+  chartScatterYT=new Chart(canvas,{type:'scatter',data:{datasets:[{data:points,backgroundColor:points.map(p=>p.x>=avgC&&p.y>=avgR?'rgba(52,211,153,0.7)':p.x<avgC&&p.y>=avgR?'rgba(251,146,60,0.7)':p.x>=avgC&&p.y<avgR?'rgba(248,113,113,0.7)':'rgba(148,163,184,0.5)'),pointRadius:7,pointHoverRadius:9}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>[`📹 ${ctx.raw.label}`,`CTR: ${ctx.raw.x}%`,`Retención: ${ctx.raw.y}%`]}}},scales:{x:{title:{display:true,text:'CTR (%)',color:'#666',font:{size:10}},ticks:{color:'#666',font:{size:9}},grid:{color:'rgba(128,128,128,0.06)'}},y:{title:{display:true,text:'Retención (%)',color:'#666',font:{size:10}},ticks:{color:'#666',font:{size:9}},grid:{color:'rgba(128,128,128,0.06)'}}}}});
+}
+
 function renderSectionTimeline(canvasId,data,color,chartRef,setRef){
   const canvas=document.getElementById(canvasId);if(!canvas)return;
   const mesId=canvasId.replace('dc-timeline-','dc-').replace('-reels','-reels-desde').replace('-hist','-hist-desde').replace('-yt','-yt-desde');
@@ -1636,6 +1787,7 @@ function renderContentGeneral(){
   if(el3)el3.innerHTML=`<div class="dst"><span>▶️</span>YouTube — ${yAll.length} total</div><div class="kg"><div class="kcard"><div class="kl">Prom. Views</div><div class="kv">${avgYV.toLocaleString()}</div></div><div class="kcard"><div class="kl">CTR Prom.</div><div class="kv">${avgYC}%</div></div></div>`;
   renderContentDNA('all');
   renderFunnel();
+  renderFatigueMeter();
   updateLeadsContenido();
 }
 
@@ -1654,6 +1806,9 @@ function renderContentReels(){
   renderSectionTimeline('dc-timeline-reels',KPI.reels,'#C9A84C',chartReels,(c)=>{chartReels=c;});
   renderContentDNA('reels');
   renderWinners('reels');
+  renderScatterReels();
+  renderHookLeaderboard();
+  renderOpportunityMatrix();
   filterContentReels();
 }
 function renderContentHist(){
@@ -1666,6 +1821,7 @@ function renderContentHist(){
   renderSectionTimeline('dc-timeline-hist',KPI.historias,'#a78bfa',chartHist,(c)=>{chartHist=c;});
   renderContentDNA('hist');
   renderWinners('hist');
+  renderDonutHist();
   filterContentHist();
 }
 function renderContentYT(){
@@ -1678,6 +1834,7 @@ function renderContentYT(){
   document.getElementById('dc-yt-top').innerHTML=top30y.length?top30y.map((it,i)=>`<div class="top-card" style="gap:10px"><div class="tr-rank">${['🥇','🥈','🥉'][i]}</div><div class="tr-info"><div class="tr-name">${it.titulo||'—'}</div><div class="tr-meta">${fD(it.fecha)}</div></div><div class="tr-stat"><div class="tv">${Number(it.views||0).toLocaleString()}</div><div class="tl">views</div></div><div class="tr-stat"><div class="tv">${it.ctr||0}%</div><div class="tl">CTR</div></div><div class="tr-stat"><div class="tv">${it.retencion||0}%</div><div class="tl">ret.</div></div></div>`).join(''):'<div style="font-size:10px;color:var(--t3)">Sin videos en los últimos 30 días</div>';
   renderSectionTimeline('dc-timeline-yt',KPI.yt,'#f87171',chartYT,(c)=>{chartYT=c;});
   renderWinners('yt');
+  renderScatterYT();
   filterContentYT();
 }
 
