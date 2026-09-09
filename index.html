@@ -1613,7 +1613,7 @@ async function renderPanelGeneral(cid){
       </div>
       <div class="sc" style="margin-bottom:14px">
         <div class="sch"><h3>Calendario Semanal</h3></div>
-        <div class="scb" style="padding:8px">${buildCalendar(taskList)}</div>
+        <div class="scb" style="padding:8px">${cid==='203dd3ca-770a-4d34-9f66-ef3e932baa39'?buildDualCalendar(taskList):buildCalendar(taskList)}</div>
       </div>
       <div class="docs-card">
         <div class="sch"><h3>Documentos y Entregables</h3></div>
@@ -2339,6 +2339,27 @@ const CAL_COLORS={
   'Diseño Interfaz Interna':{'bg':'#fbcfe8','txt':'#9d174d','icon':'🎨'},
   'Tarea':{'bg':'#f1f5f9','txt':'#475569','icon':'✓'},
 };
+
+function buildDualCalendar(tasks){
+  // Separa tareas por prefijo [José] o [Lorena]. Gael maneja 2 clientes.
+  const jose=[];const lorena=[];const otras=[];
+  (tasks||[]).forEach(t=>{
+    const txt=t.text||'';
+    if(/^\[jos[eé]\]/i.test(txt.trim())){jose.push({...t,text:txt.replace(/^\s*\[jos[eé]\]\s*/i,'')});}
+    else if(/^\[lorena\]/i.test(txt.trim())){lorena.push({...t,text:txt.replace(/^\s*\[lorena\]\s*/i,'')});}
+    else otras.push(t);
+  });
+  let html='';
+  html+=`<div style="margin-bottom:6px;font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:1px;padding:6px 4px;border-bottom:1px solid rgba(201,168,76,0.2)">📅 Calendario #1 — Cliente José</div>`;
+  html+=buildCalendar(jose.length?jose:[]);
+  html+=`<div style="margin:18px 0 6px;font-size:11px;font-weight:700;color:#a78bfa;text-transform:uppercase;letter-spacing:1px;padding:6px 4px;border-bottom:1px solid rgba(167,139,250,0.2)">📅 Calendario #2 — Clienta Lorena</div>`;
+  html+=buildCalendar(lorena.length?lorena:[]);
+  if(otras.length){
+    html+=`<div style="margin:18px 0 6px;font-size:11px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:1px;padding:6px 4px;border-bottom:1px solid var(--br)">📋 Sin cliente asignado</div>`;
+    html+=buildCalendar(otras);
+  }
+  return html;
+}
 
 function buildCalendar(tasks){
   const today=new Date();const day=today.getDay();
