@@ -1613,7 +1613,7 @@ async function renderPanelGeneral(cid){
       </div>
       <div class="sc" style="margin-bottom:14px">
         <div class="sch"><h3>Calendario Semanal</h3></div>
-        <div class="scb" style="padding:8px">${cid==='203dd3ca-770a-4d34-9f66-ef3e932baa39'?buildDualCalendar(taskList):buildCalendar(taskList)}</div>
+        <div class="scb" style="padding:8px">${DUAL_CAL[cid]?buildDualCalendar(taskList,DUAL_CAL[cid]):buildCalendar(taskList)}</div>
       </div>
       <div class="docs-card">
         <div class="sch"><h3>Documentos y Entregables</h3></div>
@@ -2340,26 +2340,35 @@ const CAL_COLORS={
   'Tarea':{'bg':'#f1f5f9','txt':'#475569','icon':'✓'},
 };
 
-function buildDualCalendar(tasks){
-  // Separa tareas por prefijo [José] o [Lorena]. Gael maneja 2 clientes.
-  const jose=[];const lorena=[];const otras=[];
+function buildDualCalendar(tasks,cfg){
+  // cfg: {a:{key,label,color,bd}, b:{key,label,color,bd}}
+  // Separa tareas por prefijo [X] o [Y]. Cliente que maneja 2 sub-cuentas.
+  const listA=[];const listB=[];const otras=[];
+  const reA=new RegExp('^\\s*\\['+cfg.a.key+'\\]\\s*','i');
+  const reB=new RegExp('^\\s*\\['+cfg.b.key+'\\]\\s*','i');
   (tasks||[]).forEach(t=>{
     const txt=t.text||'';
-    if(/^\[jos[eé]\]/i.test(txt.trim())){jose.push({...t,text:txt.replace(/^\s*\[jos[eé]\]\s*/i,'')});}
-    else if(/^\[lorena\]/i.test(txt.trim())){lorena.push({...t,text:txt.replace(/^\s*\[lorena\]\s*/i,'')});}
+    if(reA.test(txt.trim())){listA.push({...t,text:txt.replace(reA,'')});}
+    else if(reB.test(txt.trim())){listB.push({...t,text:txt.replace(reB,'')});}
     else otras.push(t);
   });
   let html='';
-  html+=`<div style="margin-bottom:6px;font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:1px;padding:6px 4px;border-bottom:1px solid rgba(201,168,76,0.2)">📅 Calendario #1 — Cliente José</div>`;
-  html+=buildCalendar(jose.length?jose:[]);
-  html+=`<div style="margin:18px 0 6px;font-size:11px;font-weight:700;color:#a78bfa;text-transform:uppercase;letter-spacing:1px;padding:6px 4px;border-bottom:1px solid rgba(167,139,250,0.2)">📅 Calendario #2 — Clienta Lorena</div>`;
-  html+=buildCalendar(lorena.length?lorena:[]);
+  html+=`<div style="margin-bottom:6px;font-size:11px;font-weight:700;color:${cfg.a.color};text-transform:uppercase;letter-spacing:1px;padding:6px 4px;border-bottom:1px solid ${cfg.a.bd}">📅 ${cfg.a.label}</div>`;
+  html+=buildCalendar(listA.length?listA:[]);
+  html+=`<div style="margin:18px 0 6px;font-size:11px;font-weight:700;color:${cfg.b.color};text-transform:uppercase;letter-spacing:1px;padding:6px 4px;border-bottom:1px solid ${cfg.b.bd}">📅 ${cfg.b.label}</div>`;
+  html+=buildCalendar(listB.length?listB:[]);
   if(otras.length){
     html+=`<div style="margin:18px 0 6px;font-size:11px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:1px;padding:6px 4px;border-bottom:1px solid var(--br)">📋 Sin cliente asignado</div>`;
     html+=buildCalendar(otras);
   }
   return html;
 }
+
+// Config de calendarios dobles por cliente (UID → 2 sub-clientes)
+const DUAL_CAL={
+  '203dd3ca-770a-4d34-9f66-ef3e932baa39':{a:{key:'jos[eé]',label:'Calendario #1 — Cliente José',color:'var(--gold)',bd:'rgba(201,168,76,0.2)'},b:{key:'lorena',label:'Calendario #2 — Clienta Lorena',color:'#a78bfa',bd:'rgba(167,139,250,0.2)'}},
+  'cc7a57fd-c539-43e2-a35a-c636a5276363':{a:{key:'jos[eé]',label:'Calendario José',color:'var(--gold)',bd:'rgba(201,168,76,0.2)'},b:{key:'[aá]ngel',label:'Calendario Ángel',color:'#a78bfa',bd:'rgba(167,139,250,0.2)'}}
+};
 
 function buildCalendar(tasks){
   const today=new Date();const day=today.getDay();
