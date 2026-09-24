@@ -1707,9 +1707,25 @@ function setPeriod(p){curPeriod=p;['month','year','life'].forEach(x=>document.ge
 
 function renderOps(){
   const ing=filterP(KPI.ingresos,'fecha');
-  const fac=ing.filter(i=>i.tipo==='nuevo').reduce((s,i)=>s+Number(i.monto||0),0);
+  // Helper: precio total del programa asociado al ingreso (si existe), si no usa el monto
+  const precioTotal=(i)=>{
+    const prog=KPI.programas.find(p=>p.nombre===i.programa);
+    return prog?Number(prog.precio||0):Number(i.monto||0);
+  };
+  // Facturación = precio total comprometido de cada cliente nuevo (no lo que pagó, sino el total del programa)
+  const fac=ing.filter(i=>i.tipo==='nuevo').reduce((s,i)=>s+precioTotal(i),0);
+  // Cash Collected = todo lo que realmente entró (montos de todos los ingresos)
   const cash=ing.reduce((s,i)=>s+Number(i.monto||0),0);
-  const porCobrar=ing.filter(i=>i.tipo==='nuevo'&&Number(i.cuotas||1)>1).reduce((s,i)=>s+Number(i.monto||0)*(Number(i.cuotas||1)-1),0);
+  // Por Cobrar = para clientes nuevos, diferencia entre total comprometido y lo pagado,
+  // menos las cuotas/abonos posteriores registrados para ese mismo cliente
+  const abonosPorCliente={};
+  ing.filter(i=>i.tipo==='cuota').forEach(i=>{const k=(i.nombre||'').toLowerCase().trim();abonosPorCliente[k]=(abonosPorCliente[k]||0)+Number(i.monto||0);});
+  const porCobrar=ing.filter(i=>i.tipo==='nuevo').reduce((s,i)=>{
+    const k=(i.nombre||'').toLowerCase().trim();
+    const abonado=abonosPorCliente[k]||0;
+    const dif=precioTotal(i)-Number(i.monto||0)-abonado;
+    return s+(dif>0?dif:0);
+  },0);
   const gas=filterP(KPI.gastos,'fecha').reduce((s,g)=>s+Number(g.monto||0),0);
   const bal=cash-gas;const marg=cash>0?Math.round(bal/cash*100):0;
   const cN=ing.filter(i=>i.tipo==='nuevo').length;const cQ=ing.filter(i=>i.tipo==='cuota').length;
