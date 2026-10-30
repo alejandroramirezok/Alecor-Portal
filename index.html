@@ -396,6 +396,7 @@ table.t tr:hover td{background:var(--d2)}
     <div class="ptb-left">
       <button class="ptb-back" onclick="goHome()">← Inicio</button>
       <div class="ptb-title">Dashboard KPI</div>
+      <button id="kpi-neg-chip" onclick="switchNegocioKPI()" style="display:none;margin-left:10px;background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.4);color:var(--gold);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:600;cursor:pointer;font-family:var(--font)"></button>
     </div>
     <span class="badge badge-kpi">KPI</span>
   </div>
@@ -750,7 +751,7 @@ table.t tr:hover td{background:var(--d2)}
     <span class="badge" style="background:rgba(139,92,246,.12);color:#a78bfa;border:1px solid rgba(139,92,246,.3)">MALLA</span>
   </div>
   <div style="display:flex;flex:1;overflow:hidden;height:calc(100vh - 50px)">
-    <div class="kpi-sidebar">
+    <div class="kpi-sidebar" id="malla-sidebar">
       <div class="ksi-section">Malla</div>
       <div class="ksi-item active" onclick="showMallaSec('tabla',this)">📋 Crear Tabla</div>
       <div class="ksi-item" onclick="showMallaSec('ideas',this)">💡 Ideas de Contenido</div>
@@ -1325,6 +1326,41 @@ let chartOps=null;
 let KPI={leads:[],agendas:[],ingresos:[],gastos:[],clientes:[],wins:[],reels:[],historias:[],yt:[],viralidad:[],programas:[],pasarelas:[]};
 let portalClientId=null;
 
+// ===== MULTI-NEGOCIO (un usuario con varios negocios/clientes) =====
+// Clientes que manejan varios negocios: cada negocio tiene su propio KPI y su propia malla.
+// Los usuarios que no están acá funcionan exactamente igual que antes.
+const NEGOCIOS={
+  '5265fa15-3c5e-43dc-9bba-647c1e4f34c6':['Cesar Echeverri','Julián Betancur','Juanca Castellanos','Juanpa Ceballos']
+};
+let curNeg=null;
+function negF(){return curNeg?{negocio:curNeg}:{};}
+function negQ(q){return curNeg?q.eq('negocio',curNeg):q;}
+function pickNegocio(uid){
+  const negs=NEGOCIOS[uid];
+  const chip=document.getElementById('kpi-neg-chip');
+  if(!negs||!negs.length){curNeg=null;if(chip)chip.style.display='none';return Promise.resolve(true);}
+  return new Promise(res=>{
+    document.getElementById('neg-pick-ov')?.remove();
+    const ov=document.createElement('div');ov.id='neg-pick-ov';ov.className='ov open';
+    ov.innerHTML=`<div class="modal" style="max-width:460px"><div class="mh"><h3>¿Qué negocio quieres ver?</h3><button class="mc" id="neg-pick-x">✕</button></div>
+      <div class="mb" style="display:flex;flex-direction:column;gap:8px">${negs.map((n,i)=>`<button data-i="${i}" class="neg-pick-btn" style="text-align:left;background:var(--d3);border:1px solid var(--br);border-radius:10px;padding:14px 16px;color:var(--tx);font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font)">📊 ${n}</button>`).join('')}</div></div>`;
+    document.body.appendChild(ov);
+    ov.querySelectorAll('.neg-pick-btn').forEach(b=>b.onclick=()=>{
+      curNeg=negs[+b.dataset.i];ov.remove();
+      if(chip){chip.textContent='👤 '+curNeg+'  ⇄';chip.style.display='inline-block';}
+      res(true);
+    });
+    ov.querySelector('#neg-pick-x').onclick=()=>{ov.remove();res(false);};
+  });
+}
+async function switchNegocioKPI(){
+  if(!(await pickNegocio(portalClientId)))return;
+  await loadKPIData();
+  ['dc-leads-total','dc-leads-reels','dc-leads-hist','dc-ventas-total'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='0';});
+  const active=document.querySelector('#s-kpi .ksi-item.active');
+  if(active)active.click();else{renderOps();renderContentReels();renderViralidad();}
+}
+
 const MESES=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 const now=new Date();const CY=now.getFullYear();
 
@@ -1538,6 +1574,7 @@ async function adminOpenPanel(clientId,name){
 
 async function adminOpenKPI(clientId){
   portalClientId=clientId;
+  if(!(await pickNegocio(clientId)))return;
   await loadKPIData();
   showScreen('s-kpi');
   document.getElementById('msel').value=now.getMonth().toString();
@@ -1650,6 +1687,7 @@ async function toggleTask(taskId,cb,cid){
 
 async function openKPI(clientId){
   portalClientId=clientId||CU.id;
+  if(!(await pickNegocio(portalClientId)))return;
   await loadKPIData();
   showScreen('s-kpi');
   document.getElementById('msel').value=now.getMonth().toString();
@@ -1661,19 +1699,19 @@ async function openKPI(clientId){
 async function loadKPIData(){
   const uid=portalClientId;
   const[l,a,i,g,c,w,r,h,y,v,p,pa,id]=await Promise.all([
-    sb.from('leads').select('*').eq('user_id',uid),
-    sb.from('agendas').select('*').eq('user_id',uid),
-    sb.from('ingresos').select('*').eq('user_id',uid),
-    sb.from('gastos').select('*').eq('user_id',uid),
-    sb.from('clientes_kpi').select('*').eq('user_id',uid),
-    sb.from('wins').select('*').eq('user_id',uid),
-    sb.from('reels').select('*').eq('user_id',uid),
-    sb.from('historias').select('*').eq('user_id',uid),
-    sb.from('yt_videos').select('*').eq('user_id',uid),
-    sb.from('viralidad').select('*').eq('user_id',uid),
-    sb.from('programas').select('*').eq('user_id',uid),
-    sb.from('pasarelas').select('*').eq('user_id',uid),
-    sb.from('ideas').select('*').eq('user_id',uid).order('created_at',{ascending:false})
+    negQ(sb.from('leads').select('*').eq('user_id',uid)),
+    negQ(sb.from('agendas').select('*').eq('user_id',uid)),
+    negQ(sb.from('ingresos').select('*').eq('user_id',uid)),
+    negQ(sb.from('gastos').select('*').eq('user_id',uid)),
+    negQ(sb.from('clientes_kpi').select('*').eq('user_id',uid)),
+    negQ(sb.from('wins').select('*').eq('user_id',uid)),
+    negQ(sb.from('reels').select('*').eq('user_id',uid)),
+    negQ(sb.from('historias').select('*').eq('user_id',uid)),
+    negQ(sb.from('yt_videos').select('*').eq('user_id',uid)),
+    negQ(sb.from('viralidad').select('*').eq('user_id',uid)),
+    negQ(sb.from('programas').select('*').eq('user_id',uid)),
+    negQ(sb.from('pasarelas').select('*').eq('user_id',uid)),
+    negQ(sb.from('ideas').select('*').eq('user_id',uid)).order('created_at',{ascending:false})
   ]);
   KPI={leads:l.data||[],agendas:a.data||[],ingresos:i.data||[],gastos:g.data||[],clientes:c.data||[],wins:w.data||[],reels:r.data||[],historias:h.data||[],yt:y.data||[],viralidad:v.data||[],programas:p.data||[],pasarelas:pa.data||[],ideas:id.data||[]};
 }
@@ -2067,7 +2105,7 @@ function renderWins(){const el=document.getElementById('wins-list');if(!KPI.wins
 
 function renderViralidad(){const cr=[{k:'n',l:'Entiende niño 10 años'},{k:'r',l:'¿Referencia viral?'},{k:'c',l:'Camino A→B claro'},{k:'p',l:'¿Pagarían $3?'},{k:'m',l:'¿Mercado viral?'},{k:'t',l:'¿Tendencia activa?'},{k:'co',l:'¿Genera controversia?'},{k:'g',l:'Gancho visual fuerte'},{k:'cu',l:'Genera curiosidad'},{k:'s',l:'Satisfacción visual'},{k:'nu',l:'Nuevo/diferente/tuyo'},{k:'mo',l:'¿Placer/Morbo?'}];document.getElementById('crit-grid').innerHTML=cr.map(c=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:var(--d3);border-radius:6px;border:1px solid var(--br)"><label for="cr-${c.k}" style="font-size:10px;color:var(--t3);cursor:pointer">${c.l}</label><input type="checkbox" id="cr-${c.k}" onchange="calcScore()" style="accent-color:var(--gold);width:13px;height:13px;cursor:pointer"></div>`).join('');const vt=document.getElementById('tbl-viral');if(!KPI.viralidad.length){vt.innerHTML=emptyEl('Sin evaluaciones');return}vt.innerHTML=`<table class="t"><thead><tr><th>Reel</th><th>Score</th><th>Nivel</th><th>Fecha</th></tr></thead><tbody>${KPI.viralidad.map(v=>`<tr><td>${v.nombre}</td><td>${v.score}/12</td><td><span class="st ${v.score>=9?'sg':v.score>=6?'sy':'sr'}">${v.score>=9?'Alto':v.score>=6?'Medio':'Bajo'}</span></td><td>${fD(v.fecha)}</td></tr>`).join('')}</tbody></table>`;}
 function calcScore(){const n=document.querySelectorAll('#crit-grid input:checked').length;document.getElementById('sc-n').textContent=n;document.getElementById('sc-f').style.width=Math.round(n/12*100)+'%';document.getElementById('sc-l').textContent=n>=9?'Potencial ALTO':n>=6?'Potencial MEDIO':'Potencial BAJO';}
-async function saveViral(){const nom=document.getElementById('vir-n').value.trim();if(!nom)return;const score=document.querySelectorAll('#crit-grid input:checked').length;await sb.from('viralidad').insert({user_id:portalClientId,nombre:nom,score,fecha:new Date().toISOString().slice(0,10)});await loadKPIData();renderViralidad();showToast('Evaluación guardada');document.getElementById('vir-n').value='';document.querySelectorAll('#crit-grid input').forEach(c=>c.checked=false);calcScore();}
+async function saveViral(){const nom=document.getElementById('vir-n').value.trim();if(!nom)return;const score=document.querySelectorAll('#crit-grid input:checked').length;await sb.from('viralidad').insert({user_id:portalClientId,...negF(),nombre:nom,score,fecha:new Date().toISOString().slice(0,10)});await loadKPIData();renderViralidad();showToast('Evaluación guardada');document.getElementById('vir-n').value='';document.querySelectorAll('#crit-grid input').forEach(c=>c.checked=false);calcScore();}
 
 function showAdminTab(t,el){document.querySelectorAll('.atab').forEach(b=>b.classList.remove('active'));el.classList.add('active');document.getElementById('admin-tab-clientes').style.display=t==='clientes'?'block':'none';document.getElementById('admin-tab-editor').style.display=t==='editor'?'block':'none';if(t==='clientes')loadAdminClients();}
 function showEditTab(t,el){document.querySelectorAll('.etab').forEach(b=>b.classList.remove('active'));document.querySelectorAll('.ep').forEach(p=>p.classList.remove('active'));el.classList.add('active');document.getElementById('ep-'+t).classList.add('active');}
@@ -2193,11 +2231,11 @@ function renderProgs(){const el=document.getElementById('prog-list');if(!KPI.pro
 function renderPas(){const el=document.getElementById('pas-list');if(!KPI.pasarelas.length){el.innerHTML=emptyEl('Agrega tus pasarelas');return}el.innerHTML=KPI.pasarelas.map(p=>`<div class="pc-card"><div><div class="pc-n">${p.nombre}</div><div class="pc-m">Comisión: ${p.comision||0}%</div></div><button class="bd" onclick="delPas('${p.id}')">✕</button></div>`).join('');}
 function openNewProg(){document.getElementById('prog-idx').value='';['p-nom','p-desc'].forEach(id=>document.getElementById(id).value='');document.getElementById('p-precio').value='';document.getElementById('p-dias').value='';document.getElementById('p-cuotas').value=1;document.getElementById('m-prog-t').textContent='Nuevo Programa';openMod('m-prog');}
 function openNewPas(){document.getElementById('pas-idx').value='';document.getElementById('pas-com').value='';document.getElementById('pas-nota').value='';document.getElementById('m-pas-t').textContent='Nueva Pasarela';openMod('m-pas');}
-async function saveProg(){const nombre=document.getElementById('p-nom').value;if(!nombre)return;await sb.from('programas').insert({user_id:portalClientId,nombre,precio:document.getElementById('p-precio').value,dias:document.getElementById('p-dias').value,cuotas:document.getElementById('p-cuotas').value,descripcion:document.getElementById('p-desc').value});closeM('m-prog');await loadKPIData();renderProgs();showToast('Programa guardado');}
+async function saveProg(){const nombre=document.getElementById('p-nom').value;if(!nombre)return;await sb.from('programas').insert({user_id:portalClientId,...negF(),nombre,precio:document.getElementById('p-precio').value,dias:document.getElementById('p-dias').value,cuotas:document.getElementById('p-cuotas').value,descripcion:document.getElementById('p-desc').value});closeM('m-prog');await loadKPIData();renderProgs();showToast('Programa guardado');}
 async function savePas(){
   const sel=document.getElementById('pas-n').value;
   const nombre=sel==='Otro'?(document.getElementById('pas-otro').value||'Otro'):sel;
-  await sb.from('pasarelas').insert({user_id:portalClientId,nombre,comision:document.getElementById('pas-com').value,notas:document.getElementById('pas-nota').value});
+  await sb.from('pasarelas').insert({user_id:portalClientId,...negF(),nombre,comision:document.getElementById('pas-com').value,notas:document.getElementById('pas-nota').value});
   closeM('m-pas');await loadKPIData();renderPas();showToast('Pasarela guardada');
 }
 async function delProg(id){await sb.from('programas').delete().eq('id',id);await loadKPIData();renderProgs();}
@@ -2227,14 +2265,14 @@ function resetMod(t){const maps={lead:['l-n','l-ig','l-f'],gasto:['g-d','g-f','g
 
 async function saveLead(){
   const id=document.getElementById('lead-idx').value;
-  const o={user_id:portalClientId,nombre:document.getElementById('l-n').value,ig:document.getElementById('l-ig').value,fecha:document.getElementById('l-f').value||null,estado:document.getElementById('l-est').value,fuente:document.getElementById('l-fue').value,agendo:document.getElementById('l-ag').value,contenido_origen:document.getElementById('l-contenido')?.value||''};
+  const o={user_id:portalClientId,...negF(),nombre:document.getElementById('l-n').value,ig:document.getElementById('l-ig').value,fecha:document.getElementById('l-f').value||null,estado:document.getElementById('l-est').value,fuente:document.getElementById('l-fue').value,agendo:document.getElementById('l-ag').value,contenido_origen:document.getElementById('l-contenido')?.value||''};
   if(id)await sb.from('leads').update(o).eq('id',id);
   else await sb.from('leads').insert(o);
   // Auto-create agenda if estado=Agendado and agendo=Si
   if(o.estado==='Agendado'&&o.agendo==='Si'&&!id){
     const agExist=KPI.agendas.find(a=>a.nombre===o.nombre&&a.ig===o.ig);
     if(!agExist){
-      await sb.from('agendas').insert({user_id:portalClientId,nombre:o.nombre,ig:o.ig,fecha:null,telefono:'',calificacion:'Alta',resultado:'Pendiente',notas:''});
+      await sb.from('agendas').insert({user_id:portalClientId,...negF(),nombre:o.nombre,ig:o.ig,fecha:null,telefono:'',calificacion:'Alta',resultado:'Pendiente',notas:''});
       showToast('Lead guardado + Agenda creada automáticamente');
     }
   } else {
@@ -2245,21 +2283,21 @@ async function saveLead(){
 }
 async function saveAgenda(){
   const id=document.getElementById('ag-idx').value;
-  const o={user_id:portalClientId,nombre:document.getElementById('ag-n').value,ig:document.getElementById('ag-ig').value,fecha:document.getElementById('ag-f').value||null,telefono:document.getElementById('ag-tel').value,calificacion:document.getElementById('ag-cal').value,resultado:document.getElementById('ag-res').value,notas:document.getElementById('ag-not').value};
+  const o={user_id:portalClientId,...negF(),nombre:document.getElementById('ag-n').value,ig:document.getElementById('ag-ig').value,fecha:document.getElementById('ag-f').value||null,telefono:document.getElementById('ag-tel').value,calificacion:document.getElementById('ag-cal').value,resultado:document.getElementById('ag-res').value,notas:document.getElementById('ag-not').value};
   if(id)await sb.from('agendas').update(o).eq('id',id);
   else await sb.from('agendas').insert(o);
   closeM('m-agenda');await loadKPIData();renderTbl('agendas','tbl-agendas');showToast(id?'Agenda actualizada':'Agenda guardada');
 }
-async function saveCliente(){const pid=document.getElementById('cl-prog').value;const ing=document.getElementById('cl-ing').value;const prog=KPI.programas.find(p=>p.id===pid);const dias=prog?parseInt(prog.dias||90):0;const fin=ing&&dias?addDays(ing,dias):null;const o={user_id:portalClientId,nombre:document.getElementById('cl-n').value,ig:document.getElementById('cl-ig').value,telefono:document.getElementById('cl-tel').value,fecha_ingreso:ing||null,fecha_fin:fin,prog_id:pid||null,cuotas:parseInt(document.getElementById('cl-cuotas').value)||1,activo:document.getElementById('cl-activo').value};await sb.from('clientes_kpi').insert(o);closeM('m-cliente');await loadKPIData();renderTbl('clientes','tbl-clientes');showToast('Cliente guardado');}
-async function saveIngreso(){const o={user_id:portalClientId,tipo:tipoIng,nombre:document.getElementById('in-n').value,programa:document.getElementById('in-prog').value,fecha:document.getElementById('in-f').value||null,monto:Number(document.getElementById('in-m').value)||0,cuotas:tipoIng==='nuevo'?parseInt(document.getElementById('in-cuotas').value)||1:1,cuota_num:tipoIng==='cuota'?parseInt(document.getElementById('in-cn').value)||null:null,pasarela:document.getElementById('in-pas').value};await sb.from('ingresos').insert(o);closeM('m-ingreso');await loadKPIData();renderTbl('ingresos','tbl-ingresos');showToast('Ingreso guardado');}
+async function saveCliente(){const pid=document.getElementById('cl-prog').value;const ing=document.getElementById('cl-ing').value;const prog=KPI.programas.find(p=>p.id===pid);const dias=prog?parseInt(prog.dias||90):0;const fin=ing&&dias?addDays(ing,dias):null;const o={user_id:portalClientId,...negF(),nombre:document.getElementById('cl-n').value,ig:document.getElementById('cl-ig').value,telefono:document.getElementById('cl-tel').value,fecha_ingreso:ing||null,fecha_fin:fin,prog_id:pid||null,cuotas:parseInt(document.getElementById('cl-cuotas').value)||1,activo:document.getElementById('cl-activo').value};await sb.from('clientes_kpi').insert(o);closeM('m-cliente');await loadKPIData();renderTbl('clientes','tbl-clientes');showToast('Cliente guardado');}
+async function saveIngreso(){const o={user_id:portalClientId,...negF(),tipo:tipoIng,nombre:document.getElementById('in-n').value,programa:document.getElementById('in-prog').value,fecha:document.getElementById('in-f').value||null,monto:Number(document.getElementById('in-m').value)||0,cuotas:tipoIng==='nuevo'?parseInt(document.getElementById('in-cuotas').value)||1:1,cuota_num:tipoIng==='cuota'?parseInt(document.getElementById('in-cn').value)||null:null,pasarela:document.getElementById('in-pas').value};await sb.from('ingresos').insert(o);closeM('m-ingreso');await loadKPIData();renderTbl('ingresos','tbl-ingresos');showToast('Ingreso guardado');}
 async function saveGasto(){
   const id=document.getElementById('gas-idx').value;
-  const o={user_id:portalClientId,detalle:document.getElementById('g-d').value,fecha:document.getElementById('g-f').value||null,monto:Number(document.getElementById('g-m').value)||0,categoria:document.getElementById('g-cat').value,descripcion:document.getElementById('g-desc').value};
+  const o={user_id:portalClientId,...negF(),detalle:document.getElementById('g-d').value,fecha:document.getElementById('g-f').value||null,monto:Number(document.getElementById('g-m').value)||0,categoria:document.getElementById('g-cat').value,descripcion:document.getElementById('g-desc').value};
   if(id)await sb.from('gastos').update(o).eq('id',id);
   else await sb.from('gastos').insert(o);
   closeM('m-gasto');await loadKPIData();renderTbl('gastos','tbl-gastos');showToast(id?'Gasto actualizado':'Gasto guardado');
 }
-async function saveWin(){const o={user_id:portalClientId,cliente:document.getElementById('w-cl').value,fecha:document.getElementById('w-f').value||null,win:document.getElementById('w-t').value,grandeza:document.getElementById('w-g').value,usada_historias:document.getElementById('w-u').value};await sb.from('wins').insert(o);closeM('m-win');await loadKPIData();renderWins();showToast('Win guardada');}
+async function saveWin(){const o={user_id:portalClientId,...negF(),cliente:document.getElementById('w-cl').value,fecha:document.getElementById('w-f').value||null,win:document.getElementById('w-t').value,grandeza:document.getElementById('w-g').value,usada_historias:document.getElementById('w-u').value};await sb.from('wins').insert(o);closeM('m-win');await loadKPIData();renderWins();showToast('Win guardada');}
 async function deleteContent(table,id){
   if(!confirm('¿Eliminar este registro?'))return;
   await sb.from(table).delete().eq('id',id);
@@ -2273,7 +2311,7 @@ async function deleteContent(table,id){
 
 async function saveReel(){
   const id=document.getElementById('reel-idx').value;
-  const o={user_id:portalClientId,
+  const o={user_id:portalClientId,...negF(),
     nombre:document.getElementById('r-n').value,
     estructura:document.getElementById('r-est').value,
     gancho:document.getElementById('r-gancho').value,
@@ -2294,7 +2332,7 @@ async function saveReel(){
 }
 async function saveHist(){
   const id=document.getElementById('hist-idx').value;
-  const o={user_id:portalClientId,
+  const o={user_id:portalClientId,...negF(),
     idea:document.getElementById('h-idea').value,
     formato:document.getElementById('h-fmt').value,
     fecha:document.getElementById('h-f').value||null,
@@ -2311,7 +2349,7 @@ async function saveHist(){
 }
 async function saveYT(){
   const id=document.getElementById('yt-idx').value;
-  const o={user_id:portalClientId,titulo:document.getElementById('y-t').value,fecha:document.getElementById('y-f').value||null,views:parseInt(document.getElementById('y-v').value)||0,ctr:Number(document.getElementById('y-ctr').value)||0,retencion:Number(document.getElementById('y-ret').value)||0};
+  const o={user_id:portalClientId,...negF(),titulo:document.getElementById('y-t').value,fecha:document.getElementById('y-f').value||null,views:parseInt(document.getElementById('y-v').value)||0,ctr:Number(document.getElementById('y-ctr').value)||0,retencion:Number(document.getElementById('y-ret').value)||0};
   if(id)await sb.from('yt_videos').update(o).eq('id',id);
   else await sb.from('yt_videos').insert(o);
   closeM('m-yt');await loadKPIData();renderContentYT();showToast(id?'Video actualizado':'Video guardado');
@@ -2484,7 +2522,7 @@ function editIdea(id){
 async function deleteIdea(id){
   if(!confirm('¿Eliminar esta idea?'))return;
   await sb.from('ideas').delete().eq('id',id);
-  const{data}=await sb.from('ideas').select('*').eq('user_id',portalClientId).order('created_at',{ascending:false});
+  const{data}=await negQ(sb.from('ideas').select('*').eq('user_id',portalClientId)).order('created_at',{ascending:false});
   KPI.ideas=data||[];
   renderIdeas();showToast('Idea eliminada');
 }
@@ -2500,11 +2538,11 @@ async function saveIdea(){
   const id=document.getElementById('idea-idx').value;
   const tipo=document.getElementById('idea-tipo').value;
   const est=tipo==='reel'?document.getElementById('idea-est-reel').value:tipo==='historia'?document.getElementById('idea-est-hist').value:'';
-  const o={user_id:portalClientId,titulo:document.getElementById('idea-titulo').value,gancho:document.getElementById('idea-gancho').value,link:document.getElementById('idea-link').value,transcripcion:document.getElementById('idea-transcripcion').value,tipo,estructura:est,formato:tipo==='reel'?document.getElementById('idea-fmt').value:'',estado:document.getElementById('idea-estado').value};
+  const o={user_id:portalClientId,...negF(),titulo:document.getElementById('idea-titulo').value,gancho:document.getElementById('idea-gancho').value,link:document.getElementById('idea-link').value,transcripcion:document.getElementById('idea-transcripcion').value,tipo,estructura:est,formato:tipo==='reel'?document.getElementById('idea-fmt').value:'',estado:document.getElementById('idea-estado').value};
   if(id)await sb.from('ideas').update(o).eq('id',id);
   else await sb.from('ideas').insert(o);
   closeM('m-idea');
-  const{data}=await sb.from('ideas').select('*').eq('user_id',portalClientId).order('created_at',{ascending:false});
+  const{data}=await negQ(sb.from('ideas').select('*').eq('user_id',portalClientId)).order('created_at',{ascending:false});
   KPI.ideas=data||[];
   renderIdeas();showToast(id?'Idea actualizada':'Idea guardada');
 }
@@ -2602,6 +2640,12 @@ function toggleExpand(id,btn){
 
 // ===== MALLA DE CONTENIDO =====
 let mallaClientId = null;
+let mallaNeg = null;
+const MALLA_SIDEBAR_DEFAULT = `<div class="ksi-section">Malla</div>
+      <div class="ksi-item active" onclick="showMallaSec('tabla',this)">📋 Crear Tabla</div>
+      <div class="ksi-item" onclick="showMallaSec('ideas',this)">💡 Ideas de Contenido</div>`;
+function mnegF(){return mallaNeg?{negocio:mallaNeg}:{};}
+function mnegQ(q){return mallaNeg?q.eq('negocio',mallaNeg):q;}
 let mallaData = {};
 
 const DOLORES_COLS = [
@@ -2621,14 +2665,38 @@ const HIST_OPTS = `<option>POV / Reflexión</option><option>Caja de Preguntas</o
 
 async function openMalla(clientId){
   mallaClientId = clientId || CU.id;
+  const negs = NEGOCIOS[mallaClientId];
+  const sb_el = document.getElementById('malla-sidebar');
+  if(negs && negs.length){
+    mallaNeg = null;
+    sb_el.innerHTML = negs.map((n,i)=>`<div class="ksi-section" style="${i?'margin-top:14px':''}">👤 ${n}</div>
+      <div class="ksi-item" data-neg="${i}" data-sec="tabla" onclick="openMallaNeg(${i},'tabla',this)">📋 Crear Tabla</div>
+      <div class="ksi-item" data-neg="${i}" data-sec="ideas" onclick="openMallaNeg(${i},'ideas',this)">💡 Banco de Ideas</div>`).join('');
+    showScreen('s-malla');
+    await openMallaNeg(0,'tabla',sb_el.querySelector('.ksi-item'));
+    return;
+  }
+  mallaNeg = null;
+  sb_el.innerHTML = MALLA_SIDEBAR_DEFAULT;
   await loadMallaData();
   renderMallaTabla();
   showScreen('s-malla');
   showMallaSec('tabla', document.querySelector('#s-malla .ksi-item'));
 }
 
+async function openMallaNeg(i, sec, el){
+  const negs = NEGOCIOS[mallaClientId]||[];
+  const changed = mallaNeg !== negs[i];
+  mallaNeg = negs[i];
+  if(changed || !document.getElementById('malla-tabla-container').innerHTML){
+    await loadMallaData();
+    renderMallaTabla();
+  }
+  showMallaSec(sec, el);
+}
+
 async function loadMallaData(){
-  const {data} = await sb.from('malla_contenido').select('*').eq('user_id', mallaClientId).maybeSingle();
+  const {data} = await mnegQ(sb.from('malla_contenido').select('*').eq('user_id', mallaClientId)).maybeSingle();
   mallaData = data?.data ? JSON.parse(data.data) : {};
 }
 
@@ -2656,9 +2724,9 @@ async function saveMalla(){
       };
     });
   });
-  const {data:ex} = await sb.from('malla_contenido').select('id').eq('user_id', mallaClientId).maybeSingle();
-  const payload = {user_id: mallaClientId, data: JSON.stringify(mallaData)};
-  if(ex) await sb.from('malla_contenido').update(payload).eq('user_id', mallaClientId);
+  const {data:ex} = await mnegQ(sb.from('malla_contenido').select('id').eq('user_id', mallaClientId)).maybeSingle();
+  const payload = {user_id: mallaClientId, ...mnegF(), data: JSON.stringify(mallaData)};
+  if(ex) await sb.from('malla_contenido').update(payload).eq('id', ex.id);
   else await sb.from('malla_contenido').insert(payload);
   showToast('Malla guardada');
   // Refresh ideas
@@ -2876,9 +2944,9 @@ async function deleteMallaIdea(colId, n){
 }
 
 async function saveMallaDirecto(){
-  const {data:ex} = await sb.from('malla_contenido').select('id').eq('user_id', mallaClientId).maybeSingle();
-  const payload = {user_id: mallaClientId, data: JSON.stringify(mallaData)};
-  if(ex) await sb.from('malla_contenido').update(payload).eq('user_id', mallaClientId);
+  const {data:ex} = await mnegQ(sb.from('malla_contenido').select('id').eq('user_id', mallaClientId)).maybeSingle();
+  const payload = {user_id: mallaClientId, ...mnegF(), data: JSON.stringify(mallaData)};
+  if(ex) await sb.from('malla_contenido').update(payload).eq('id', ex.id);
   else await sb.from('malla_contenido').insert(payload);
 }
 
@@ -2886,7 +2954,7 @@ async function addMallaToBancoFromIdea(colId, n){
   const sd = mallaData[colId]?.subdolores?.[n];
   if(!sd?.text){showToast('Sin subdolor');return;}
   const col = DOLORES_COLS.find(c=>c.id===colId);
-  await sb.from('ideas').insert({user_id:mallaClientId,titulo:`[${col?.label}] ${sd.text}`,gancho:sd.estructura?`Estructura: ${sd.estructura}`:'',tipo:'reel',estructura:sd.estructura||'',formato:sd.formato_reel||'',estado:'idea'});
+  await sb.from('ideas').insert({user_id:mallaClientId,...mnegF(),titulo:`[${col?.label}] ${sd.text}`,gancho:sd.estructura?`Estructura: ${sd.estructura}`:'',tipo:'reel',estructura:sd.estructura||'',formato:sd.formato_reel||'',estado:'idea'});
   showToast('¡Agregado al Banco de Ideas!');
 }
 
@@ -2898,7 +2966,7 @@ async function addMallaToBanco(colId, n){
   const titulo = `[${col?.label}] ${sd.text}`;
   const gancho = sd.estructura ? `Estructura: ${sd.estructura}` : '';
   await sb.from('ideas').insert({
-    user_id: mallaClientId, titulo, gancho,
+    user_id: mallaClientId, ...mnegF(), titulo, gancho,
     tipo: 'reel', estructura: sd.estructura||'',
     formato: sd.formato_reel||'', estado: 'idea'
   });
